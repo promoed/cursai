@@ -169,13 +169,25 @@
           (m[i].a = m[i].a || []).push(arguments);
         };
       m[i].l = 1 * new Date();
+      for (var j = 0; j < document.scripts.length; j++) {
+        if (document.scripts[j].src === r) return;
+      }
       k = e.createElement(t);
       a = e.getElementsByTagName(t)[0];
       k.async = 1;
       k.src = r;
       a.parentNode.insertBefore(k, a);
-    })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
-    window.ym(id, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true });
+    })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=' + id, 'ym');
+    window.ym(id, 'init', {
+      ssr: true,
+      webvisor: true,
+      clickmap: true,
+      ecommerce: 'dataLayer',
+      referrer: document.referrer,
+      url: location.href,
+      accurateTrackBounce: true,
+      trackLinks: true,
+    });
     window.YM_ID = id;
   }
   function openBanner(open, focus) {
@@ -208,6 +220,17 @@
     if (decision === 'all') loadAnalytics();
     else if (!decision) openBanner(true);
   }
+
+  /* Ссылка на курс, скрытый фильтром: сначала показываем все курсы */
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest && e.target.closest('a[href^="#kurs-"]');
+    if (!link) return;
+    var target = document.getElementById(link.getAttribute('href').slice(1));
+    if (target && target.hidden) {
+      applyFilter('all', false);
+      store('nr-filter', 'all');
+    }
+  });
 
   /* Клики по кнопкам курсов: событие для аналитики */
   document.addEventListener('click', function (e) {

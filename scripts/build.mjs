@@ -1,7 +1,7 @@
-// Собирает статичный index.html из src/courses.mjs + src/styles.css + src/app.js.
-//   node scripts/build.mjs             -> index.html + styles.css
-//   node scripts/build.mjs --artifact  -> dist/preview.html (все встроено в один файл)
-import { readFile, writeFile, mkdir, copyFile } from 'node:fs/promises';
+// Собирает сайт из src/courses.mjs + src/styles.css + src/app.js.
+//   node scripts/build.mjs             -> site/ (готовая папка для хостинга)
+//   node scripts/build.mjs --artifact  -> dist/ (превью: главная страница без обертки html/head)
+import { readFile, writeFile, mkdir, copyFile, rm, readdir } from 'node:fs/promises';
 import { criteria, filters, schools, courses, faq } from '../src/courses.mjs';
 import { policy, consent } from '../src/legal.mjs';
 
@@ -12,9 +12,10 @@ const SITE = {
   name: 'Нейрорейтинг',
   updated: 'сентябрь 2026',
   year: 2026,
-  url: 'https://example.com/',
+  // Адрес сайта со слешем на конце, например 'https://kursy-ii.ru/'. Нужен для canonical, og:url и sitemap.xml.
+  url: '',
   // Номер счетчика Яндекс Метрики. Метрика запускается только после согласия посетителя на cookie.
-  ymId: null,
+  ymId: 113107145,
   policyDate: '27 сентября 2026',
   // Реквизиты оператора персональных данных для политики и согласия
   operator: {
@@ -26,6 +27,7 @@ const SITE = {
   },
 };
 
+if (!SITE.url) console.warn('Укажите адрес сайта в SITE.url (scripts/build.mjs): без него нет canonical и sitemap.xml.');
 if (Object.values(SITE.operator).some((v) => v.startsWith('['))) {
   console.warn('Заполните реквизиты оператора в SITE.operator (scripts/build.mjs): они выводятся в политике и согласии.');
 }
@@ -61,6 +63,10 @@ if (missing.length) console.warn(`Не заполнено (поле не буд�
 const text = [JSON.stringify(courses), JSON.stringify(faq), JSON.stringify(filters)].join('');
 if (/[ёЁ]/.test(text)) throw new Error('В текстах есть буква «ё»');
 
+// [текст](#kurs-N) -> ссылка на курс; в JSON-LD уходит чистый текст
+const richText = (t) => esc(t).replace(/\[([^\]]+)\]\((#kurs-\d+)\)/g, '<a class="inline-link" href="$2">$1</a>');
+const plainText = (t) => t.replace(/\[([^\]]+)\]\((#kurs-\d+)\)/g, '$1');
+
 const check = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const arrow = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -95,7 +101,7 @@ const cover = (c, i) => {
     const dark = parseInt(school.logoBg.slice(1, 3), 16) < 128;
     return `
           <figure class="cover cover-logo${dark ? ' is-dark' : ''}" style="--logo-bg:${school.logoBg}">
-            <img src="${esc(school.logo)}" alt="Логотип ${esc(school.name)}" loading="lazy" decoding="async">
+            <img src="${esc(school.logo)}" alt="Логотип ${esc(school.name)}" width="${school.logoSize[0]}" height="${school.logoSize[1]}" loading="lazy" decoding="async">
             <figcaption>${esc(c.short)}</figcaption>
           </figure>`;
   }
@@ -183,11 +189,11 @@ const tableRows = courses
     (c) => `
             <tr style="--c:${c.color}">
               <td class="t-pos"><span>${c.rank}</span></td>
-              <td class="t-course"><a href="#kurs-${c.rank}">${esc(c.title)}</a><span>${esc(schools[c.school].name)}</span></td>
-              <td>${esc(c.level)}</td>
-              <td class="t-nowrap">${c.duration ? esc(c.duration) : '<span class="t-na">—</span>'}</td>
-              <td class="t-price">${c.price ? rub(c.price) : '<span class="t-na">—</span>'}</td>
-              <td class="t-score">${fmt(c.total)}</td>
+              <td class="t-course" data-rank="${c.rank}"><a href="#kurs-${c.rank}">${esc(c.title)}</a><span>${esc(schools[c.school].name)}</span></td>
+              <td data-label="Уровень">${esc(c.level)}</td>
+              <td class="t-nowrap" data-label="Срок">${c.duration ? esc(c.duration) : '<span class="t-na">—</span>'}</td>
+              <td class="t-price" data-label="Стоимость">${c.price ? rub(c.price) : '<span class="t-na">—</span>'}</td>
+              <td class="t-score" data-label="Балл">${fmt(c.total)}</td>
               <td class="t-cta"><a class="t-link" href="${esc(c.url)}" target="_blank" rel="${rel}" data-course="${c.rank}">На сайт ${arrow}</a></td>
             </tr>`
   )
@@ -216,7 +222,7 @@ const faqHtml = faq
     (f, i) => `
         <details class="qa"${i === 0 ? ' open' : ''}>
           <summary><span>${esc(f.q)}</span><i aria-hidden="true"></i></summary>
-          <p>${esc(f.a)}</p>
+          <p>${richText(f.a)}</p>
         </details>`
   )
   .join('');
@@ -259,7 +265,7 @@ const jsonLd = {
     },
     {
       '@type': 'FAQPage',
-      mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+      mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: plainText(f.a) } })),
     },
   ],
 };
@@ -270,16 +276,35 @@ const favicon =
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="16" fill="#FFD23F"/><text x="16" y="22" font-family="Arial Black,sans-serif" font-size="15" text-anchor="middle" fill="#121212">10</text></svg>'
   );
 
-const css = await readFile(new URL('src/styles.css', root), 'utf8');
+// Шрифты лежат на своем хостинге (src/fonts): только символы, которые есть на сайте (кириллица, латиница, цифры, знаки).
+// Если добавите текст с новыми символами, скачайте подмножество заново (см. README).
+const fontFaces = `@font-face{font-family:'Dela Gothic One';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/dela-gothic-one-subset.woff2) format('woff2')}
+@font-face{font-family:'Onest';font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/onest-subset.woff2) format('woff2')}
+`;
+const minifyCss = (t) =>
+  t
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\s+/g, ' ')
+    .replace(/\s*([{};,>])\s*/g, '$1')
+    .replace(/;}/g, '}')
+    .trim();
+// Сжимает пробелы в разметке, не трогая содержимое <script> и <style>
+const minifyHtml = (t) =>
+  t
+    .split(/(<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>)/)
+    .map((part, i) => (i % 2 ? part : part.replace(/\s*\n\s*/g, '\n').replace(/>\n</g, '><').replace(/\n/g, ' ')))
+    .join('')
+    .trim();
+
+const css = minifyCss(fontFaces + (await readFile(new URL('src/styles.css', root), 'utf8')));
 const js = await readFile(new URL('src/app.js', root), 'utf8');
 
 const title = `Топ-10 курсов по нейросетям ${SITE.year}: рейтинг лучших онлайн-курсов по ИИ`;
 const description =
   'Рейтинг 10 лучших курсов по нейросетям и ИИ: Нетология, Skillbox, Яндекс Практикум, Eduson, GeekBrains. Оценки по практике, программе и поддержке, что вы узнаете на каждом курсе.';
 
-const fonts = `<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Onest:wght@400;500;600;700&display=swap">`;
+const fonts = `<link rel="preload" href="fonts/dela-gothic-one-subset.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/onest-subset.woff2" as="font" type="font/woff2" crossorigin>`;
 
 const themeBoot = `<script>try{var t=localStorage.getItem('nr-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>`;
 
@@ -287,9 +312,7 @@ const head = artifact
   ? `<title>${esc(SITE.name)}</title>
 <meta name="description" content="${esc(description)}">
 ${fonts}
-<style>
-${css}
-</style>
+<style>${css}</style>
 ${themeBoot}`
   : `<!doctype html>
 <html lang="ru">
@@ -298,8 +321,7 @@ ${themeBoot}`
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<link rel="canonical" href="${SITE.url}">
-<meta property="og:type" content="article">
+${SITE.url ? `<link rel="canonical" href="${SITE.url}">\n<meta property="og:url" content="${SITE.url}">\n` : ''}<meta property="og:type" content="article">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:locale" content="ru_RU">
@@ -307,7 +329,7 @@ ${themeBoot}`
 <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="${favicon}">
 ${fonts}
-<link rel="stylesheet" href="styles.css">
+<style>${css}</style>
 ${themeBoot}
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
@@ -464,7 +486,7 @@ const legalPage = (doc, other) => {
 <meta name="robots" content="noindex, follow">
 <link rel="icon" href="${favicon}">
 ${fonts}
-${artifact ? `<style>\n${css}\n</style>` : '<link rel="stylesheet" href="styles.css">'}
+<style>${css}</style>
 ${themeBoot}
 </head>
 <body class="legal-page">
@@ -495,14 +517,29 @@ const legal = {
 };
 if (/[ёЁ]/.test(Object.values(legal).join(''))) throw new Error('В юридических текстах есть буква «ё»');
 
-if (artifact) {
-  await mkdir(new URL('dist/', root), { recursive: true });
-  await writeFile(new URL('dist/preview.html', root), html);
-  for (const [name, page] of Object.entries(legal)) await writeFile(new URL(`dist/${name}`, root), page);
-  console.log('dist/preview.html, dist/privacy.html, dist/consent.html');
-} else {
-  await writeFile(new URL('index.html', root), html);
-  for (const [name, page] of Object.entries(legal)) await writeFile(new URL(name, root), page);
-  await copyFile(new URL('src/styles.css', root), new URL('styles.css', root));
-  console.log('index.html, privacy.html, consent.html, styles.css');
+const out = new URL(artifact ? 'dist/' : 'site/', root);
+await rm(out, { recursive: true, force: true });
+await mkdir(new URL('images/', out), { recursive: true });
+await mkdir(new URL('fonts/', out), { recursive: true });
+
+const pages = { [artifact ? 'preview.html' : 'index.html']: html, ...legal };
+for (const [name, page] of Object.entries(pages)) await writeFile(new URL(name, out), minifyHtml(page));
+
+const used = new Set(Object.values(schools).map((sc) => sc.logo).concat(courses.map((c) => c.image)).filter(Boolean));
+for (const file of used) await copyFile(new URL(file, root), new URL(file, out));
+for (const f of await readdir(new URL('src/fonts/', root))) await copyFile(new URL(`src/fonts/${f}`, root), new URL(`fonts/${f}`, out));
+
+if (!artifact) {
+  await writeFile(
+    new URL('robots.txt', out),
+    `User-agent: *\nDisallow: /privacy.html\nDisallow: /consent.html\n${SITE.url ? `\nSitemap: ${SITE.url}sitemap.xml\n` : ''}`
+  );
+  if (SITE.url) {
+    await writeFile(
+      new URL('sitemap.xml', out),
+      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${SITE.url}</loc></url></urlset>\n`
+    );
+  }
+  await copyFile(new URL('src/htaccess', root), new URL('.htaccess', out));
 }
+console.log(`${artifact ? 'dist' : 'site'}/: ${Object.keys(pages).join(', ')}, ${used.size} картинок, шрифты`);

@@ -306,7 +306,12 @@ ol {
   margin-left: -0.04em;
   font: 400 clamp(5.4rem, 17vw, 13.5rem) / 0.86 var(--f-display);
   letter-spacing: -0.035em;
-  animation: rise 0.9s var(--ease) both 0.05s;
+  animation: lift 0.9s var(--ease) both;
+}
+@keyframes lift {
+  from {
+    transform: translateY(18px);
+  }
 }
 .mega-dash {
   color: #ff7a59;
@@ -389,8 +394,7 @@ ol {
   align-self: end;
   margin-top: 10px;
   font-size: 0.82rem;
-  font-weight: 500;
-  opacity: 0.72;
+  font-weight: 600;
 }
 .sticker-name {
   font-weight: 700;
@@ -786,10 +790,10 @@ ol {
   font-weight: 600;
   font-size: 0.9rem;
   line-height: 1.3;
-  color: rgba(18, 18, 18, 0.55);
+  color: rgba(18, 18, 18, 0.78);
 }
 .cover-logo.is-dark figcaption {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.82);
 }
 .cover-art svg {
   position: absolute;
@@ -1011,6 +1015,18 @@ td:nth-child(4) {
 }
 .qa[open] summary i {
   transform: rotate(135deg);
+}
+.inline-link {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s;
+}
+.inline-link:hover {
+  text-decoration-color: currentColor;
 }
 .qa p {
   padding-bottom: 24px;
@@ -1470,6 +1486,110 @@ td:nth-child(4) {
     flex: 1 1 0;
     padding: 0 10px;
     font-size: 0.85rem;
+  }
+}
+
+/* Таблица на телефоне: каждая строка превращается в карточку, все колонки видны без прокрутки вбок */
+@media (max-width: 640px) {
+  .table-scroll {
+    overflow: visible;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  table,
+  tbody {
+    display: block;
+    min-width: 0;
+  }
+  thead {
+    display: none;
+  }
+  tbody {
+    display: grid;
+    gap: 12px;
+  }
+  tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 16px;
+    padding: 18px;
+    border-radius: 22px;
+    background: var(--paper);
+    box-shadow: var(--shadow);
+  }
+  tbody tr:hover {
+    background: var(--paper);
+  }
+  td {
+    display: grid;
+    align-content: start;
+    gap: 2px;
+    padding: 0;
+    border: 0;
+  }
+  td[data-label]::before {
+    content: attr(data-label);
+    font: 700 0.72rem/1.4 var(--f-body);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .t-pos {
+    display: none;
+  }
+  .t-course {
+    grid-column: 1 / -1;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  .t-course::before {
+    content: attr(data-rank);
+    grid-row: span 2;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--c);
+    color: #121212;
+    font: 400 1rem/1 var(--f-display);
+  }
+  .t-cta {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+  .t-link {
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+    border-radius: 99px;
+    background: var(--solid);
+    color: var(--solid-ink);
+  }
+}
+
+/* Мобильные: без размытия под шапкой и без постоянной анимации фигур, чтобы прокрутка была плавной */
+@media (max-width: 900px) {
+  .top,
+  .morph .top {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: color-mix(in srgb, color-mix(in srgb, var(--page, var(--bg)) var(--mix), var(--bg)) 94%, transparent);
+  }
+  .dock-in {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .deco-a,
+  .deco-b,
+  .art-a,
+  .art-b,
+  .logo-dot {
+    animation: none;
   }
 }
 
