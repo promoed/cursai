@@ -52,7 +52,7 @@ courses.forEach((c, i) => {
 });
 
 const missing = courses.flatMap((c) =>
-  [['duration', 'срок'], ['schedule', 'занятия'], ['price', 'цена'], ['image', 'картинка']]
+  [['duration', 'срок'], ['schedule', 'занятия'], ['price', 'цена']]
     .filter(([k]) => c[k] == null)
     .map(([, label]) => `  #${c.rank} ${c.short}: ${label}`)
 );
@@ -88,6 +88,15 @@ const cover = (c, i) => {
     return `
           <figure class="cover${wide ? ' cover-wide' : ''}">
             <img src="${esc(c.image)}" alt="${esc(c.title)}, ${esc(schools[c.school].name)}" width="${wide ? 1600 : 960}" height="${wide ? 900 : 1200}" loading="lazy" decoding="async">
+          </figure>`;
+  }
+  const school = schools[c.school];
+  if (school.logo) {
+    const dark = parseInt(school.logoBg.slice(1, 3), 16) < 128;
+    return `
+          <figure class="cover cover-logo${dark ? ' is-dark' : ''}" style="--logo-bg:${school.logoBg}">
+            <img src="${esc(school.logo)}" alt="Логотип ${esc(school.name)}" loading="lazy" decoding="async">
+            <figcaption>${esc(c.short)}</figcaption>
           </figure>`;
   }
   const a = shapes[(i + 1) % shapes.length];

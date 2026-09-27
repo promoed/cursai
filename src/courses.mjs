@@ -19,12 +19,13 @@ export const filters = [
   { key: 'career', label: 'Новая профессия' },
 ];
 
+// logo: картинка курса по умолчанию (файл обрезан по краям надписи), logoBg: фон карточки под логотипом
 export const schools = {
-  netology: { name: 'Нетология', mark: 'Н', hue: 250 },
-  eduson: { name: 'Eduson Academy', mark: 'E', hue: 200 },
-  skillbox: { name: 'Skillbox', mark: 'S', hue: 280 },
-  practicum: { name: 'Яндекс Практикум', mark: 'П', hue: 45 },
-  gb: { name: 'GeekBrains', mark: 'GB', hue: 150 },
+  netology: { name: 'Нетология', logo: 'images/logo-netology.png', logoBg: '#ffffff' },
+  eduson: { name: 'Eduson Academy', logo: 'images/logo-eduson.png', logoBg: '#ffd53b' },
+  skillbox: { name: 'Skillbox', logo: 'images/logo-skillbox.png', logoBg: '#ffffff' },
+  practicum: { name: 'Яндекс Практикум', logo: 'images/logo-practicum.png', logoBg: '#1e1e1e' },
+  gb: { name: 'GeekBrains', logo: 'images/logo-geekbrains.png', logoBg: '#ffffff' },
 };
 
 export const courses = [
@@ -33,8 +34,7 @@ export const courses = [
     title: 'Нейросети с нуля: для себя, работы и маркетинга',
     short: 'Нейросети с нуля',
     url: 'https://netology.ru/programs/chat-gpt',
-    image: 'images/kurs-1.webp',
-    imageShape: 'portrait', // 'portrait' (4:5, слева под номером) или 'landscape' (16:9, баннер над описанием)
+    image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: null,
     schedule: null,
     price: null, // руб., полная стоимость на дату обновления
@@ -60,8 +60,7 @@ export const courses = [
     title: 'Нейросети на практике: для себя, работы и бизнеса',
     short: 'Нейросети на практике',
     url: 'https://eduson.academy/ai',
-    image: 'images/kurs-2.png',
-    imageShape: 'portrait', // 'portrait' (4:5, слева под номером) или 'landscape' (16:9, баннер над описанием)
+    image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: '32 видеоурока и 40 часов практики',
     price: 52418, // руб., полная стоимость на дату обновления
@@ -87,7 +86,7 @@ export const courses = [
     title: 'Нейросети. Практический курс',
     short: 'Нейросети. Практический курс',
     url: 'https://skillbox.ru/course/neural-networks/',
-    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '3 месяца',
     schedule: '130+ уроков в записи',
     price: 74900, // руб., полная стоимость на дату обновления
@@ -113,7 +112,7 @@ export const courses = [
     title: 'Нейросети для маркетинга',
     short: 'Нейросети для маркетинга',
     url: 'https://practicum.yandex.ru/ai-for-marketing/',
-    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: '5–10 часов в неделю',
     price: null, // руб., полная стоимость на дату обновления
@@ -139,7 +138,7 @@ export const courses = [
     title: 'ИИ-агенты без программирования',
     short: 'ИИ-агенты',
     url: 'https://netology.ru/programs/agin',
-    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: null,
     schedule: 'Вебинары, воркшопы и разборы с наставниками',
     price: null, // руб., полная стоимость на дату обновления
@@ -165,7 +164,7 @@ export const courses = [
     title: 'Нейросети для рабочих задач',
     short: 'Нейросети для рабочих задач',
     url: 'https://skillbox.ru/course/neuronetforbusiness/',
-    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '1 месяц',
     schedule: null,
     price: 31290, // руб., полная стоимость на дату обновления
@@ -191,7 +190,7 @@ export const courses = [
     title: 'ChatGPT: практический курс',
     short: 'ChatGPT: практический курс',
     url: 'https://skillbox.ru/course/practical-course-text/',
-    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: null,
     price: null, // руб., полная стоимость на дату обновления
@@ -217,7 +216,7 @@ export const courses = [
     title: 'Специалист по искусственному интеллекту',
     short: 'Специалист по ИИ',
     url: 'https://netology.ru/programs/specialist-po-iskusstvennomu-intellektu',
-    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '5 или 11 месяцев',
     schedule: null,
     price: 125700, // руб., полная стоимость на дату обновления
@@ -243,7 +242,7 @@ export const courses = [
     title: 'Нейросети для бизнеса',
     short: 'Нейросети для бизнеса',
     url: 'https://practicum.yandex.ru/ai-for-business/',
-    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2,5 месяца',
     schedule: null,
     price: 84500, // руб., полная стоимость на дату обновления
@@ -269,7 +268,7 @@ export const courses = [
     title: 'Специалист по внедрению ИИ',
     short: 'Специалист по внедрению ИИ',
     url: 'https://gb.ru/s/ai-integration-specialist',
-    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '6 месяцев',
     schedule: 'Живые онлайн-занятия по расписанию',
     price: 105276, // руб., полная стоимость на дату обновления
