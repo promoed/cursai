@@ -39,9 +39,9 @@ export const courses = [
     affiliateA: 'https://go.avnxt.site/597ee3404129eb00?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://go.avnxt.site/8d565408fd1947c0?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
-    duration: null,
+    duration: '1 месяц', // 5 недель, на странице оплаты школа сама округляет до месяца
     schedule: null,
-    price: null, // руб., полная стоимость на дату обновления
+    price: 53000, // руб., полная стоимость на дату обновления
     award: 'Выбор редакции',
     tags: ['self', 'work', 'marketing'],
     audience: 'Всем, кто хочет начать',
@@ -149,9 +149,9 @@ export const courses = [
     affiliateA: 'https://go.avnxt.site/a9cc35519403d4b0?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://go.avnxt.site/875a2f77a95a0710?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
-    duration: null,
+    duration: '4 месяца',
     schedule: 'Вебинары, воркшопы и разборы с наставниками',
-    price: null, // руб., полная стоимость на дату обновления
+    price: 59000, // руб., полная стоимость на дату обновления
     award: 'Лучший по ИИ-агентам',
     tags: ['agents', 'business', 'work'],
     audience: 'Маркетологам, менеджерам, владельцам бизнеса',
@@ -178,7 +178,7 @@ export const courses = [
     affiliateB: 'https://go.avnxt.site/21929556e3ee4f30?erid=2VfnxwisD9b&m=1', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '1 месяц',
-    schedule: null,
+    schedule: 'В своем темпе, ускоренно можно пройти за 2 недели',
     price: 31290, // руб., полная стоимость на дату обновления
     award: 'Для руководителей и менеджеров',
     tags: ['work', 'business', 'agents'],
@@ -235,7 +235,7 @@ export const courses = [
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: null,
-    price: null, // руб., полная стоимость на дату обновления
+    price: 48540, // руб., сумма по рассрочке 4045 x 12 мес, других цифр школа не показывает
     award: 'Лучший старт с ChatGPT',
     tags: ['self', 'work'],
     audience: 'Тем, кто много пишет и ищет',
