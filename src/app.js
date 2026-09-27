@@ -1,6 +1,8 @@
 (function () {
   var root = document.documentElement;
+  var body = document.body;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var data = window.NR_COURSES || [];
 
   function store(key, value) {
     try {
@@ -30,87 +32,81 @@
     else apply();
     store('nr-theme', next);
   });
-  systemDark.addEventListener && systemDark.addEventListener('change', syncToggle);
+  if (systemDark.addEventListener) systemDark.addEventListener('change', syncToggle);
   syncToggle();
 
-  /* Табло: перелистывание цифр при загрузке */
-  document.querySelectorAll('[data-flap]').forEach(function (el, row) {
-    var value = el.getAttribute('data-flap');
-    el.textContent = '';
-    var cells = value.split('').map(function (ch) {
-      var span = document.createElement('span');
-      var sep = !/\d/.test(ch);
-      span.className = 'flap' + (sep ? ' is-sep' : '');
-      span.textContent = ch;
-      el.appendChild(span);
-      return { el: span, ch: ch, sep: sep };
-    });
-    el.setAttribute('aria-label', value);
-    if (reduce) return;
-    cells.forEach(function (cell, i) {
-      if (cell.sep) return;
-      var flips = 8 + row * 3 + i * 4;
-      var n = 0;
-      cell.el.textContent = String(Math.floor(Math.random() * 10));
-      setTimeout(function step() {
-        n++;
-        cell.el.classList.remove('tick');
-        void cell.el.offsetWidth;
-        cell.el.classList.add('tick');
-        cell.el.textContent = n >= flips ? cell.ch : String((Number(cell.el.textContent) + 1) % 10);
-        if (n < flips) setTimeout(step, 55);
-      }, 350 + row * 60);
-    });
-  });
+  var courses = Array.prototype.slice.call(document.querySelectorAll('.course'));
+  var tinted = Array.prototype.slice.call(document.querySelectorAll('.course, [data-tint]'));
+  var rail = document.querySelector('.rail');
+  var railLinks = rail ? Array.prototype.slice.call(rail.querySelectorAll('a')) : [];
+  var dock = document.getElementById('dock');
+  var dockNum = document.getElementById('dock-num');
+  var dockTitle = document.getElementById('dock-title');
+  var dockMeta = document.getElementById('dock-meta');
+  var dockLink = document.getElementById('dock-link');
+  var current = 0;
 
-  /* Шапка с линией после прокрутки */
-  var top = document.querySelector('.top');
-  var onScroll = function () {
-    top.classList.toggle('is-stuck', window.scrollY > 8);
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-  /* Места рейтинга: заливка цифры, полосы и счетчик при появлении */
-  var entries = Array.prototype.slice.call(document.querySelectorAll('.entry'));
-  function countUp(el) {
-    var target = parseFloat(el.getAttribute('data-count'));
-    var start = performance.now();
-    var from = Math.max(0, target - 2);
-    (function frame(now) {
-      var t = Math.min(1, (now - start) / 900);
-      var eased = 1 - Math.pow(1 - t, 3);
-      el.textContent = (from + (target - from) * eased).toFixed(1).replace('.', ',');
-      if (t < 1) requestAnimationFrame(frame);
-    })(start);
+  function setCurrent(rank) {
+    if (rank === current) return;
+    current = rank;
+    var c = data[rank - 1];
+    body.style.setProperty('--page', c ? c.color : 'var(--bg)');
+    railLinks.forEach(function (a) {
+      a.classList.toggle('is-active', Number(a.getAttribute('data-rank')) === rank);
+    });
+    if (rail) rail.classList.toggle('is-on', !!c);
+    if (!dock) return;
+    dock.hidden = !c;
+    if (c) {
+      dockNum.textContent = c.rank;
+      dockNum.parentNode.style.setProperty('--c', c.color);
+      dockTitle.textContent = c.short;
+      dockMeta.textContent = c.school + ' · ' + c.score;
+      dockLink.href = c.url;
+      dockLink.setAttribute('data-course', c.rank);
+    }
   }
-  if ('IntersectionObserver' in window && !reduce) {
-    var io = new IntersectionObserver(
+
+  if ('IntersectionObserver' in window) {
+    /* Фон страницы перетекает в цвет курса, который сейчас в центре экрана */
+    root.classList.add('morph');
+    var watch = new IntersectionObserver(
       function (list) {
         list.forEach(function (item) {
           if (!item.isIntersecting) return;
-          item.target.classList.remove('await');
-          item.target.classList.add('is-in');
-          countUp(item.target.querySelector('[data-count]'));
-          io.unobserve(item.target);
+          setCurrent(Number(item.target.getAttribute('data-rank')) || 0);
         });
       },
-      { rootMargin: '0px 0px -15% 0px' }
+      { rootMargin: '-50% 0px -50% 0px' }
     );
-    entries.forEach(function (entry) {
-      if (entry.getBoundingClientRect().top > window.innerHeight) {
-        entry.classList.add('await');
-        io.observe(entry);
-      }
+    tinted.forEach(function (el) {
+      watch.observe(el);
     });
+
+    /* Появление цифры, печати и полос оценок */
+    if (!reduce) {
+      var reveal = new IntersectionObserver(
+        function (list) {
+          list.forEach(function (item) {
+            if (!item.isIntersecting) return;
+            item.target.classList.remove('await');
+            reveal.unobserve(item.target);
+          });
+        },
+        { rootMargin: '0px 0px -20% 0px' }
+      );
+      courses.forEach(function (el) {
+        if (el.getBoundingClientRect().top > window.innerHeight) {
+          el.classList.add('await');
+          reveal.observe(el);
+        }
+      });
+    }
   }
 
   /* Подбор под задачу */
   var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
   var status = document.getElementById('filter-status');
-  entries.forEach(function (entry, i) {
-    entry.style.viewTransitionName = 'entry-' + (i + 1);
-  });
   function plural(n) {
     var m10 = n % 10;
     var m100 = n % 100;
@@ -121,13 +117,17 @@
   function applyFilter(key, animate) {
     var run = function () {
       var shown = 0;
-      entries.forEach(function (entry) {
-        var match = key === 'all' || entry.getAttribute('data-tags').split(' ').indexOf(key) !== -1;
-        entry.hidden = !match;
+      courses.forEach(function (el) {
+        var match = key === 'all' || el.getAttribute('data-tags').split(' ').indexOf(key) !== -1;
+        el.hidden = !match;
         if (match) {
           shown++;
-          entry.classList.remove('await');
+          el.classList.remove('await');
         }
+      });
+      railLinks.forEach(function (a) {
+        var target = document.getElementById('kurs-' + a.getAttribute('data-rank'));
+        a.hidden = target ? target.hidden : false;
       });
       chips.forEach(function (chip) {
         chip.setAttribute('aria-pressed', String(chip.getAttribute('data-filter') === key));
@@ -136,7 +136,7 @@
       status.textContent =
         key === 'all'
           ? 'Показаны все 10 курсов'
-          : 'Задача «' + label + '»: ' + shown + ' ' + plural(shown) + ' из 10, места сохранены';
+          : 'Задача «' + label + '»: ' + shown + ' ' + plural(shown) + ' из 10, места в рейтинге сохранены';
     };
     if (animate && document.startViewTransition && !reduce) document.startViewTransition(run);
     else run();
@@ -150,22 +150,6 @@
   });
   var saved = store('nr-filter');
   if (saved && document.querySelector('[data-filter="' + saved + '"]')) applyFilter(saved, false);
-
-  /* Нижняя панель с лидером рейтинга */
-  var dock = document.getElementById('dock');
-  var hero = document.querySelector('.hero');
-  var final = document.querySelector('.final');
-  if ('IntersectionObserver' in window && dock) {
-    var visible = { hero: true, final: false };
-    var watch = new IntersectionObserver(function (list) {
-      list.forEach(function (item) {
-        visible[item.target === hero ? 'hero' : 'final'] = item.isIntersecting;
-      });
-      dock.hidden = visible.hero || visible.final;
-    });
-    watch.observe(hero);
-    watch.observe(final);
-  }
 
   /* Клики по кнопкам курсов: событие для аналитики */
   document.addEventListener('click', function (e) {
