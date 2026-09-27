@@ -187,7 +187,7 @@ const course = (c, i) => {
             </dl>
           </div>
           <div class="course-cta">
-            <a class="btn btn-solid" href="${esc(c.urlA)}" target="_blank" rel="${rel}" data-course="${c.rank}">Подробнее о курсе ${arrow}</a>
+            <a class="btn btn-solid" href="${esc(c.urlA)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="cta" data-school="${esc(s.name)}">Подробнее о курсе ${arrow}</a>
           </div>
         </div>
       </div>
@@ -206,7 +206,7 @@ const tableRows = (urlKey) =>
               <td class="t-nowrap" data-label="Срок">${c.duration ? esc(c.duration) : '<span class="t-na">—</span>'}</td>
               <td class="t-price" data-label="Стоимость">${c.price ? rub(c.price) : '<span class="t-na">—</span>'}</td>
               <td class="t-score" data-label="Балл">${fmt(c.total)}</td>
-              <td class="t-cta"><a class="t-link" href="${esc(c[urlKey])}" target="_blank" rel="${rel}" data-course="${c.rank}">На сайт ${arrow}</a></td>
+              <td class="t-cta"><a class="t-link" href="${esc(c[urlKey])}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="table" data-school="${esc(schools[c.school].name)}">На сайт ${arrow}</a></td>
             </tr>`
     )
     .join('');
@@ -251,7 +251,7 @@ const finalPicks = (urlKey) =>
     .slice(0, 3)
     .map(
       (c) => `
-          <a class="pick" href="${esc(c[urlKey])}" target="_blank" rel="${rel}" data-course="${c.rank}" style="--c:${c.color}">
+          <a class="pick" href="${esc(c[urlKey])}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="pick" data-school="${esc(schools[c.school].name)}" style="--c:${c.color}">
             <span class="pick-num">${c.rank}</span>
             <span class="pick-text"><b>${esc(c.title)}</b><span>${esc(schools[c.school].name)} · ${fmt(c.total)}</span></span>
             ${arrow}
@@ -472,7 +472,7 @@ const html = `${head}
   <div class="dock-in">
     <span class="dock-num" id="dock-num">1</span>
     <span class="dock-text"><b id="dock-title">${esc(courses[0].short)}</b><span id="dock-meta">${esc(schools[courses[0].school].name)} · ${fmt(courses[0].total)}</span></span>
-    <a class="btn btn-ink btn-sm" id="dock-link" href="${esc(courses[0].urlA)}" target="_blank" rel="${rel}" data-course="1">Подробнее ${arrow}</a>
+    <a class="btn btn-ink btn-sm" id="dock-link" href="${esc(courses[0].urlA)}" target="_blank" rel="${rel}" data-course="1" data-place="dock" data-school="${esc(schools[courses[0].school].name)}">Подробнее ${arrow}</a>
   </div>
 </div>
 
@@ -527,7 +527,7 @@ const courseCard = (c) => {
             <ul class="mcard-tags">
               ${shown.map((t) => `<li>${esc(t)}</li>`).join('')}${rest > 0 ? `<li>+ еще ${rest}</li>` : ''}
             </ul>
-            <a class="btn btn-solid mcard-cta" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}">Подробнее о курсе ${arrow}</a>
+            <a class="btn btn-solid mcard-cta" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="cta" data-school="${esc(s.name)}">Подробнее о курсе ${arrow}</a>
           </div>
         </article>`;
 };

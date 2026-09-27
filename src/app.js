@@ -69,6 +69,7 @@
       dockMeta.textContent = c.school + ' · ' + c.score;
       dockLink.href = c.url;
       dockLink.setAttribute('data-course', c.rank);
+      dockLink.setAttribute('data-school', c.school);
     }
   }
 
@@ -233,13 +234,26 @@
     }
   });
 
-  /* Клики по кнопкам курсов: событие для аналитики */
+  /* Клики по кнопкам курсов: цель Метрики course_click для оптимизации рекламы.
+     place показывает, какая именно кнопка сработала: cta — "Подробнее о курсе" у курса,
+     table — строка в таблице сравнения, pick — блок внизу страницы, dock — плашка на телефоне. */
   document.addEventListener('click', function (e) {
     var link = e.target.closest && e.target.closest('a[data-course]');
     if (!link) return;
-    var detail = { rank: Number(link.getAttribute('data-course')), url: link.href };
+    var detail = {
+      rank: Number(link.getAttribute('data-course')),
+      url: link.href,
+      place: link.getAttribute('data-place') || '',
+      school: link.getAttribute('data-school') || '',
+    };
     window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: 'course_click', course_rank: detail.rank, course_url: detail.url });
+    window.dataLayer.push({
+      event: 'course_click',
+      course_rank: detail.rank,
+      course_url: detail.url,
+      course_place: detail.place,
+      course_school: detail.school,
+    });
     if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', 'course_click', detail);
   });
 })();
