@@ -434,6 +434,7 @@ const html = `${head}
       <a href="privacy.html">Политика конфиденциальности</a>
       <a href="consent.html">Согласие на cookie</a>
       <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
+      <a href="b.html" class="foot-quiet">Компактная версия</a>
     </p>
   </div>
 </footer>

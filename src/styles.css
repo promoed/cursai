@@ -7,7 +7,7 @@
   --line: rgba(18, 18, 18, 0.14);
   --paper: #ffffff;
   --paper-line: rgba(18, 18, 18, 0.08);
-  --mix: 46%;
+  --mix: 24%;
   --k: 0; /* 0: плотные элементы черные, 1: плотные элементы в цвете курса */
   --shadow: 0 1px 2px rgba(18, 18, 18, 0.06), 0 18px 40px -22px rgba(18, 18, 18, 0.35);
   --knob-x: 0px;
@@ -31,7 +31,7 @@
     --line: rgba(255, 255, 255, 0.16);
     --paper: #1b1b1b;
     --paper-line: rgba(255, 255, 255, 0.08);
-    --mix: 17%;
+    --mix: 13%;
     --k: 1;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 18px 40px -22px rgba(0, 0, 0, 0.9);
     --knob-x: 22px;
@@ -46,7 +46,7 @@
   --line: rgba(255, 255, 255, 0.16);
   --paper: #1b1b1b;
   --paper-line: rgba(255, 255, 255, 0.08);
-  --mix: 17%;
+  --mix: 13%;
   --k: 1;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 18px 40px -22px rgba(0, 0, 0, 0.9);
   --knob-x: 22px;
@@ -499,6 +499,9 @@ ol {
   padding-block: clamp(56px, 8vw, 112px);
   background: var(--tint);
 }
+.course + .course {
+  border-top: 2px solid var(--ink);
+}
 .morph .course {
   background: transparent;
 }
@@ -528,7 +531,7 @@ ol {
   position: absolute;
   top: 50%;
   left: 0;
-  width: clamp(190px, 21vw, 300px);
+  width: clamp(150px, 16vw, 225px);
   max-width: none;
   height: auto;
   transform: translate(-6%, -52%);
@@ -541,11 +544,12 @@ ol {
   transform-origin: center;
 }
 .deco-a {
+  opacity: 0.6;
   animation: float 9s ease-in-out infinite;
 }
 .deco-b {
   fill: var(--paper);
-  opacity: 0.85;
+  opacity: 0.7;
   animation: float 11s ease-in-out infinite reverse;
 }
 @keyframes float {
@@ -1125,6 +1129,16 @@ td:nth-child(4) {
 .foot a:hover,
 .linklike:hover {
   text-decoration-color: currentColor;
+}
+.foot-quiet {
+  margin-left: auto;
+  color: #7d7b76;
+  font-size: 0.86rem;
+  text-decoration-color: transparent;
+}
+.foot-quiet:hover {
+  color: #f3f2ee;
+  text-decoration-color: rgba(243, 242, 238, 0.35);
 }
 
 /* ============ Cookie ============ */
