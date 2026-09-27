@@ -84,9 +84,10 @@ const poster = (i) => {
 // Картинка курса. Пока файла нет, показываем постерную заглушку в цвете курса.
 const cover = (c, i) => {
   if (c.image) {
+    const wide = c.imageShape === 'landscape';
     return `
-          <figure class="cover">
-            <img src="${esc(c.image)}" alt="${esc(c.title)}, ${esc(schools[c.school].name)}" width="960" height="1200" loading="lazy" decoding="async">
+          <figure class="cover${wide ? ' cover-wide' : ''}">
+            <img src="${esc(c.image)}" alt="${esc(c.title)}, ${esc(schools[c.school].name)}" width="${wide ? 1600 : 960}" height="${wide ? 900 : 1200}" loading="lazy" decoding="async">
           </figure>`;
   }
   const a = shapes[(i + 1) % shapes.length];
@@ -140,7 +141,7 @@ const course = (c, i) => {
             <b>${fmt(c.total)}</b>
             <span>из 10</span>
             <em>${verdict(c.total)}</em>
-          </div>${cover(c, i)}
+          </div>${c.imageShape === 'landscape' ? '' : cover(c, i)}
         </div>
         <div class="course-body">
           <p class="course-meta">
@@ -148,7 +149,7 @@ const course = (c, i) => {
             <span class="tape">${esc(c.award)}</span>
           </p>
           <h3 class="course-title" id="t-${c.rank}"><span class="sr-only">${c.rank} место. </span>${esc(c.title)}</h3>
-          <p class="course-hook">${esc(c.hook)}</p>
+          <p class="course-hook">${esc(c.hook)}</p>${c.imageShape === 'landscape' ? cover(c, i) : ''}
           <div class="paper">
             <h4 class="kicker">Что вы узнаете</h4>
             <p class="learn">${esc(c.learn)}</p>

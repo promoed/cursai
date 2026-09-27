@@ -751,6 +751,16 @@ ol {
 .course:hover .cover {
   transform: rotate(0.5deg);
 }
+.cover-wide {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 4px 0 6px;
+  border-radius: 28px;
+  transform: rotate(-1deg);
+}
+.course:hover .cover-wide {
+  transform: rotate(0deg);
+}
 .cover img {
   display: block;
   width: 100%;
