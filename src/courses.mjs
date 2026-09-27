@@ -1,5 +1,6 @@
 // Данные рейтинга. Меняйте тексты, ссылки и оценки здесь, затем запустите `npm run build`.
 // Итоговая оценка считается автоматически из критериев (веса ниже), порядок в массиве = место в рейтинге.
+// null в полях duration / schedule / price значит «еще не уточнено»: такое поле не показывается, сборка напомнит о нем.
 
 export const criteria = [
   { key: 'practice', label: 'Практика', weight: 0.35, hint: 'Доля заданий, кейсов и проектов в программе' },
@@ -32,6 +33,10 @@ export const courses = [
     title: 'Нейросети с нуля: для себя, работы и маркетинга',
     short: 'Нейросети с нуля',
     url: 'https://netology.ru/programs/chat-gpt',
+    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    duration: null,
+    schedule: null,
+    price: null, // руб., полная стоимость на дату обновления
     award: 'Выбор редакции',
     tags: ['self', 'work', 'marketing'],
     audience: 'Всем, кто хочет начать',
@@ -54,6 +59,10 @@ export const courses = [
     title: 'Нейросети на практике: для себя, работы и бизнеса',
     short: 'Нейросети на практике',
     url: 'https://eduson.academy/ai',
+    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    duration: '2 месяца',
+    schedule: '32 видеоурока и 40 часов практики',
+    price: 52418, // руб., полная стоимость на дату обновления
     award: 'Самый большой набор инструментов',
     tags: ['self', 'work', 'business'],
     audience: 'Специалистам и предпринимателям',
@@ -76,6 +85,10 @@ export const courses = [
     title: 'Нейросети. Практический курс',
     short: 'Нейросети. Практический курс',
     url: 'https://skillbox.ru/course/neural-networks/',
+    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    duration: '3 месяца',
+    schedule: '130+ уроков в записи',
+    price: 74900, // руб., полная стоимость на дату обновления
     award: 'Больше всего практики',
     tags: ['self', 'work', 'marketing', 'agents'],
     audience: 'Тем, кто хочет глубоко и много',
@@ -98,6 +111,10 @@ export const courses = [
     title: 'Нейросети для маркетинга',
     short: 'Нейросети для маркетинга',
     url: 'https://practicum.yandex.ru/ai-for-marketing/',
+    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    duration: '2 месяца',
+    schedule: '5–10 часов в неделю',
+    price: null, // руб., полная стоимость на дату обновления
     award: 'Лучший для маркетологов',
     tags: ['marketing', 'work'],
     audience: 'SMM, контент, CRM и перформанс',
@@ -120,6 +137,10 @@ export const courses = [
     title: 'ИИ-агенты без программирования',
     short: 'ИИ-агенты',
     url: 'https://netology.ru/programs/agin',
+    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    duration: null,
+    schedule: 'Вебинары, воркшопы и разборы с наставниками',
+    price: null, // руб., полная стоимость на дату обновления
     award: 'Лучший по ИИ-агентам',
     tags: ['agents', 'business', 'work'],
     audience: 'Маркетологам, менеджерам, владельцам бизнеса',
@@ -142,6 +163,10 @@ export const courses = [
     title: 'Нейросети для рабочих задач',
     short: 'Нейросети для рабочих задач',
     url: 'https://skillbox.ru/course/neuronetforbusiness/',
+    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    duration: '1 месяц',
+    schedule: null,
+    price: 31290, // руб., полная стоимость на дату обновления
     award: 'Для руководителей и менеджеров',
     tags: ['work', 'business', 'agents'],
     audience: 'Тем, у кого много задач и мало времени',
@@ -164,6 +189,10 @@ export const courses = [
     title: 'ChatGPT: практический курс',
     short: 'ChatGPT: практический курс',
     url: 'https://skillbox.ru/course/practical-course-text/',
+    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    duration: '2 месяца',
+    schedule: null,
+    price: null, // руб., полная стоимость на дату обновления
     award: 'Лучший старт с ChatGPT',
     tags: ['self', 'work'],
     audience: 'Тем, кто много пишет и ищет',
@@ -186,6 +215,10 @@ export const courses = [
     title: 'Специалист по искусственному интеллекту',
     short: 'Специалист по ИИ',
     url: 'https://netology.ru/programs/specialist-po-iskusstvennomu-intellektu',
+    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    duration: '5 или 11 месяцев',
+    schedule: null,
+    price: 125700, // руб., полная стоимость на дату обновления
     award: 'Новая профессия',
     tags: ['career'],
     audience: 'Тем, кто хочет создавать ИИ',
@@ -208,6 +241,10 @@ export const courses = [
     title: 'Нейросети для бизнеса',
     short: 'Нейросети для бизнеса',
     url: 'https://practicum.yandex.ru/ai-for-business/',
+    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    duration: '2,5 месяца',
+    schedule: null,
+    price: 84500, // руб., полная стоимость на дату обновления
     award: 'Для собственников и руководителей',
     tags: ['business'],
     audience: 'Руководителям и предпринимателям',
@@ -230,6 +267,10 @@ export const courses = [
     title: 'Специалист по внедрению ИИ',
     short: 'Специалист по внедрению ИИ',
     url: 'https://gb.ru/s/ai-integration-specialist',
+    image: null, // например 'images/kurs-N.webp', 4:5, от 960×1200
+    duration: '6 месяцев',
+    schedule: 'Живые онлайн-занятия по расписанию',
+    price: 105276, // руб., полная стоимость на дату обновления
     award: 'Карьера во внедрении ИИ',
     tags: ['career', 'business', 'agents'],
     audience: 'Тем, кто хочет внедрять ИИ в компаниях',

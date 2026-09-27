@@ -45,6 +45,12 @@
   var dockMeta = document.getElementById('dock-meta');
   var dockLink = document.getElementById('dock-link');
   var current = 0;
+  var banner = document.getElementById('consent');
+
+  function syncDock() {
+    if (!dock) return;
+    dock.hidden = !current || (banner && !banner.hidden);
+  }
 
   function setCurrent(rank) {
     if (rank === current) return;
@@ -55,9 +61,8 @@
       a.classList.toggle('is-active', Number(a.getAttribute('data-rank')) === rank);
     });
     if (rail) rail.classList.toggle('is-on', !!c);
-    if (!dock) return;
-    dock.hidden = !c;
-    if (c) {
+    syncDock();
+    if (dock && c) {
       dockNum.textContent = c.rank;
       dockNum.parentNode.style.setProperty('--c', c.color);
       dockTitle.textContent = c.short;
@@ -150,6 +155,59 @@
   });
   var saved = store('nr-filter');
   if (saved && document.querySelector('[data-filter="' + saved + '"]')) applyFilter(saved, false);
+
+  /* Cookie и согласие на аналитику (152-ФЗ): Метрика стартует только после «Принять все» */
+  var analyticsOn = false;
+  function loadAnalytics() {
+    var id = window.NR_YM_ID;
+    if (!id || analyticsOn) return;
+    analyticsOn = true;
+    (function (m, e, t, r, i, k, a) {
+      m[i] =
+        m[i] ||
+        function () {
+          (m[i].a = m[i].a || []).push(arguments);
+        };
+      m[i].l = 1 * new Date();
+      k = e.createElement(t);
+      a = e.getElementsByTagName(t)[0];
+      k.async = 1;
+      k.src = r;
+      a.parentNode.insertBefore(k, a);
+    })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
+    window.ym(id, 'init', { clickmap: true, trackLinks: true, accurateTrackBounce: true });
+    window.YM_ID = id;
+  }
+  function openBanner(open, focus) {
+    if (!banner) return;
+    banner.hidden = !open;
+    syncDock();
+    if (open && focus) document.getElementById('consent-all').focus({ preventScroll: true });
+  }
+  function decide(value) {
+    var wasOn = analyticsOn;
+    store('nr-consent', value);
+    store('nr-consent-at', new Date().toISOString());
+    openBanner(false);
+    if (value === 'all') loadAnalytics();
+    else if (wasOn) location.reload();
+  }
+  if (banner) {
+    document.getElementById('consent-all').addEventListener('click', function () {
+      decide('all');
+    });
+    document.getElementById('consent-min').addEventListener('click', function () {
+      decide('necessary');
+    });
+    var settings = document.getElementById('cookie-settings');
+    if (settings)
+      settings.addEventListener('click', function () {
+        openBanner(true, true);
+      });
+    var decision = store('nr-consent');
+    if (decision === 'all') loadAnalytics();
+    else if (!decision) openBanner(true);
+  }
 
   /* Клики по кнопкам курсов: событие для аналитики */
   document.addEventListener('click', function (e) {

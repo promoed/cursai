@@ -60,6 +60,9 @@
 }
 
 /* ============ База ============ */
+[hidden] {
+  display: none !important;
+}
 *,
 *::before,
 *::after {
@@ -622,6 +625,8 @@ ol {
   font-weight: 500;
 }
 .paper {
+  position: relative;
+  overflow: hidden;
   display: grid;
   gap: 16px;
   padding: clamp(22px, 3vw, 34px);
@@ -664,72 +669,6 @@ ol {
   background: var(--c);
   color: #121212;
 }
-.course-foot {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 20px 40px;
-  align-items: start;
-}
-.meters {
-  display: grid;
-  gap: 10px;
-}
-.meters li {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 4px 12px;
-  font-size: 0.92rem;
-}
-.meters b {
-  font-variant-numeric: tabular-nums;
-}
-.meters li > i {
-  grid-column: 1 / -1;
-  height: 6px;
-  border-radius: 3px;
-  background: color-mix(in srgb, var(--ink) 12%, transparent);
-  overflow: hidden;
-}
-.meters li > i > i {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--ink);
-  transform-origin: left;
-  transform: scaleX(var(--v));
-  transition: transform 1.2s var(--ease);
-}
-.meters li:nth-child(2) i i {
-  transition-delay: 0.08s;
-}
-.meters li:nth-child(3) i i {
-  transition-delay: 0.16s;
-}
-.meters li:nth-child(4) i i {
-  transition-delay: 0.24s;
-}
-.course.await .meters li > i > i {
-  transform: scaleX(0);
-}
-.facts {
-  display: grid;
-  gap: 10px;
-  margin: 0;
-}
-.facts div {
-  display: grid;
-  grid-template-columns: 76px minmax(0, 1fr);
-  gap: 12px;
-  font-size: 0.92rem;
-  line-height: 1.4;
-}
-.facts dt {
-  color: var(--ink-3);
-}
-.facts dd {
-  margin: 0;
-  font-weight: 600;
-}
 .course-cta {
   display: flex;
   flex-wrap: wrap;
@@ -737,10 +676,126 @@ ol {
   gap: 12px 20px;
   margin-top: 6px;
 }
-.cta-note {
-  font-size: 0.88rem;
+
+/* Корешок с фактами о курсе: перфорация как у билета */
+.perf {
+  position: relative;
+  height: 2px;
+  margin: 8px calc(clamp(22px, 3vw, 34px) * -1) 2px;
+  background: repeating-linear-gradient(90deg, var(--paper-line) 0 8px, transparent 8px 16px);
+}
+.perf::before,
+.perf::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--tint);
+  transform: translateY(-50%);
+}
+.morph .perf::before,
+.morph .perf::after {
+  background: color-mix(in srgb, var(--page) var(--mix), var(--bg));
+  transition: background-color 0.7s var(--ease);
+}
+.perf::before {
+  left: -14px;
+}
+.perf::after {
+  right: -14px;
+}
+.stub {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px 28px;
+  margin: 0;
+}
+.stub div {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+}
+.stub dt {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--ink-3);
-  max-width: 30ch;
+}
+.stub dd {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.stub div:first-child dd {
+  font: 400 1.35rem/1.1 var(--f-display);
+  letter-spacing: -0.01em;
+}
+
+/* Картинка курса */
+.cover {
+  position: relative;
+  width: min(100%, 360px);
+  aspect-ratio: 4 / 5;
+  margin: 28px 0 0;
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--c);
+  box-shadow: var(--shadow), 0 0 0 8px var(--paper);
+  transform: rotate(-2.5deg);
+  transition: transform 0.6s var(--spring);
+}
+.course:hover .cover {
+  transform: rotate(0.5deg);
+}
+.cover img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cover-art svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.art-a,
+.art-b,
+.art-c {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.art-a {
+  fill: color-mix(in srgb, var(--c) 72%, #121212);
+  animation: float 12s ease-in-out infinite;
+}
+.art-b {
+  fill: #ffffff;
+  opacity: 0.9;
+  animation: float 14s ease-in-out infinite reverse;
+}
+.art-c {
+  fill: #121212;
+}
+.cover-art figcaption {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 20px;
+  display: grid;
+  gap: 2px;
+  color: #121212;
+}
+.cover-art figcaption b {
+  font: 400 1.5rem/1 var(--f-display);
+}
+.cover-art figcaption span {
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 /* Появление секции курса */
@@ -830,6 +885,23 @@ td:nth-child(4) {
 }
 .t-score {
   font: 400 1.25rem/1 var(--f-display);
+}
+.t-nowrap,
+.t-price {
+  white-space: nowrap;
+}
+.t-price {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.t-na {
+  color: var(--ink-3);
+}
+.table-note {
+  max-width: 80ch;
+  margin-top: 16px;
+  font-size: 0.88rem;
+  color: var(--ink-3);
 }
 .t-cta {
   text-align: right;
@@ -982,6 +1054,123 @@ td:nth-child(4) {
 .foot b {
   color: #f3f2ee;
 }
+.foot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-top: 8px;
+}
+.foot a,
+.linklike {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #f3f2ee;
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(243, 242, 238, 0.35);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.foot a:hover,
+.linklike:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ============ Cookie ============ */
+.consent {
+  position: fixed;
+  left: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  display: grid;
+  gap: 12px;
+  width: min(420px, calc(100% - 32px));
+  padding: 22px 22px 20px;
+  border-radius: 26px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--paper-line);
+  transform: rotate(-1deg);
+  animation: drop 0.8s var(--spring) both 0.6s;
+}
+.consent::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  right: 26px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 35%, #121212 0 4px, transparent 5px),
+    radial-gradient(circle at 62% 58%, #121212 0 3px, transparent 4px),
+    radial-gradient(circle at 40% 70%, #121212 0 3px, transparent 4px), #ffd23f;
+  transform: rotate(14deg);
+}
+.consent-title {
+  font: 400 1.35rem/1.1 var(--f-display);
+}
+.consent-text {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.consent-text a {
+  font-weight: 600;
+}
+.consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ============ Юридические страницы ============ */
+.legal {
+  max-width: calc(760px + var(--gutter) * 2);
+  padding-block: clamp(32px, 6vw, 72px) clamp(56px, 8vw, 96px);
+}
+.legal h1 {
+  margin-top: 10px;
+  font: 400 clamp(2rem, 5vw, 3.4rem) / 1.02 var(--f-display);
+  letter-spacing: -0.02em;
+}
+.legal-lead {
+  margin-top: 20px;
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.55;
+}
+.legal section {
+  display: grid;
+  gap: 12px;
+  margin-top: 32px;
+}
+.legal h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.legal p,
+.legal li {
+  color: var(--ink-2);
+  line-height: 1.7;
+}
+.legal ul {
+  display: grid;
+  gap: 8px;
+  padding-left: 22px;
+  list-style: disc;
+}
+.legal-other {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 2px solid var(--ink);
+}
+.legal-back {
+  margin-left: auto;
+}
+.legal-page .foot {
+  padding-block: 28px;
+}
 
 /* ============ Навигация по местам ============ */
 .rail {
@@ -1095,6 +1284,12 @@ td:nth-child(4) {
 }
 
 /* ============ Адаптив ============ */
+@media (max-height: 820px) {
+  .course-side {
+    position: static;
+  }
+}
+
 @media (max-width: 1100px) {
   .stickers {
     display: flex;
@@ -1147,6 +1342,16 @@ td:nth-child(4) {
   .deco {
     width: clamp(150px, 42vw, 210px);
   }
+  .cover {
+    grid-column: 1 / -1;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    margin: 20px 0 12px;
+    transform: rotate(-1deg);
+  }
+  .cover-art {
+    display: none;
+  }
   .seal {
     width: 118px;
     height: 118px;
@@ -1167,17 +1372,17 @@ td:nth-child(4) {
   .hero-cta .btn {
     flex: 1 1 100%;
   }
-  .pros,
-  .course-foot {
+  .pros {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .stub {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stub div:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
   .course-cta .btn {
     width: 100%;
-  }
-  .cta-note {
-    max-width: none;
-    width: 100%;
-    text-align: center;
   }
   .filter {
     flex-wrap: nowrap;
@@ -1195,6 +1400,37 @@ td:nth-child(4) {
   .paper {
     margin-inline: calc(var(--gutter) * -0.5);
     border-radius: 22px;
+  }
+}
+
+@media (max-width: 640px) {
+  .consent {
+    left: 10px;
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    gap: 10px;
+    padding: 18px 16px 16px;
+    transform: none;
+  }
+  .consent::before {
+    width: 34px;
+    height: 34px;
+    top: -10px;
+  }
+  .consent-title {
+    font-size: 1.15rem;
+  }
+  .consent-text {
+    font-size: 0.85rem;
+  }
+  .consent-actions {
+    flex-wrap: nowrap;
+  }
+  .consent-actions .btn {
+    flex: 1 1 0;
+    padding: 0 10px;
+    font-size: 0.85rem;
   }
 }
 
