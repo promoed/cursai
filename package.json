@@ -1,0 +1,9 @@
+{
+  "name": "neuroreiting",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/build.mjs --artifact"
+  }
+}
