@@ -484,8 +484,14 @@ const courseCard = (c) => {
   const tags = c.tags.map((t) => tagLabel[t]).filter(Boolean);
   const shown = tags.slice(0, 2);
   const rest = tags.length - shown.length;
+  const facts = [
+    c.duration ? `<span>${calIco}${esc(c.duration)}</span>` : '',
+    c.price ? `<span class="mcard-price">${rub(c.price)}</span>` : '',
+  ]
+    .filter(Boolean)
+    .join('');
   return `
-        <article class="mcard" id="kurs-${c.rank}" style="--c:${c.color}" aria-labelledby="mt-${c.rank}">
+        <article class="mcard" id="kurs-${c.rank}" data-tags="${c.tags.join(' ')}" style="--c:${c.color}" aria-labelledby="mt-${c.rank}">
           <div class="mcard-cover">
             ${miniCover(c)}
             <span class="mcard-rank" aria-hidden="true">${c.rank}</span>
@@ -497,7 +503,8 @@ const courseCard = (c) => {
             </p>
             <p class="mcard-award">${esc(c.award)}</p>
             <h2 class="mcard-title" id="mt-${c.rank}"><span class="sr-only">${c.rank} место. </span>${esc(c.title)}</h2>
-            ${c.duration ? `<p class="mcard-duration">${calIco}${esc(c.duration)}</p>` : ''}
+            <p class="mcard-hook">${esc(c.hook)}</p>
+            ${facts ? `<p class="mcard-facts">${facts}</p>` : ''}
             <ul class="mcard-tags">
               ${shown.map((t) => `<li>${esc(t)}</li>`).join('')}${rest > 0 ? `<li>+ еще ${rest}</li>` : ''}
             </ul>
@@ -540,7 +547,15 @@ ${themeBoot}
   </section>
 
   <section class="mcards">
-    <div class="wrap mgrid">${courses.map(courseCard).join('')}
+    <div class="wrap">
+      <div class="mfilter-wrap">
+        <div class="filter" role="group" aria-label="Подобрать курс под задачу">
+          ${chips}
+        </div>
+        <p class="filter-status" id="filter-status" aria-live="polite">Показаны все 10 курсов</p>
+      </div>
+      <div class="mgrid">${courses.map(courseCard).join('')}
+      </div>
     </div>
   </section>
 
@@ -557,6 +572,22 @@ ${themeBoot}
         </table>
       </div>
       <p class="table-note">Стоимость указана на дату обновления рейтинга (${esc(SITE.updated)}) без учета скидок, акций и налогового вычета. Школы часто дают скидку и рассрочку: актуальные условия откроются по кнопке «На сайт».</p>
+    </div>
+  </section>
+
+  <section class="faq" id="faq" aria-labelledby="faq-title">
+    <div class="wrap faq-in">
+      <h2 class="h2" id="faq-title">Частые вопросы</h2>
+      <div class="qa-list">${faqHtml}
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap">
+      <h2 class="final-title">Лучшее время начать было вчера. Следующее лучшее — сегодня.</h2>
+      <div class="picks">${finalPicks}
+      </div>
     </div>
   </section>
 </main>

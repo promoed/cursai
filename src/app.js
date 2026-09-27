@@ -35,7 +35,7 @@
   if (systemDark.addEventListener) systemDark.addEventListener('change', syncToggle);
   syncToggle();
 
-  var courses = Array.prototype.slice.call(document.querySelectorAll('.course'));
+  var courses = Array.prototype.slice.call(document.querySelectorAll('.course, .mcard'));
   var tinted = Array.prototype.slice.call(document.querySelectorAll('.course, [data-tint]'));
   var rail = document.querySelector('.rail');
   var railLinks = rail ? Array.prototype.slice.call(rail.querySelectorAll('a')) : [];
