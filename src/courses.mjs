@@ -34,7 +34,7 @@ export const courses = [
     short: 'Нейросети с нуля',
     url: 'https://netology.ru/programs/chat-gpt',
     image: 'images/kurs-1.webp',
-    imageShape: 'portrait', // например 'images/kurs-N.webp', 4:5, от 960×1200
+    imageShape: 'portrait', // 'portrait' (4:5, слева под номером) или 'landscape' (16:9, баннер над описанием)
     duration: null,
     schedule: null,
     price: null, // руб., полная стоимость на дату обновления
@@ -61,7 +61,7 @@ export const courses = [
     short: 'Нейросети на практике',
     url: 'https://eduson.academy/ai',
     image: 'images/kurs-2.png',
-    imageShape: 'landscape', // 'portrait' (4:5, слева под номером) или 'landscape' (16:9, баннер над описанием) // например 'images/kurs-N.webp', 4:5, от 960×1200
+    imageShape: 'portrait', // 'portrait' (4:5, слева под номером) или 'landscape' (16:9, баннер над описанием)
     duration: '2 месяца',
     schedule: '32 видеоурока и 40 часов практики',
     price: 52418, // руб., полная стоимость на дату обновления
