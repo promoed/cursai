@@ -51,10 +51,17 @@ courses.forEach((c, i) => {
   c.rank = i + 1;
   c.total = total(c);
   c.color = palette[i % palette.length];
+  // Партнерские ссылки: у варианта Б своя ссылка (другой параметр отслеживания у партнера).
+  // Если для курса ссылку не прислали, обе кнопки ведут на обычный url курса.
+  c.urlA = c.affiliateA || c.url;
+  c.urlB = c.affiliateB || c.url;
   if (i > 0 && c.total > courses[i - 1].total) {
     throw new Error(`Оценка курса #${i + 1} выше, чем у #${i}: поправьте критерии`);
   }
 });
+
+const noAffiliate = courses.filter((c) => !c.affiliateA).map((c) => `  #${c.rank} ${c.short}`);
+if (noAffiliate.length) console.warn(`Нет партнерской ссылки, кнопка ведет на сайт школы напрямую:\n${noAffiliate.join('\n')}`);
 
 const missing = courses.flatMap((c) =>
   [['duration', 'срок'], ['schedule', 'занятия'], ['price', 'цена']]
@@ -180,16 +187,18 @@ const course = (c, i) => {
             </dl>
           </div>
           <div class="course-cta">
-            <a class="btn btn-solid" href="${esc(c.url)}" target="_blank" rel="${rel}" data-course="${c.rank}">Подробнее о курсе ${arrow}</a>
+            <a class="btn btn-solid" href="${esc(c.urlA)}" target="_blank" rel="${rel}" data-course="${c.rank}">Подробнее о курсе ${arrow}</a>
           </div>
         </div>
       </div>
     </section>`;
 };
 
-const tableRows = courses
-  .map(
-    (c) => `
+// Таблица сравнения строится дважды (index.html и b.html) с разными партнерскими ссылками в кнопке "На сайт"
+const tableRows = (urlKey) =>
+  courses
+    .map(
+      (c) => `
             <tr style="--c:${c.color}">
               <td class="t-pos"><span>${c.rank}</span></td>
               <td class="t-course" data-rank="${c.rank}"><a href="#kurs-${c.rank}">${esc(c.title)}</a><span>${esc(schools[c.school].name)}</span></td>
@@ -197,10 +206,12 @@ const tableRows = courses
               <td class="t-nowrap" data-label="Срок">${c.duration ? esc(c.duration) : '<span class="t-na">—</span>'}</td>
               <td class="t-price" data-label="Стоимость">${c.price ? rub(c.price) : '<span class="t-na">—</span>'}</td>
               <td class="t-score" data-label="Балл">${fmt(c.total)}</td>
-              <td class="t-cta"><a class="t-link" href="${esc(c.url)}" target="_blank" rel="${rel}" data-course="${c.rank}">На сайт ${arrow}</a></td>
+              <td class="t-cta"><a class="t-link" href="${esc(c[urlKey])}" target="_blank" rel="${rel}" data-course="${c.rank}">На сайт ${arrow}</a></td>
             </tr>`
-  )
-  .join('');
+    )
+    .join('');
+const tableRowsA = tableRows('urlA');
+const tableRowsB = tableRows('urlB');
 
 const weights = criteria
   .map(
@@ -234,17 +245,21 @@ const index = courses
   .map((c) => `<a href="#kurs-${c.rank}" style="--c:${c.color}" data-rank="${c.rank}" aria-label="${c.rank} место: ${esc(c.short)}"><span>${c.rank}</span></a>`)
   .join('');
 
-const finalPicks = courses
-  .slice(0, 3)
-  .map(
-    (c) => `
-          <a class="pick" href="${esc(c.url)}" target="_blank" rel="${rel}" data-course="${c.rank}" style="--c:${c.color}">
+// Финальный блок с топ-3 тоже строится дважды, отдельно для index.html и b.html
+const finalPicks = (urlKey) =>
+  courses
+    .slice(0, 3)
+    .map(
+      (c) => `
+          <a class="pick" href="${esc(c[urlKey])}" target="_blank" rel="${rel}" data-course="${c.rank}" style="--c:${c.color}">
             <span class="pick-num">${c.rank}</span>
             <span class="pick-text"><b>${esc(c.title)}</b><span>${esc(schools[c.school].name)} · ${fmt(c.total)}</span></span>
             ${arrow}
           </a>`
-  )
-  .join('');
+    )
+    .join('');
+const finalPicksA = finalPicks('urlA');
+const finalPicksB = finalPicks('urlB');
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -261,7 +276,7 @@ const jsonLd = {
           '@type': 'Course',
           name: c.title,
           description: c.hook,
-          url: c.url,
+          url: c.urlA,
           provider: { '@type': 'Organization', name: schools[c.school].name },
         },
       })),
@@ -404,7 +419,7 @@ const html = `${head}
           <thead>
             <tr><th>#</th><th>Курс</th><th>Уровень</th><th>Срок</th><th>Стоимость</th><th>Балл</th><th><span class="sr-only">Ссылка</span></th></tr>
           </thead>
-          <tbody>${tableRows}
+          <tbody>${tableRowsA}
           </tbody>
         </table>
       </div>
@@ -423,7 +438,7 @@ const html = `${head}
   <section class="final" data-tint="base">
     <div class="wrap">
       <h2 class="final-title">Лучшее время начать было вчера. Следующее лучшее — сегодня.</h2>
-      <div class="picks">${finalPicks}
+      <div class="picks">${finalPicksA}
       </div>
     </div>
   </section>
@@ -457,13 +472,13 @@ const html = `${head}
   <div class="dock-in">
     <span class="dock-num" id="dock-num">1</span>
     <span class="dock-text"><b id="dock-title">${esc(courses[0].short)}</b><span id="dock-meta">${esc(schools[courses[0].school].name)} · ${fmt(courses[0].total)}</span></span>
-    <a class="btn btn-ink btn-sm" id="dock-link" href="${esc(courses[0].url)}" target="_blank" rel="${rel}" data-course="1">Подробнее ${arrow}</a>
+    <a class="btn btn-ink btn-sm" id="dock-link" href="${esc(courses[0].urlA)}" target="_blank" rel="${rel}" data-course="1">Подробнее ${arrow}</a>
   </div>
 </div>
 
 <script>
 window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
-window.NR_COURSES = ${JSON.stringify(courses.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.url, color: c.color })))};
+window.NR_COURSES = ${JSON.stringify(courses.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlA, color: c.color })))};
 ${js}
 </script>
 ${artifact ? '' : '</body>\n</html>'}
@@ -512,7 +527,7 @@ const courseCard = (c) => {
             <ul class="mcard-tags">
               ${shown.map((t) => `<li>${esc(t)}</li>`).join('')}${rest > 0 ? `<li>+ еще ${rest}</li>` : ''}
             </ul>
-            <a class="btn btn-solid mcard-cta" href="${esc(c.url)}" target="_blank" rel="${rel}" data-course="${c.rank}">Подробнее о курсе ${arrow}</a>
+            <a class="btn btn-solid mcard-cta" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}">Подробнее о курсе ${arrow}</a>
           </div>
         </article>`;
 };
@@ -571,7 +586,7 @@ ${themeBoot}
           <thead>
             <tr><th>#</th><th>Курс</th><th>Уровень</th><th>Срок</th><th>Стоимость</th><th>Балл</th><th><span class="sr-only">Ссылка</span></th></tr>
           </thead>
-          <tbody>${tableRows}
+          <tbody>${tableRowsB}
           </tbody>
         </table>
       </div>
@@ -590,7 +605,7 @@ ${themeBoot}
   <section class="final">
     <div class="wrap">
       <h2 class="final-title">Лучшее время начать было вчера. Следующее лучшее — сегодня.</h2>
-      <div class="picks">${finalPicks}
+      <div class="picks">${finalPicksB}
       </div>
     </div>
   </section>
@@ -619,7 +634,7 @@ ${themeBoot}
 
 <script>
 window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
-window.NR_COURSES = ${JSON.stringify(courses.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.url, color: c.color })))};
+window.NR_COURSES = ${JSON.stringify(courses.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlB, color: c.color })))};
 ${js}
 </script>
 </body>

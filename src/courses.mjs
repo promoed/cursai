@@ -1,6 +1,8 @@
 // Данные рейтинга. Меняйте тексты, ссылки и оценки здесь, затем запустите `npm run build`.
 // Итоговая оценка считается автоматически из критериев (веса ниже), порядок в массиве = место в рейтинге.
 // null в полях duration / schedule / price значит «еще не уточнено»: такое поле не показывается, сборка напомнит о нем.
+// affiliateA/affiliateB — партнерские ссылки для кнопок "Подробнее о курсе": A used on index.html, B on b.html.
+// Если их нет, кнопки ведут на обычный url курса (см. urlA/urlB в scripts/build.mjs).
 
 export const criteria = [
   { key: 'practice', label: 'Практика', weight: 0.35, hint: 'Доля заданий, кейсов и проектов в программе' },
@@ -34,6 +36,8 @@ export const courses = [
     title: 'Нейросети с нуля: для себя, работы и маркетинга',
     short: 'Нейросети с нуля',
     url: 'https://netology.ru/programs/chat-gpt',
+    affiliateA: 'https://go.avnxt.site/597ee3404129eb00?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для главной страницы (index.html)
+    affiliateB: 'https://go.avnxt.site/8d565408fd1947c0?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: null,
     schedule: null,
@@ -60,6 +64,8 @@ export const courses = [
     title: 'Нейросети. Практический курс',
     short: 'Нейросети. Практический курс',
     url: 'https://skillbox.ru/course/neural-networks/',
+    affiliateA: 'https://go.avnxt.site/1170230385b75cb0?erid=2VfnxwisD9b&m=1', // партнерская ссылка для главной страницы (index.html)
+    affiliateB: 'https://go.avnxt.site/8243b6273f4b8240?erid=2VfnxwisD9b&m=1', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '3 месяца',
     schedule: '130+ уроков в записи',
@@ -86,6 +92,8 @@ export const courses = [
     title: 'Нейросети на практике: для себя, работы и бизнеса',
     short: 'Нейросети на практике',
     url: 'https://eduson.academy/ai',
+    affiliateA: 'https://go.avnxt.site/83e946bb93f3bf80?erid=LdtCKXSTq&m=1', // партнерская ссылка для главной страницы (index.html)
+    affiliateB: 'https://go.avnxt.site/9c587d23d0716e40?erid=LdtCKXSTq&m=1', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: '32 видеоурока и 40 часов практики',
@@ -138,6 +146,8 @@ export const courses = [
     title: 'ИИ-агенты без программирования',
     short: 'ИИ-агенты',
     url: 'https://netology.ru/programs/agin',
+    affiliateA: 'https://go.avnxt.site/a9cc35519403d4b0?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для главной страницы (index.html)
+    affiliateB: 'https://go.avnxt.site/875a2f77a95a0710?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: null,
     schedule: 'Вебинары, воркшопы и разборы с наставниками',
@@ -164,6 +174,8 @@ export const courses = [
     title: 'Нейросети для рабочих задач',
     short: 'Нейросети для рабочих задач',
     url: 'https://skillbox.ru/course/neuronetforbusiness/',
+    affiliateA: 'https://go.avnxt.site/0e34e58fb40873d0?erid=2VfnxwisD9b&m=1', // партнерская ссылка для главной страницы (index.html)
+    affiliateB: 'https://go.avnxt.site/21929556e3ee4f30?erid=2VfnxwisD9b&m=1', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '1 месяц',
     schedule: null,
@@ -190,6 +202,8 @@ export const courses = [
     title: 'Специалист по искусственному интеллекту',
     short: 'Специалист по ИИ',
     url: 'https://netology.ru/programs/specialist-po-iskusstvennomu-intellektu',
+    affiliateA: 'https://go.avnxt.site/b01766be8c59c870?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для главной страницы (index.html)
+    affiliateB: 'https://go.avnxt.site/16751ff98aeff8e0?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '5 или 11 месяцев',
     schedule: null,
@@ -216,6 +230,8 @@ export const courses = [
     title: 'ChatGPT: практический курс',
     short: 'ChatGPT: практический курс',
     url: 'https://skillbox.ru/course/practical-course-text/',
+    affiliateA: 'https://go.avnxt.site/662fe1a201802250?erid=2VfnxwisD9b&m=1', // партнерская ссылка для главной страницы (index.html)
+    affiliateB: 'https://go.avnxt.site/77292dd2906b0cc0?erid=2VfnxwisD9b&m=1', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: null,
@@ -268,6 +284,8 @@ export const courses = [
     title: 'Специалист по внедрению ИИ',
     short: 'Специалист по внедрению ИИ',
     url: 'https://gb.ru/s/ai-integration-specialist',
+    affiliateA: 'https://go.avnxt.site/39f468d51530c240?erid=2VfnxxQa3a9&m=1', // партнерская ссылка для главной страницы (index.html)
+    affiliateB: 'https://go.avnxt.site/cedd54e0a3347e50?erid=2VfnxxQa3a9&m=1', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '6 месяцев',
     schedule: 'Живые онлайн-занятия по расписанию',
