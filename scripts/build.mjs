@@ -465,6 +465,132 @@ ${js}
 ${artifact ? '' : '</body>\n</html>'}
 `;
 
+// ============ Вариант Б: минималистичная страница для А/Б теста ============
+// Только первый экран без большого заголовка, компактные карточки курсов и таблица сравнения.
+// Тот же визуальный код (шрифты, цвета, тема), без фильтра, методики, FAQ и финальной секции.
+const tagLabel = Object.fromEntries(filters.filter((f) => f.key !== 'all').map((f) => [f.key, f.label]));
+const calIco = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 6.2h11M5.3 2v2.4M10.7 2v2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+
+const miniCover = (c) => {
+  if (c.image) {
+    return `<img class="mcard-img" src="${esc(c.image)}" alt="${esc(c.title)}, ${esc(schools[c.school].name)}" width="640" height="400" loading="lazy" decoding="async">`;
+  }
+  const school = schools[c.school];
+  return `<span class="mcard-logo" style="--logo-bg:${school.logoBg}"><img src="${esc(school.logo)}" alt="Логотип ${esc(school.name)}" width="${school.logoSize[0]}" height="${school.logoSize[1]}" loading="lazy" decoding="async"></span>`;
+};
+
+const courseCard = (c) => {
+  const s = schools[c.school];
+  const tags = c.tags.map((t) => tagLabel[t]).filter(Boolean);
+  const shown = tags.slice(0, 2);
+  const rest = tags.length - shown.length;
+  return `
+        <article class="mcard" id="kurs-${c.rank}" style="--c:${c.color}" aria-labelledby="mt-${c.rank}">
+          <div class="mcard-cover">
+            ${miniCover(c)}
+            <span class="mcard-rank" aria-hidden="true">${c.rank}</span>
+          </div>
+          <div class="mcard-body">
+            <p class="mcard-row">
+              <span class="mcard-school">${esc(s.name)}</span>
+              <span class="mcard-score"><b>${fmt(c.total)}</b><small>/10</small></span>
+            </p>
+            <p class="mcard-award">${esc(c.award)}</p>
+            <h2 class="mcard-title" id="mt-${c.rank}"><span class="sr-only">${c.rank} место. </span>${esc(c.title)}</h2>
+            ${c.duration ? `<p class="mcard-duration">${calIco}${esc(c.duration)}</p>` : ''}
+            <ul class="mcard-tags">
+              ${shown.map((t) => `<li>${esc(t)}</li>`).join('')}${rest > 0 ? `<li>+ еще ${rest}</li>` : ''}
+            </ul>
+            <a class="btn btn-solid mcard-cta" href="${esc(c.url)}" target="_blank" rel="${rel}" data-course="${c.rank}">Подробнее о курсе ${arrow}</a>
+          </div>
+        </article>`;
+};
+
+const bTitle = `Топ-10 курсов по нейросетям ${SITE.year}`;
+const bHtml = `<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>${esc(bTitle)}</title>
+<meta name="description" content="${esc(description)}">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="${favicon}">
+${fonts}
+<style>${css}</style>
+${themeBoot}
+</head>
+<body>
+<header class="mtop">
+  <div class="wrap mtop-in">
+    <span class="logo"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</span>
+    <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
+      <span class="theme-knob" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="mhero">
+    <div class="wrap">
+      <p class="mhero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
+      <h1 class="mhero-title">Топ-10 курсов по нейросетям ${SITE.year}</h1>
+      <p class="mhero-lead">Сравнили программы Нетологии, Skillbox, Яндекс Практикума, Eduson и GeekBrains по практике, содержанию, поддержке и результату.</p>
+    </div>
+  </section>
+
+  <section class="mcards">
+    <div class="wrap mgrid">${courses.map(courseCard).join('')}
+    </div>
+  </section>
+
+  <section class="compare" id="compare" aria-labelledby="compare-title">
+    <div class="wrap">
+      <h2 class="h2" id="compare-title">Все курсы в одной таблице</h2>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Таблица сравнения курсов">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Курс</th><th>Уровень</th><th>Срок</th><th>Стоимость</th><th>Балл</th><th><span class="sr-only">Ссылка</span></th></tr>
+          </thead>
+          <tbody>${tableRows}
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">Стоимость указана на дату обновления рейтинга (${esc(SITE.updated)}) без учета скидок, акций и налогового вычета. Школы часто дают скидку и рассрочку: актуальные условия откроются по кнопке «На сайт».</p>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
+    <p>Страница содержит партнерские ссылки: если вы купите курс по ссылке, мы можем получить вознаграждение. На оценки это не влияет. Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться.</p>
+    <p class="foot-links">
+      <a href="privacy.html">Политика конфиденциальности</a>
+      <a href="consent.html">Согласие на cookie</a>
+      <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
+    </p>
+  </div>
+</footer>
+
+<div class="consent" id="consent" role="dialog" aria-labelledby="consent-title" hidden>
+  <p class="consent-title" id="consent-title">Мы используем cookie</p>
+  <p class="consent-text">Сайт использует Яндекс Метрику для статистики посещений. Продолжая пользоваться сайтом, вы соглашаетесь с этим. Подробнее в <a href="privacy.html">политике</a> и <a href="consent.html">согласии</a>.</p>
+  <div class="consent-actions">
+    <button type="button" class="btn btn-ink btn-sm" id="consent-all">Хорошо</button>
+    <button type="button" class="btn btn-line btn-sm" id="consent-min">Отказаться</button>
+  </div>
+</div>
+
+<script>
+window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
+window.NR_COURSES = ${JSON.stringify(courses.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.url, color: c.color })))};
+${js}
+</script>
+</body>
+</html>
+`;
+
 const legalPage = (doc, other) => {
   const body = doc.sections
     .map(
@@ -516,13 +642,14 @@ const legal = {
   'consent.html': legalPage(consentDoc, { href: 'privacy.html', title: policyDoc.title }),
 };
 if (/[ёЁ]/.test(Object.values(legal).join(''))) throw new Error('В юридических текстах есть буква «ё»');
+if (/[ёЁ]/.test(bHtml)) throw new Error('В варианте Б есть буква «ё»');
 
 const out = new URL(artifact ? 'dist/' : 'site/', root);
 await rm(out, { recursive: true, force: true });
 await mkdir(new URL('images/', out), { recursive: true });
 await mkdir(new URL('fonts/', out), { recursive: true });
 
-const pages = { [artifact ? 'preview.html' : 'index.html']: html, ...legal };
+const pages = { [artifact ? 'preview.html' : 'index.html']: html, 'b.html': bHtml, ...legal };
 for (const [name, page] of Object.entries(pages)) await writeFile(new URL(name, out), minifyHtml(page));
 
 const used = new Set(Object.values(schools).map((sc) => sc.logo).concat(courses.map((c) => c.image)).filter(Boolean));
@@ -532,7 +659,7 @@ for (const f of await readdir(new URL('src/fonts/', root))) await copyFile(new U
 if (!artifact) {
   await writeFile(
     new URL('robots.txt', out),
-    `User-agent: *\nDisallow: /privacy.html\nDisallow: /consent.html\n${SITE.url ? `\nSitemap: ${SITE.url}sitemap.xml\n` : ''}`
+    `User-agent: *\nDisallow: /privacy.html\nDisallow: /consent.html\nDisallow: /b.html\n${SITE.url ? `\nSitemap: ${SITE.url}sitemap.xml\n` : ''}`
   );
   if (SITE.url) {
     await writeFile(
