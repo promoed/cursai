@@ -19,6 +19,9 @@ const SITE = {
   // уведомление о cookie только информирует и дает отказаться на этом устройстве.
   ymId: 113107145,
   policyDate: '27 сентября 2026',
+  // Мета-теги подтверждения владения сайтом для партнерских программ/вебмастер-сервисов.
+  // Каждый — строка вида '<meta name="..." content="...">', ставится только на реальной сборке (site/), не в превью.
+  verification: ['<meta name="mitgo-verification" content="c882e009-18cd-42f1-b70d-7c06b9f8288c">'],
   // Реквизиты оператора для политики и согласия. ФИО/ИНН можно оставить пустыми —
   // тогда в текстах используется формулировка «владелец сайта cursai.ru».
   operator: {
@@ -321,7 +324,7 @@ ${themeBoot}`
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-${SITE.url ? `<link rel="canonical" href="${SITE.url}">\n<meta property="og:url" content="${SITE.url}">\n` : ''}<meta property="og:type" content="article">
+${SITE.url ? `<link rel="canonical" href="${SITE.url}">\n<meta property="og:url" content="${SITE.url}">\n` : ''}${SITE.verification.map((t) => t + '\n').join('')}<meta property="og:type" content="article">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:locale" content="ru_RU">
