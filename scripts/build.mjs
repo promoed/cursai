@@ -10,26 +10,26 @@ const artifact = process.argv.includes('--artifact');
 
 const SITE = {
   name: 'Нейрорейтинг',
+  domain: 'cursai.ru',
   updated: 'сентябрь 2026',
   year: 2026,
-  // Адрес сайта со слешем на конце, например 'https://kursy-ii.ru/'. Нужен для canonical, og:url и sitemap.xml.
-  url: '',
-  // Номер счетчика Яндекс Метрики. Метрика запускается только после согласия посетителя на cookie.
+  // Адрес сайта со слешем на конце. Нужен для canonical, og:url и sitemap.xml.
+  url: 'https://cursai.ru/',
+  // Номер счетчика Яндекс Метрики. Метрика запускается сразу при заходе на сайт (см. src/app.js);
+  // уведомление о cookie только информирует и дает отказаться на этом устройстве.
   ymId: 113107145,
   policyDate: '27 сентября 2026',
-  // Реквизиты оператора персональных данных для политики и согласия
+  // Реквизиты оператора для политики и согласия. ФИО/ИНН можно оставить пустыми —
+  // тогда в текстах используется формулировка «владелец сайта cursai.ru».
   operator: {
-    name: '[ФИО индивидуального предпринимателя или название организации]',
-    inn: '[ИНН]',
-    ogrn: '[ОГРНИП или ОГРН]',
-    address: '[адрес регистрации]',
-    email: '[почта для обращений]',
+    name: '',
+    inn: '',
+    email: 'gvrsoon@yandex.ru',
   },
 };
 
-if (!SITE.url) console.warn('Укажите адрес сайта в SITE.url (scripts/build.mjs): без него нет canonical и sitemap.xml.');
-if (Object.values(SITE.operator).some((v) => v.startsWith('['))) {
-  console.warn('Заполните реквизиты оператора в SITE.operator (scripts/build.mjs): они выводятся в политике и согласии.');
+if (!SITE.operator.email) {
+  console.warn('Укажите почту в SITE.operator.email (scripts/build.mjs): она выводится в политике и согласии.');
 }
 
 // Цвет «постера» для каждого места рейтинга
@@ -431,8 +431,8 @@ const html = `${head}
     <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
     <p>Страница содержит партнерские ссылки: если вы купите курс по ссылке, мы можем получить вознаграждение. На оценки это не влияет. Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться.</p>
     <p class="foot-links">
-      <a href="privacy.html">Политика обработки персональных данных</a>
-      <a href="consent.html">Согласие на обработку данных</a>
+      <a href="privacy.html">Политика конфиденциальности</a>
+      <a href="consent.html">Согласие на cookie</a>
       <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
     </p>
   </div>
@@ -440,10 +440,10 @@ const html = `${head}
 
 <div class="consent" id="consent" role="dialog" aria-labelledby="consent-title" hidden>
   <p class="consent-title" id="consent-title">Мы используем cookie</p>
-  <p class="consent-text">Необходимые cookie запоминают ваши настройки. С вашего согласия включим Яндекс Метрику для статистики посещений. Подробнее в <a href="privacy.html">политике</a> и <a href="consent.html">согласии</a>.</p>
+  <p class="consent-text">Сайт использует Яндекс Метрику для статистики посещений. Продолжая пользоваться сайтом, вы соглашаетесь с этим. Подробнее в <a href="privacy.html">политике</a> и <a href="consent.html">согласии</a>.</p>
   <div class="consent-actions">
-    <button type="button" class="btn btn-ink btn-sm" id="consent-all">Принять все</button>
-    <button type="button" class="btn btn-line btn-sm" id="consent-min">Только необходимые</button>
+    <button type="button" class="btn btn-ink btn-sm" id="consent-all">Хорошо</button>
+    <button type="button" class="btn btn-line btn-sm" id="consent-min">Отказаться</button>
   </div>
 </div>
 

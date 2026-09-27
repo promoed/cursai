@@ -156,7 +156,9 @@
   var saved = store('nr-filter');
   if (saved && document.querySelector('[data-filter="' + saved + '"]')) applyFilter(saved, false);
 
-  /* Cookie и согласие на аналитику (152-ФЗ): Метрика стартует только после «Принять все» */
+  /* Cookie и статистика (152-ФЗ): Метрика запускается сразу при заходе на сайт.
+     Уведомление внизу экрана информирует об этом и дает отказаться на этом устройстве —
+     тогда при следующих visitах Метрика не загружается. */
   var analyticsOn = false;
   function loadAnalytics() {
     var id = window.NR_YM_ID;
@@ -197,19 +199,18 @@
     if (open && focus) document.getElementById('consent-all').focus({ preventScroll: true });
   }
   function decide(value) {
-    var wasOn = analyticsOn;
     store('nr-consent', value);
     store('nr-consent-at', new Date().toISOString());
     openBanner(false);
-    if (value === 'all') loadAnalytics();
-    else if (wasOn) location.reload();
+    if (value === 'out' && analyticsOn) location.reload();
+    else if (value === 'all') loadAnalytics();
   }
   if (banner) {
     document.getElementById('consent-all').addEventListener('click', function () {
       decide('all');
     });
     document.getElementById('consent-min').addEventListener('click', function () {
-      decide('necessary');
+      decide('out');
     });
     var settings = document.getElementById('cookie-settings');
     if (settings)
@@ -217,8 +218,8 @@
         openBanner(true, true);
       });
     var decision = store('nr-consent');
-    if (decision === 'all') loadAnalytics();
-    else if (!decision) openBanner(true);
+    if (decision !== 'out') loadAnalytics();
+    if (!decision) openBanner(true);
   }
 
   /* Ссылка на курс, скрытый фильтром: сначала показываем все курсы */
