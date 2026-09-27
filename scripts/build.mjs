@@ -328,10 +328,10 @@ const html = `${head}
       <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
       <h1 class="hero-title">
         <span class="mega">Топ<span class="mega-dash">-</span>10</span>
-        <span class="hero-sub">курсов по нейросетям ${SITE.year}, после которых ИИ работает на вас</span>
+        <span class="hero-sub">курсов по нейросетям ${SITE.year}.</span>
       </h1>
       <div class="hero-row">
-        <p class="hero-lead">Мы разобрали программы Нетологии, Skillbox, Яндекс Практикума, Eduson и GeekBrains и оценили их по практике, содержанию, поддержке и результату. Выберите курс под свою задачу и начните применять нейросети уже на этой неделе.</p>
+        <p class="hero-lead">Сравнили программы по практике, содержанию, поддержке и результату обучения. Посмотрите, какой курс подойдет для ваших задач — от первых шагов с ИИ до применения в работе.</p>
         <div class="hero-cta">
           <a class="btn btn-ink" href="#kurs-1">Смотреть рейтинг ${arrow}</a>
           <a class="btn btn-line" href="#pick">Подобрать под задачу</a>

@@ -329,7 +329,7 @@ ol {
 }
 .hero-lead {
   flex: 1 1 420px;
-  max-width: 58ch;
+  max-width: 52ch;
   font-size: clamp(1.02rem, 1.3vw, 1.15rem);
   color: var(--ink-2);
 }
@@ -1349,8 +1349,13 @@ td:nth-child(4) {
     margin: 20px 0 12px;
     transform: rotate(-1deg);
   }
-  .cover-art {
-    display: none;
+  .cover-art figcaption {
+    left: 18px;
+    right: 30%;
+    bottom: 14px;
+  }
+  .cover-art figcaption b {
+    font-size: 1.25rem;
   }
   .seal {
     width: 118px;
