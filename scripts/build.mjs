@@ -389,7 +389,7 @@ const html = `${head}
       <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
       <h1 class="hero-title">
         <span class="mega">Топ<span class="mega-dash">-</span>10</span>
-        <span class="hero-sub">курсов по нейросетям ${SITE.year} — для ${heroCycle}.</span>
+        <span class="hero-sub">курсов по нейросетям ${SITE.year} — для ${heroCycle}</span>
       </h1>
       <div class="hero-row">
         <p class="hero-lead">Сравнили программы по практике, содержанию, поддержке и результату обучения. Посмотрите, какой курс подойдет для ваших задач — от первых шагов с ИИ до применения в работе.</p>
