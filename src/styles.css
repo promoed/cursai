@@ -496,7 +496,7 @@ ol {
 /* ============ Курс ============ */
 .course {
   position: relative;
-  padding-block: clamp(56px, 8vw, 112px);
+  padding-block: clamp(44px, 6vw, 92px);
   background: var(--tint);
 }
 .course + .course {
@@ -631,6 +631,26 @@ ol {
   font-size: clamp(1.1rem, 1.6vw, 1.35rem);
   line-height: 1.45;
   font-weight: 500;
+}
+.glance {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 28px;
+}
+.glance li {
+  display: grid;
+  gap: 2px;
+}
+.glance b {
+  font: 400 1.55rem/1 var(--f-display);
+  letter-spacing: -0.01em;
+}
+.glance span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
 }
 .paper {
   position: relative;
@@ -1503,86 +1523,15 @@ td:nth-child(4) {
   }
 }
 
-/* Таблица на телефоне: каждая строка превращается в карточку, все колонки видны без прокрутки вбок */
+/* Таблица на телефоне: остается настоящей таблицей с прокруткой вбок, только компактнее */
 @media (max-width: 640px) {
-  .table-scroll {
-    overflow: visible;
-    background: transparent;
-    box-shadow: none;
-    border-radius: 0;
-  }
-  table,
-  tbody {
-    display: block;
-    min-width: 0;
-  }
-  thead {
-    display: none;
-  }
-  tbody {
-    display: grid;
-    gap: 12px;
-  }
-  tbody tr {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px 16px;
-    padding: 18px;
-    border-radius: 22px;
-    background: var(--paper);
-    box-shadow: var(--shadow);
-  }
-  tbody tr:hover {
-    background: var(--paper);
-  }
+  th,
   td {
-    display: grid;
-    align-content: start;
-    gap: 2px;
-    padding: 0;
-    border: 0;
+    padding: 12px 14px;
+    font-size: 0.92rem;
   }
-  td[data-label]::before {
-    content: attr(data-label);
-    font: 700 0.72rem/1.4 var(--f-body);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-3);
-  }
-  .t-pos {
-    display: none;
-  }
-  .t-course {
-    grid-column: 1 / -1;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
-    column-gap: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--paper-line);
-  }
-  .t-course::before {
-    content: attr(data-rank);
-    grid-row: span 2;
-    display: grid;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--c);
-    color: #121212;
-    font: 400 1rem/1 var(--f-display);
-  }
-  .t-cta {
-    grid-column: 1 / -1;
-    text-align: left;
-  }
-  .t-link {
-    justify-content: center;
-    width: 100%;
-    min-height: 44px;
-    border-radius: 99px;
-    background: var(--solid);
-    color: var(--solid-ink);
+  .t-score {
+    font-size: 1.1rem;
   }
 }
 

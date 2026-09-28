@@ -9,7 +9,7 @@ const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
 
 const SITE = {
-  name: 'Нейрорейтинг',
+  name: 'AIresearcher',
   domain: 'cursai.ru',
   updated: 'сентябрь 2026',
   year: 2026,
@@ -145,7 +145,6 @@ const stickers = courses
 const course = (c, i) => {
   const s = schools[c.school];
   const facts = [
-    ['Срок', c.duration],
     ['Занятия', c.schedule],
     ['Уровень', c.level],
     ['Формат', c.format],
@@ -174,7 +173,15 @@ const course = (c, i) => {
             <span class="tape">${esc(c.award)}</span>
           </p>
           <h3 class="course-title" id="t-${c.rank}"><span class="sr-only">${c.rank} место. </span>${esc(c.title)}</h3>
-          <p class="course-hook">${esc(c.hook)}</p>${c.imageShape === 'landscape' ? cover(c, i) : ''}
+          <p class="course-hook">${esc(c.hook)}</p>${c.imageShape === 'landscape' ? cover(c, i) : ''}${
+    c.price || c.duration
+      ? `
+          <ul class="glance" aria-label="Коротко о курсе">
+            ${c.price ? `<li><b>${rub(c.price)}</b><span>цена</span></li>` : ''}
+            ${c.duration ? `<li><b>${esc(c.duration)}</b><span>срок</span></li>` : ''}
+          </ul>`
+      : ''
+  }
           <div class="paper">
             <h4 class="kicker">Что вы узнаете</h4>
             <p class="learn">${esc(c.learn)}</p>
