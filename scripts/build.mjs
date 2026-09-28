@@ -331,10 +331,6 @@ const analyticsHints = `<link rel="preconnect" href="https://mc.yandex.ru">
 
 const themeBoot = `<script>try{var t=localStorage.getItem('nr-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>`;
 
-// Динамическое окончание заголовка: слова сменяют друг друга через чистую CSS-анимацию (без JS).
-const heroCycleWords = ['себя', 'работы', 'творчества', 'самореализации', 'вдохновения'];
-const heroCycle = `<span class="hero-cycle" aria-hidden="true">${heroCycleWords.map((w) => `<span>${esc(w)}</span>`).join('')}</span><span class="sr-only">${esc(heroCycleWords.slice(0, -1).join(', ') + ' или ' + heroCycleWords[heroCycleWords.length - 1])}</span>`;
-
 const head = artifact
   ? `<title>${esc(SITE.name)}</title>
 <meta name="description" content="${esc(description)}">
@@ -389,7 +385,7 @@ const html = `${head}
       <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
       <h1 class="hero-title">
         <span class="mega">Топ<span class="mega-dash">-</span>10</span>
-        <span class="hero-sub">курсов по нейросетям ${SITE.year} — для ${heroCycle}</span>
+        <span class="hero-sub">курсов по нейросетям ${SITE.year}</span>
       </h1>
       <div class="hero-row">
         <p class="hero-lead">Сравнили программы по практике, содержанию, поддержке и результату обучения. Посмотрите, какой курс подойдет для ваших задач — от первых шагов с ИИ до применения в работе.</p>
