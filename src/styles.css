@@ -632,26 +632,6 @@ ol {
   line-height: 1.45;
   font-weight: 500;
 }
-.glance {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 28px;
-}
-.glance li {
-  display: grid;
-  gap: 2px;
-}
-.glance b {
-  font: 400 1.55rem/1 var(--f-display);
-  letter-spacing: -0.01em;
-}
-.glance span {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-}
 .paper {
   position: relative;
   overflow: hidden;
@@ -1523,7 +1503,8 @@ td:nth-child(4) {
   }
 }
 
-/* Таблица на телефоне: остается настоящей таблицей с прокруткой вбок, только компактнее */
+/* Таблица на телефоне: остается настоящей таблицей с прокруткой вбок и вниз,
+   шапка и первые две колонки (место и курс) закреплены, чтобы не терять контекст строки */
 @media (max-width: 640px) {
   th,
   td {
@@ -1532,6 +1513,35 @@ td:nth-child(4) {
   }
   .t-score {
     font-size: 1.1rem;
+  }
+  .table-scroll {
+    max-height: 66vh;
+    overflow-y: auto;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--paper);
+    box-shadow: 0 1px 0 var(--paper-line);
+  }
+  .t-pos,
+  .t-course,
+  thead th:nth-child(1),
+  thead th:nth-child(2) {
+    position: sticky;
+    left: 0;
+    background: var(--paper);
+    z-index: 1;
+  }
+  .t-course,
+  thead th:nth-child(2) {
+    left: 62px;
+    box-shadow: 1px 0 0 var(--paper-line);
+  }
+  thead th:nth-child(1),
+  thead th:nth-child(2) {
+    z-index: 4;
   }
 }
 

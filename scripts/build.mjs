@@ -145,6 +145,8 @@ const stickers = courses
 const course = (c, i) => {
   const s = schools[c.school];
   const facts = [
+    ['Цена', c.price ? rub(c.price) : null],
+    ['Срок', c.duration],
     ['Занятия', c.schedule],
     ['Уровень', c.level],
     ['Формат', c.format],
@@ -173,15 +175,7 @@ const course = (c, i) => {
             <span class="tape">${esc(c.award)}</span>
           </p>
           <h3 class="course-title" id="t-${c.rank}"><span class="sr-only">${c.rank} место. </span>${esc(c.title)}</h3>
-          <p class="course-hook">${esc(c.hook)}</p>${c.imageShape === 'landscape' ? cover(c, i) : ''}${
-    c.price || c.duration
-      ? `
-          <ul class="glance" aria-label="Коротко о курсе">
-            ${c.price ? `<li><b>${rub(c.price)}</b><span>цена</span></li>` : ''}
-            ${c.duration ? `<li><b>${esc(c.duration)}</b><span>срок</span></li>` : ''}
-          </ul>`
-      : ''
-  }
+          <p class="course-hook">${esc(c.hook)}</p>${c.imageShape === 'landscape' ? cover(c, i) : ''}
           <div class="paper">
             <h4 class="kicker">Что вы узнаете</h4>
             <p class="learn">${esc(c.learn)}</p>
@@ -330,12 +324,17 @@ const description =
 
 const fonts = `<link rel="preload" href="fonts/dela-gothic-one-subset.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/onest-subset.woff2" as="font" type="font/woff2" crossorigin>`;
+// Раннее соединение со счетчиком Метрики: сам тег грузится не сразу (см. app.js),
+// но браузер успевает установить соединение заранее, пока страница еще рендерится.
+const analyticsHints = `<link rel="preconnect" href="https://mc.yandex.ru">
+<link rel="dns-prefetch" href="https://mc.yandex.ru">`;
 
 const themeBoot = `<script>try{var t=localStorage.getItem('nr-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>`;
 
 const head = artifact
   ? `<title>${esc(SITE.name)}</title>
 <meta name="description" content="${esc(description)}">
+${analyticsHints}
 ${fonts}
 <style>${css}</style>
 ${themeBoot}`
@@ -353,6 +352,7 @@ ${SITE.url ? `<link rel="canonical" href="${SITE.url}">\n<meta property="og:url"
 <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="${favicon}">
+${analyticsHints}
 ${fonts}
 <style>${css}</style>
 ${themeBoot}
@@ -549,6 +549,7 @@ const bHtml = `<!doctype html>
 <meta name="description" content="${esc(description)}">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="${favicon}">
+${analyticsHints}
 ${fonts}
 <style>${css}</style>
 ${themeBoot}
