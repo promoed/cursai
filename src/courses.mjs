@@ -120,6 +120,8 @@ export const courses = [
     title: 'Нейросети для маркетинга',
     short: 'Нейросети для маркетинга',
     url: 'https://practicum.yandex.ru/ai-for-marketing/',
+    affiliateA: 'https://zallj.com/g/qqb62fps0r15c13731e361cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-marketing%2F', // партнерская ссылка (одна на обе страницы, отдельной для варианта Б не прислали)
+    affiliateB: 'https://zallj.com/g/qqb62fps0r15c13731e361cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-marketing%2F',
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: '5–10 часов в неделю',
@@ -258,6 +260,8 @@ export const courses = [
     title: 'Нейросети для бизнеса',
     short: 'Нейросети для бизнеса',
     url: 'https://practicum.yandex.ru/ai-for-business/',
+    affiliateA: 'https://zallj.com/g/qqb62fps0r15c13731e361cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-business%2F', // партнерская ссылка (одна на обе страницы, отдельной для варианта Б не прислали)
+    affiliateB: 'https://zallj.com/g/qqb62fps0r15c13731e361cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-business%2F',
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2,5 месяца',
     schedule: null,
