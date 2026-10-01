@@ -317,7 +317,6 @@ ol {
   color: #ff7a59;
 }
 .hero-sub {
-  max-width: 30ch;
   margin-top: clamp(12px, 2vw, 24px);
   font: 700 clamp(1.5rem, 2.8vw, 2.3rem) / 1.12 var(--f-body);
   letter-spacing: -0.03em;
