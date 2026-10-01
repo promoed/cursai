@@ -9,7 +9,7 @@ const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
 
 const SITE = {
-  name: 'AIresearcher',
+  name: 'Course Ai',
   domain: 'cursai.ru',
   updated: 'октябрь 2026',
   year: 2026,
