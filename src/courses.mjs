@@ -1,6 +1,8 @@
 // Данные рейтинга. Меняйте тексты, ссылки и оценки здесь, затем запустите `npm run build`.
 // Итоговая оценка считается автоматически из критериев (веса ниже), порядок в массиве = место в рейтинге.
 // null в полях duration / schedule / price значит «еще не уточнено»: такое поле не показывается, сборка напомнит о нем.
+// price — полная стоимость, priceMonthly — платеж по рассрочке в месяц. priceFrom/priceMonthlyFrom: true
+// добавляет приставку "от", если у школы несколько тарифов и это цена самого дешевого.
 // affiliateA/affiliateB — партнерские ссылки для кнопок "Подробнее о курсе": A used on index.html, B on b.html.
 // Если их нет, кнопки ведут на обычный url курса (см. urlA/urlB в scripts/build.mjs).
 
@@ -42,6 +44,7 @@ export const courses = [
     duration: '1 месяц', // 5 недель, на странице оплаты школа сама округляет до месяца
     schedule: null,
     price: 53000, // руб., полная стоимость на дату обновления
+    priceMonthly: 2699, // руб./мес, рассрочка
     award: 'Выбор редакции',
     tags: ['self', 'work', 'marketing'],
     audience: 'Всем, кто хочет начать',
@@ -70,6 +73,7 @@ export const courses = [
     duration: '3 месяца',
     schedule: '130+ уроков в записи',
     price: 74900, // руб., полная стоимость на дату обновления
+    priceMonthly: 6242, // руб./мес, рассрочка
     award: 'Больше всего практики',
     tags: ['self', 'work', 'marketing', 'agents'],
     audience: 'Тем, кто хочет глубоко и много',
@@ -98,6 +102,7 @@ export const courses = [
     duration: '2 месяца',
     schedule: '32 видеоурока и 40 часов практики',
     price: 52418, // руб., полная стоимость на дату обновления
+    priceMonthly: 4633, // руб./мес, рассрочка
     award: 'Самый большой набор инструментов',
     tags: ['self', 'work', 'business'],
     audience: 'Специалистам и предпринимателям',
@@ -120,12 +125,15 @@ export const courses = [
     title: 'Нейросети для маркетинга',
     short: 'Нейросети для маркетинга',
     url: 'https://practicum.yandex.ru/ai-for-marketing/',
-    affiliateA: 'https://zallj.com/g/qqb62fps0r15c13731e361cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-marketing%2F', // партнерская ссылка (одна на обе страницы, отдельной для варианта Б не прислали)
-    affiliateB: 'https://zallj.com/g/qqb62fps0r15c13731e361cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-marketing%2F',
+    affiliateA: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=A&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-marketing%2F', // партнерская ссылка для главной страницы (index.html)
+    affiliateB: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=B&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-marketing%2F', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: '5–10 часов в неделю',
     price: 49560, // руб., базовый тариф, одним платежом с учетом промокода и сертификатов
+    priceFrom: true, // у школы 3 тарифа, это цена самого дешевого
+    priceMonthly: 2408, // руб./мес, рассрочка, самый дешевый тариф
+    priceMonthlyFrom: true,
     award: 'Лучший для маркетологов',
     tags: ['marketing', 'work'],
     audience: 'SMM, контент, CRM и перформанс',
@@ -154,6 +162,7 @@ export const courses = [
     duration: '4 месяца',
     schedule: 'Вебинары, воркшопы и разборы с наставниками',
     price: 59000, // руб., полная стоимость на дату обновления
+    priceMonthly: 3004, // руб./мес, рассрочка
     award: 'Лучший по ИИ-агентам',
     tags: ['agents', 'business', 'work'],
     audience: 'Маркетологам, менеджерам, владельцам бизнеса',
@@ -182,6 +191,7 @@ export const courses = [
     duration: '1 месяц',
     schedule: 'В своем темпе, ускоренно можно пройти за 2 недели',
     price: 31290, // руб., полная стоимость на дату обновления
+    priceMonthly: 5215, // руб./мес, рассрочка
     award: 'Для руководителей и менеджеров',
     tags: ['work', 'business', 'agents'],
     audience: 'Тем, у кого много задач и мало времени',
@@ -210,6 +220,7 @@ export const courses = [
     duration: '5 или 11 месяцев',
     schedule: null,
     price: 125700, // руб., полная стоимость на дату обновления
+    priceMonthly: 3598, // руб./мес, рассрочка
     award: 'Новая профессия',
     tags: ['career'],
     audience: 'Тем, кто хочет создавать ИИ',
@@ -238,6 +249,7 @@ export const courses = [
     duration: '2 месяца',
     schedule: null,
     price: 48540, // руб., сумма по рассрочке 4045 x 12 мес, других цифр школа не показывает
+    priceMonthly: 4045, // руб./мес, рассрочка
     award: 'Лучший старт с ChatGPT',
     tags: ['self', 'work'],
     audience: 'Тем, кто много пишет и ищет',
@@ -260,12 +272,14 @@ export const courses = [
     title: 'Нейросети для бизнеса',
     short: 'Нейросети для бизнеса',
     url: 'https://practicum.yandex.ru/ai-for-business/',
-    affiliateA: 'https://zallj.com/g/qqb62fps0r15c13731e361cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-business%2F', // партнерская ссылка (одна на обе страницы, отдельной для варианта Б не прислали)
-    affiliateB: 'https://zallj.com/g/qqb62fps0r15c13731e361cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-business%2F',
+    affiliateA: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=A&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-business%2F', // партнерская ссылка для главной страницы (index.html)
+    affiliateB: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=B&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-business%2F', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2,5 месяца',
     schedule: null,
     price: 84500, // руб., полная стоимость на дату обновления
+    priceMonthly: 3449, // руб./мес, рассрочка
+    priceMonthlyFrom: true,
     award: 'Для собственников и руководителей',
     tags: ['business'],
     audience: 'Руководителям и предпринимателям',
@@ -294,6 +308,8 @@ export const courses = [
     duration: '6 месяцев',
     schedule: 'Живые онлайн-занятия по расписанию',
     price: 105276, // руб., полная стоимость на дату обновления
+    priceMonthly: 2771, // руб./мес, рассрочка
+    priceMonthlyFrom: true,
     award: 'Карьера во внедрении ИИ',
     tags: ['career', 'business', 'agents'],
     audience: 'Тем, кто хочет внедрять ИИ в компаниях',

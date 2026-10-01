@@ -44,6 +44,8 @@ const esc = (s) =>
 const total = (c) => Math.round(criteria.reduce((sum, k) => sum + c.scores[k.key] * k.weight, 0) * 10) / 10;
 const fmt = (n) => n.toFixed(1).replace('.', ',');
 const rub = (n) => (n == null ? '' : `${String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0')}\u00a0₽`);
+// Полная стоимость или рассрочка; from добавляет приставку "от" (несколько тарифов у школы), perMonth — "/мес"
+const priceText = (n, { from, perMonth } = {}) => (n == null ? null : `${from ? 'от ' : ''}${rub(n)}${perMonth ? '/мес' : ''}`);
 const verdict = (n) => (n >= 9.5 ? 'превосходно' : n >= 9.2 ? 'отлично' : 'очень хорошо');
 const rel = 'nofollow sponsored noopener';
 
@@ -145,7 +147,8 @@ const stickers = courses
 const course = (c, i) => {
   const s = schools[c.school];
   const facts = [
-    ['Цена', c.price ? rub(c.price) : null],
+    ['Полная стоимость', priceText(c.price, { from: c.priceFrom })],
+    ['В рассрочку', priceText(c.priceMonthly, { from: c.priceMonthlyFrom, perMonth: true })],
     ['Срок', c.duration],
     ['Занятия', c.schedule],
     ['Уровень', c.level],
@@ -205,7 +208,7 @@ const tableRows = (urlKey) =>
               <td class="t-course" data-rank="${c.rank}"><a href="#kurs-${c.rank}">${esc(c.title)}</a><span>${esc(schools[c.school].name)}</span></td>
               <td data-label="Уровень">${esc(c.level)}</td>
               <td class="t-nowrap" data-label="Срок">${c.duration ? esc(c.duration) : '<span class="t-na">—</span>'}</td>
-              <td class="t-price" data-label="Стоимость">${c.price ? rub(c.price) : '<span class="t-na">—</span>'}</td>
+              <td class="t-price" data-label="Стоимость">${c.price ? priceText(c.price, { from: c.priceFrom }) : '<span class="t-na">—</span>'}${c.priceMonthly ? `<span class="t-price-sub">${priceText(c.priceMonthly, { from: c.priceMonthlyFrom, perMonth: true })}</span>` : ''}</td>
               <td class="t-score" data-label="Балл">${fmt(c.total)}</td>
               <td class="t-cta"><a class="t-link" href="${esc(c[urlKey])}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="table" data-school="${esc(schools[c.school].name)}">На сайт ${arrow}</a></td>
             </tr>`
@@ -388,7 +391,7 @@ const html = `${head}
         <span class="hero-sub">курсов по нейросетям ${SITE.year}</span>
       </h1>
       <div class="hero-row">
-        <p class="hero-lead">Сравнили программы по практике, содержанию, поддержке и результату обучения. Посмотрите, какой курс подойдет для ваших задач — от первых шагов с ИИ до применения в работе.</p>
+        <p class="hero-lead">Сравнили программы по содержанию, поддержке и результату обучения.</p>
         <div class="hero-cta">
           <a class="btn btn-ink" href="#kurs-1">Смотреть рейтинг ${arrow}</a>
           <a class="btn btn-line" href="#pick">Подобрать под задачу</a>
@@ -510,9 +513,12 @@ const courseCard = (c) => {
   const tags = c.tags.map((t) => tagLabel[t]).filter(Boolean);
   const shown = tags.slice(0, 2);
   const rest = tags.length - shown.length;
-  const facts = [
-    c.duration ? `<span>${calIco}${esc(c.duration)}</span>` : '',
-    c.price ? `<span class="mcard-price">${rub(c.price)}</span>` : '',
+  const facts = [c.duration ? `<span>${calIco}${esc(c.duration)}</span>` : '']
+    .filter(Boolean)
+    .join('');
+  const priceRow = [
+    c.price ? `<span class="mcard-price">${priceText(c.price, { from: c.priceFrom })}</span>` : '',
+    c.priceMonthly ? `<span class="mcard-price-sub">${priceText(c.priceMonthly, { from: c.priceMonthlyFrom, perMonth: true })}</span>` : '',
   ]
     .filter(Boolean)
     .join('');
@@ -530,6 +536,7 @@ const courseCard = (c) => {
             <p class="mcard-award">${esc(c.award)}</p>
             <h2 class="mcard-title" id="mt-${c.rank}"><span class="sr-only">${c.rank} место. </span>${esc(c.title)}</h2>
             <p class="mcard-hook">${esc(c.hook)}</p>
+            ${priceRow ? `<p class="mcard-price-row">${priceRow}</p>` : ''}
             ${facts ? `<p class="mcard-facts">${facts}</p>` : ''}
             <ul class="mcard-tags">
               ${shown.map((t) => `<li>${esc(t)}</li>`).join('')}${rest > 0 ? `<li>+ еще ${rest}</li>` : ''}

@@ -934,6 +934,14 @@ td:nth-child(4) {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
+.t-price-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--ink-3);
+}
 .t-na {
   color: var(--ink-3);
 }
@@ -1744,10 +1752,23 @@ td:nth-child(4) {
 .mcard-facts .ico {
   flex: none;
 }
+.mcard-price-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
 .mcard-price {
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
+}
+.mcard-price-sub {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink-3);
+  white-space: nowrap;
 }
 .mcard-tags {
   display: flex;
