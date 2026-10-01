@@ -76,7 +76,7 @@ export const courses = [
     priceMonthly: 6242, // руб./мес, рассрочка
     award: 'Больше всего практики',
     tags: ['self', 'work', 'marketing', 'agents'],
-    audience: 'Тем, кто хочет глубоко и много',
+    audience: 'Тем, кто хочет глубоко погрузиться и разобраться во всех инструментах',
     level: 'С нуля до уверенного',
     format: 'Онлайн, 130+ уроков',
     tools: 'ChatGPT, Midjourney, n8n, Cursor и еще 40+',
@@ -130,14 +130,14 @@ export const courses = [
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: '5–10 часов в неделю',
-    price: 49560, // руб., базовый тариф, одним платежом с учетом промокода и сертификатов
+    price: 59000, // руб., базовый тариф, одним платежом с учетом промокода и сертификатов
     priceFrom: true, // у школы 3 тарифа, это цена самого дешевого
     priceMonthly: 2408, // руб./мес, рассрочка, самый дешевый тариф
     priceMonthlyFrom: true,
     award: 'Лучший для маркетологов',
     tags: ['marketing', 'work'],
-    audience: 'SMM, контент, CRM и перформанс',
-    level: 'Для практикующих',
+    audience: 'Маркетологам, SMM, SEO и др.',
+    level: 'С нуля, но для специалистов сферы',
     format: 'Онлайн, 6 модулей',
     tools: 'ChatGPT, Claude, GigaChat, Midjourney, Kandinsky, Veo',
     hook: 'Маркетинг, в котором у вас в команде десяток ИИ-ассистентов. 22 новых инструмента за одну программу.',
@@ -166,7 +166,7 @@ export const courses = [
     award: 'Лучший по ИИ-агентам',
     tags: ['agents', 'business', 'work'],
     audience: 'Маркетологам, менеджерам, владельцам бизнеса',
-    level: 'Без кода',
+    level: 'С нуля',
     format: 'Онлайн, практика в n8n',
     tools: 'n8n, языковые модели, чат-боты, интеграции',
     hook: 'Соберите сотрудника, который не спит, не устает и отвечает клиентам за секунды.',
@@ -252,7 +252,7 @@ export const courses = [
     priceMonthly: 4045, // руб./мес, рассрочка
     award: 'Лучший старт с ChatGPT',
     tags: ['self', 'work'],
-    audience: 'Тем, кто много пишет и ищет',
+    audience: 'Специалистам, создателям контента',
     level: 'С нуля',
     format: 'Онлайн, уроки со спикерами',
     tools: 'ChatGPT, Claude, Perplexity, Gamma',
