@@ -388,10 +388,10 @@ const html = `${head}
       <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
       <h1 class="hero-title">
         <span class="mega">Топ<span class="mega-dash">-</span>10</span>
-        <span class="hero-sub">курсов по нейросетям ${SITE.year}</span>
+        <span class="hero-sub">курсов по нейросетям для работы и творчества</span>
       </h1>
       <div class="hero-row">
-        <p class="hero-lead">Сравнили программы по содержанию, поддержке и результату обучения.</p>
+        <p class="hero-lead">Освойте ИИ для работы, творчества и собственных проектов. Сравните 10 курсов по программе, практике и поддержке — и выберите тот, который подходит под ваши задачи и уровень.</p>
         <div class="hero-cta">
           <a class="btn btn-ink" href="#kurs-1">Смотреть рейтинг ${arrow}</a>
           <a class="btn btn-line" href="#pick">Подобрать под задачу</a>
