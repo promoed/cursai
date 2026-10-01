@@ -11,7 +11,7 @@ const artifact = process.argv.includes('--artifact');
 const SITE = {
   name: 'AIresearcher',
   domain: 'cursai.ru',
-  updated: 'сентябрь 2026',
+  updated: 'октябрь 2026',
   year: 2026,
   // Адрес сайта со слешем на конце. Нужен для canonical, og:url и sitemap.xml.
   url: 'https://cursai.ru/',
