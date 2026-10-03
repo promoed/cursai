@@ -974,6 +974,52 @@ await rm(out, { recursive: true, force: true });
 await mkdir(new URL('images/', out), { recursive: true });
 await mkdir(new URL('fonts/', out), { recursive: true });
 
+// Страница 404: ненайденный адрес показывает понятную ошибку со ссылками, а не подменяется главной
+const notFoundHtml = `<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Страница не найдена · ${esc(SITE.name)}</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="${favicon}">
+${fonts}
+<style>${css}</style>
+${themeBoot}
+</head>
+<body>
+<header class="mtop">
+  <div class="wrap mtop-in">
+    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</a>
+    <nav class="site-nav" aria-label="Разделы сайта">
+      <a href="${U.home}">Рейтинг курсов</a>
+      <a href="${U.top}">Курсы по ИИ</a>
+      <a href="${U.about}">О нас</a>
+    </nav>
+    <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
+      <span class="theme-knob" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+<main class="hero">
+  <div class="wrap">
+    <h1 class="hero-title"><span class="mega">404</span> <span class="hero-sub">Такой страницы нет</span></h1>
+    <div class="hero-row">
+      <p class="hero-lead">Возможно, адрес изменился. Рейтинг курсов по нейросетям — на главной.</p>
+      <div class="hero-cta">
+        <a class="btn btn-ink" href="${U.home}">На главную ${arrow}</a>
+        <a class="btn btn-line" href="${U.top}">Топ-10 курсов</a>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+${js}
+</script>
+</body>
+</html>
+`;
+
 // Старые адреса (b.html, about.html) ведут на новые; ?dir= и #якорь сохраняются, чтобы рекламные ссылки не сломались.
 // На Apache то же делает 301-редирект в .htaccess, эта страница — запасной вариант для другого хостинга.
 const redirect = (to) => `<!doctype html>
@@ -1001,6 +1047,7 @@ const pages = artifact
       'about/index.html': rootify(aboutHtml),
       'b.html': redirect('/'),
       'about.html': redirect('/about/'),
+      '404.html': rootify(notFoundHtml),
       ...Object.fromEntries(Object.entries(legal).map(([k, v]) => [k, rootify(v)])),
     };
 for (const [name, page] of Object.entries(pages)) {

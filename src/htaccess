@@ -31,4 +31,5 @@ AddType image/webp .webp
   RewriteRule ^about\.html$ /about/ [R=301,L]
 </IfModule>
 
-ErrorDocument 404 /index.html
+# Ненайденный адрес — честная страница 404 (не главная), чтобы пропавший файл сразу был заметен
+ErrorDocument 404 /404.html
