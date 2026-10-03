@@ -258,7 +258,7 @@ const heroLead = `Освойте ИИ для работы, творчества 
 const methodSection = `
   <section class="method" data-tint="base" aria-labelledby="method-title">
     <div class="wrap method-in">
-      <h2 class="h2" id="method-title">Как мы ставили оценки</h2>
+      <h2 class="h2" id="method-title">Как формируется рейтинг</h2>
       <ul class="weights">${weights}
       </ul>
     </div>
@@ -538,26 +538,19 @@ const miniCover = (c) => {
   return `<span class="mcard-logo" style="--logo-bg:${school.logoBg}"><img src="${esc(school.logo)}" alt="Логотип ${esc(school.name)}" width="${school.logoSize[0]}" height="${school.logoSize[1]}" loading="lazy" decoding="async"></span>`;
 };
 
-// На странице Б у всех карточек один акцентный цвет (оранжевый, как дефис в «Топ-10»)
-const ACCENT = '#FF7A59';
+// На странице Б у всех карточек один акцентный цвет — фиолетовый из палитры сайта
+const ACCENT = '#9C8CFF';
 
-// Декор первого экрана страницы Б: карточка-диаграмма рейтинга (столбцы 1–5 плавно «дышат»),
-// вращающаяся печать со звездой и две плавающие фигуры. Без брендов и конкретных курсов.
-const barHeights = [100, 82, 66, 52, 40];
+// Декор первого экрана страницы Б: минималистичный пьедестал 1–2–3 (столбцы вырастают при загрузке)
+// и звезда над первым местом, которая медленно покачивается. Без брендов и конкретных курсов.
 const heroArt = `
       <div class="hero-art" aria-hidden="true">
-        <svg class="art-tri" viewBox="0 0 120 120"><path d="M60 0l60 120H0z"/></svg>
-        <div class="art-chart">
-          <span class="art-chart-kicker">Топ направления</span>
-          <div class="art-bars">
-            ${barHeights.map((h, i) => `<span class="art-bar" style="--h:${h}%; --c:${palette[i]}; --d:${-i * 0.7}s"><b>${i + 1}</b></span>`).join('')}
-          </div>
+        <svg class="art-star" viewBox="0 0 24 24"><path d="M12 1.5l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.6l-6.4 3.5L7 14l-5.3-5 7.2-.9z"/></svg>
+        <div class="podium">
+          <span class="pod pod-2" style="--c:${palette[2]}"><b>2</b></span>
+          <span class="pod pod-1" style="--c:${palette[0]}"><b>1</b></span>
+          <span class="pod pod-3" style="--c:${palette[3]}"><b>3</b></span>
         </div>
-        <div class="art-seal">
-          <svg class="art-ring" viewBox="0 0 120 120"><defs><path id="art-ring-path" d="M60 60m-47 0a47 47 0 1 1 94 0a47 47 0 1 1-94 0"/></defs><text><textPath href="#art-ring-path" textLength="292" lengthAdjust="spacing">РЕЙТИНГ КУРСОВ · ${SITE.year} · РЕЙТИНГ КУРСОВ · ${SITE.year} ·</textPath></text></svg>
-          <svg class="art-star" viewBox="0 0 24 24"><path d="M12 1.5l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.6l-6.4 3.5L7 14l-5.3-5 7.2-.9z"/></svg>
-        </div>
-        <svg class="art-quarter" viewBox="0 0 120 120"><path d="M0 120A120 120 0 0 1 120 0v120z"/></svg>
       </div>`;
 
 const courseCard = (c) => {
