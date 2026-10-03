@@ -4,7 +4,7 @@
 import { readFile, writeFile, mkdir, copyFile, rm, readdir } from 'node:fs/promises';
 import { criteria, filters, directionsB, schools, courses, coursesB, faq } from '../src/courses.mjs';
 import { policy, consent } from '../src/legal.mjs';
-import { timeline, bigStat, outlook } from '../src/about.mjs';
+import { timeline, bigStat } from '../src/about.mjs';
 
 const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
@@ -100,7 +100,7 @@ const missing = allB.flatMap((c) =>
 );
 if (missing.length) console.warn(`Не заполнено (поле не будет показано):\n${missing.join('\n')}`);
 
-const text = [JSON.stringify({ timeline, bigStat, outlook }), JSON.stringify(allB), JSON.stringify(faq), JSON.stringify(filters), JSON.stringify(directionsB)].join('');
+const text = [JSON.stringify({ timeline, bigStat }), JSON.stringify(allB), JSON.stringify(faq), JSON.stringify(filters), JSON.stringify(directionsB)].join('');
 if (/[ёЁ]/.test(text)) throw new Error('В текстах есть буква «ё»');
 
 // [текст](#kurs-N) -> ссылка на курс; в JSON-LD уходит чистый текст
@@ -849,17 +849,11 @@ ${themeBoot}
     </div>
   </section>
 
-  <section class="ab-stat" aria-label="Скорость распространения ИИ">
+  <section class="ab-stat" aria-labelledby="ab-stat-title">
     <div class="wrap ab-stat-in" data-reveal>
+      <h2 class="ab-stat-title" id="ab-stat-title">${esc(bigStat.title)}</h2>
       <p class="ab-stat-num"><b data-count="${bigStat.value}">${bigStat.value}</b> ${esc(bigStat.unit)}</p>
       <p class="ab-stat-text">${esc(bigStat.text)}</p>
-    </div>
-  </section>
-
-  <section class="ab-out" aria-labelledby="ab-out-title">
-    <div class="wrap">
-      <h2 class="h2 ab-h2" id="ab-out-title">${esc(outlook.title)}</h2>
-      <p class="ab-out-lead">${esc(outlook.lead)}</p>
     </div>
   </section>
 

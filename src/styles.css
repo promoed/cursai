@@ -2528,6 +2528,12 @@ td:nth-child(4) {
   padding-block: clamp(28px, 4vw, 48px);
   border-block: 2px solid var(--ink);
 }
+.ab-stat-title {
+  grid-column: 1 / -1;
+  max-width: 22ch;
+  font: 400 clamp(1.8rem, 4vw, 3.1rem) / 1.05 var(--f-display);
+  letter-spacing: -0.01em;
+}
 .ab-stat-num {
   font: 400 clamp(2rem, 4vw, 3.2rem) / 0.9 var(--f-display);
   white-space: nowrap;
@@ -2553,16 +2559,6 @@ td:nth-child(4) {
   font: 600 clamp(1.1rem, 2vw, 1.45rem) / 1.4 var(--f-body);
 }
 
-/* Вывод: что делать людям */
-.ab-out {
-  padding-block: clamp(64px, 9vw, 120px) clamp(32px, 5vw, 56px);
-}
-.ab-out-lead {
-  max-width: 56ch;
-  margin-top: 20px;
-  font: 600 clamp(1.15rem, 2vw, 1.5rem) / 1.4 var(--f-body);
-  letter-spacing: -0.01em;
-}
 
 /* Финальный призыв: фиолетовая панель */
 .ab-final {
