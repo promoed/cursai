@@ -2249,7 +2249,7 @@ td:nth-child(4) {
   text-underline-offset: 4px;
 }
 .ab-h2 {
-  max-width: 18ch;
+  max-width: 20ch;
 }
 
 /* Первый экран в стиле страниц рейтинга: крупное слово, под ним текст и карточка для партнеров */
@@ -2527,12 +2527,6 @@ td:nth-child(4) {
   gap: clamp(20px, 4vw, 56px);
   padding-block: clamp(28px, 4vw, 48px);
   border-block: 2px solid var(--ink);
-}
-.ab-stat-title {
-  grid-column: 1 / -1;
-  max-width: 22ch;
-  font: 400 clamp(1.8rem, 4vw, 3.1rem) / 1.05 var(--f-display);
-  letter-spacing: -0.01em;
 }
 .ab-stat-num {
   font: 400 clamp(2rem, 4vw, 3.2rem) / 0.9 var(--f-display);
