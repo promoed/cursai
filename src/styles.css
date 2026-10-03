@@ -1593,6 +1593,146 @@ td:nth-child(4) {
   font-size: clamp(3.6rem, 15vw, 12rem);
 }
 
+/* Декор первого экрана страницы Б: только там, где справа есть свободное место */
+.hero-b .wrap {
+  position: relative;
+}
+.hero-art {
+  display: none;
+}
+@media (min-width: 1180px) {
+  .hero-art {
+    display: block;
+    position: absolute;
+    right: var(--gutter);
+    bottom: 0;
+    width: 340px;
+    height: 340px;
+    pointer-events: none;
+    transform-origin: bottom right;
+    animation: rise 1s var(--ease) both 0.3s;
+  }
+}
+@media (min-width: 1180px) and (max-width: 1399px) {
+  .hero-art {
+    scale: 0.8;
+  }
+}
+.art-card {
+  --r: 0deg;
+  position: absolute;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  width: 168px;
+  height: 208px;
+  padding: 16px 18px 18px;
+  border-radius: 26px;
+  background: var(--c);
+  color: #121212;
+  box-shadow: var(--shadow);
+  transform: rotate(var(--r));
+  animation: art-float 8s ease-in-out infinite;
+}
+.art-card b {
+  font: 400 4.2rem/0.9 var(--f-display);
+  letter-spacing: -0.04em;
+}
+.art-card span {
+  align-self: end;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.art-card em {
+  font: 700 1rem/1.2 var(--f-body);
+  font-style: normal;
+}
+.art-card-2 span,
+.art-card-2 em,
+.art-card-3 span,
+.art-card-3 em {
+  visibility: hidden;
+}
+.art-card-1 {
+  --r: -5deg;
+  left: 118px;
+  top: 104px;
+  z-index: 3;
+}
+.art-card-2 {
+  --r: 9deg;
+  left: 172px;
+  top: 28px;
+  z-index: 2;
+  animation-duration: 9s;
+  animation-delay: -3s;
+}
+.art-card-3 {
+  --r: -14deg;
+  left: 70px;
+  top: 0;
+  z-index: 1;
+  animation-duration: 10s;
+  animation-delay: -6s;
+}
+@keyframes art-float {
+  50% {
+    transform: translateY(-12px) rotate(calc(var(--r) + 3deg));
+  }
+}
+.art-seal {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--bg);
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.art-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  font: 600 9px/1 var(--f-body);
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+  animation: spin 24s linear infinite;
+}
+.art-seal b {
+  font: 400 2rem/0.9 var(--f-display);
+  letter-spacing: -0.04em;
+}
+.art-seal span {
+  margin-top: 4px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.art-dot {
+  position: absolute;
+  right: 6px;
+  bottom: 28px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #3dd6a0;
+  animation: art-bob 6s ease-in-out infinite;
+}
+@keyframes art-bob {
+  50% {
+    transform: translate(-10px, 14px);
+  }
+}
+
 .mcards {
   padding-block: 0 clamp(40px, 6vw, 72px);
   border-top: 2px solid var(--ink);
@@ -1748,7 +1888,8 @@ td:nth-child(4) {
 .mcard-score {
   flex: none;
   font: 400 1.05rem/1 var(--f-display);
-  color: var(--solid);
+  /* акцентный цвет; на светлом фоне чуть темнее, чтобы хватало контраста */
+  color: color-mix(in srgb, var(--c) calc(70% + var(--k) * 30%), #000);
   white-space: nowrap;
 }
 .mcard-score small {
@@ -1835,6 +1976,8 @@ td:nth-child(4) {
   width: 100%;
   margin-top: 8px;
   --h: 48px;
+  background: var(--c);
+  color: #121212;
 }
 
 @media (max-width: 420px) {

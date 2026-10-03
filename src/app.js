@@ -292,15 +292,17 @@
       school: link.getAttribute('data-school') || '',
     };
     if (directions.length) detail.direction = currentFilter;
+    /* У страницы рейтинга по направлениям своя цель (NR_GOAL), чтобы конверсии страниц не смешивались */
+    var goal = window.NR_GOAL || 'course_click';
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
-      event: 'course_click',
+      event: goal,
       course_rank: detail.rank,
       course_url: detail.url,
       course_place: detail.place,
       course_school: detail.school,
       course_direction: detail.direction || '',
     });
-    if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', 'course_click', detail);
+    if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', goal, detail);
   });
 })();

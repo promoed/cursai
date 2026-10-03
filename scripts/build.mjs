@@ -222,7 +222,6 @@ const tableRows = (urlKey) =>
     )
     .join('');
 const tableRowsA = tableRows('urlA');
-const tableRowsB = tableRows('urlB');
 
 const weights = criteria
   .map(
@@ -254,6 +253,7 @@ const directions = filters
   .join('\n        ');
 
 const heroSub = 'курсов по нейросетям для работы и творчества';
+const bLead = `Сравните ${courses.length} ${plural(courses.length)} по программе, практике, стоимости — и выберите тот, который подходит под ваши задачи.`;
 const heroLead = `Освойте ИИ для работы, творчества и собственных проектов. Сравните ${courses.length} ${plural(courses.length)} по программе, практике и поддержке — и выберите тот, который подходит под ваши задачи и уровень.`;
 const methodSection = `
   <section class="method" data-tint="base" aria-labelledby="method-title">
@@ -529,6 +529,27 @@ const miniCover = (c) => {
   return `<span class="mcard-logo" style="--logo-bg:${school.logoBg}"><img src="${esc(school.logo)}" alt="Логотип ${esc(school.name)}" width="${school.logoSize[0]}" height="${school.logoSize[1]}" loading="lazy" decoding="async"></span>`;
 };
 
+// На странице Б у всех карточек один акцентный цвет (оранжевый, как дефис в «Топ-10»)
+const ACCENT = '#FF7A59';
+
+// Декор первого экрана страницы Б: веер наклеек топ-3 и печать с лучшим баллом, плавно покачиваются
+const heroArt = `
+      <div class="hero-art" aria-hidden="true">
+        ${courses
+          .slice(0, 3)
+          .map(
+            (c) => `<div class="art-card art-card-${c.rank}" style="--c:${c.color}"><b>${c.rank}</b><span>${esc(schools[c.school].name)}</span><em>${fmt(c.total)}</em></div>`
+          )
+          .reverse()
+          .join('\n        ')}
+        <div class="art-seal">
+          <svg class="art-ring" viewBox="0 0 120 120"><defs><path id="art-ring-path" d="M60 60m-47 0a47 47 0 1 1 94 0a47 47 0 1 1-94 0"/></defs><text><textPath href="#art-ring-path" textLength="292" lengthAdjust="spacing">РЕЙТИНГ КУРСОВ · ${SITE.year} · РЕЙТИНГ КУРСОВ · ${SITE.year} ·</textPath></text></svg>
+          <b>${fmt(courses[0].total)}</b>
+          <span>лучший балл</span>
+        </div>
+        <span class="art-dot"></span>
+      </div>`;
+
 const courseCard = (c) => {
   const s = schools[c.school];
   const tags = c.tags.map((t) => tagLabel[t]).filter(Boolean);
@@ -544,7 +565,7 @@ const courseCard = (c) => {
     .filter(Boolean)
     .join('');
   return `
-        <article class="mcard" id="kurs-${c.rank}" data-tags="${c.tags.join(' ')}" data-rank="${c.rank}" style="--c:${c.color}" aria-labelledby="mt-${c.rank}">
+        <article class="mcard" id="kurs-${c.rank}" data-tags="${c.tags.join(' ')}" data-rank="${c.rank}" style="--c:${ACCENT}" aria-labelledby="mt-${c.rank}">
           <div class="mcard-cover">
             ${miniCover(c)}
             <span class="mcard-rank" aria-hidden="true">${c.rank}</span>
@@ -593,15 +614,15 @@ ${themeBoot}
 </header>
 
 <main>
-  <section class="hero">
-    <div class="wrap">
+  <section class="hero hero-b">
+    <div class="wrap">${heroArt}
       <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
       <h1 class="hero-title">
         <span class="mega mega-word">Рейтинг</span>
         <span class="hero-sub">${heroSub}</span>
       </h1>
       <div class="hero-row">
-        <p class="hero-lead">${heroLead}</p>
+        <p class="hero-lead">${bLead}</p>
         <div class="hero-cta">
           <a class="btn btn-ink" href="#kurs-1">Смотреть рейтинг ${arrow}</a>
           <a class="btn btn-line" href="#rating">Подобрать под задачу</a>
@@ -622,22 +643,6 @@ ${methodSection}
       </div>
       <div class="mgrid">${courses.map(courseCard).join('')}
       </div>
-    </div>
-  </section>
-
-  <section class="compare" id="compare" aria-labelledby="compare-title">
-    <div class="wrap">
-      <h2 class="h2" id="compare-title">Все курсы в одной таблице</h2>
-      <div class="table-scroll" tabindex="0" role="region" aria-label="Таблица сравнения курсов">
-        <table>
-          <thead>
-            <tr><th>#</th><th>Курс</th><th>Уровень</th><th>Срок</th><th>Стоимость</th><th>Балл</th><th><span class="sr-only">Ссылка</span></th></tr>
-          </thead>
-          <tbody>${tableRowsB}
-          </tbody>
-        </table>
-      </div>
-      <p class="table-note">Стоимость указана на дату обновления рейтинга (${esc(SITE.updated)}) без учета скидок, акций и налогового вычета. Школы часто дают скидку и рассрочку: актуальные условия откроются по кнопке «На сайт».</p>
     </div>
   </section>
 
@@ -681,6 +686,7 @@ ${methodSection}
 
 <script>
 window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
+window.NR_GOAL = 'rating_course_click';
 window.NR_COURSES = ${JSON.stringify(courses.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlB, color: c.color })))};
 ${js}
 </script>
