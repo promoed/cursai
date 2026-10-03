@@ -1687,18 +1687,6 @@ td:nth-child(4) {
   letter-spacing: -0.01em;
   word-spacing: 0.12em;
 }
-.deck-go {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  justify-self: start;
-  padding: 9px 16px;
-  border-radius: 99px;
-  background: #121212;
-  color: #fff;
-  font-size: 0.9rem;
-  font-weight: 700;
-}
 
 /* Меню разделов сайта в шапке */
 .site-nav {

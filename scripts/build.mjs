@@ -576,7 +576,7 @@ const heroArt = `
           ${deckDirs
             .map((d, i) => {
               const n = allB.filter((c) => dirsOf(c).includes(d)).length;
-              return `<a class="deck-card" href="?dir=${d.key}" data-dir="${d.key}" style="--c:${palette[i % palette.length]}; --p:${i}" tabindex="${i ? -1 : 0}"><span class="deck-n">${n} ${plural(n)}</span><span class="deck-label">${esc(d.label)}</span><span class="deck-go">Смотреть ${arrow}</span></a>`;
+              return `<a class="deck-card" href="?dir=${d.key}" data-dir="${d.key}" style="--c:${palette[i % palette.length]}; --p:${i}" tabindex="${i ? -1 : 0}"><span class="deck-n">${n} ${plural(n)}</span><span class="deck-label">${esc(d.label)}</span></a>`;
             })
             .join('\n          ')}
         </div>
