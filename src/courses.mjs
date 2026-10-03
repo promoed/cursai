@@ -335,7 +335,7 @@ export const courses = [
 // Курсы только для страницы «Рейтинг курсов» (b.html). На главной (Топ-10 по нейросетям) их нет.
 // Порядок в массиве = порядок внутри направления, оценки должны идти по убыванию (сборка проверит).
 // В «Все курсы» на странице Б все курсы сортируются по итоговой оценке.
-// Цены и сроки не заполнены: страницы школ недоступны для проверки, на сайт идут только подтвержденные цифры.
+// Цены и сроки — из таблицы владельца сайта (октябрь 2026). Несколько тарифов — цена «от» самого дешевого.
 export const coursesB = [
   {
     school: 'netology',
@@ -343,22 +343,28 @@ export const coursesB = [
     short: 'Data Scientist: расширенный',
     url: 'https://netology.ru/programs/prodatascience',
     image: null,
-    duration: null,
+    duration: '15–17 месяцев', // расширенный тариф 15 мес., продвинутый 17 мес.
     schedule: null,
-    price: null,
+    price: 156200, // одним платежом, тариф «расширенный»; «продвинутый» — 172 800 ₽
+    priceFrom: true,
+    priceMonthly: 5104, // 5 104 ₽ × 36 мес.
+    priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
     hook: 'Самая полная программа по Data Science в подборке: от SQL и Python до глубокого обучения, NLP и компьютерного зрения.',
     scores: { practice: 9.6, program: 9.8, support: 9.4, result: 9.4 },
   },
   {
     school: 'skillbox',
-    title: 'Профессия Data Scientist',
-    short: 'Профессия Data Scientist',
+    title: 'Data Scientist + ИИ',
+    short: 'Data Scientist + ИИ',
     url: 'https://skillbox.ru/course/profession-data-scientist/',
     image: null,
-    duration: null,
+    duration: '12 месяцев',
     schedule: null,
-    price: null,
+    price: 110160, // сумма рассрочки базового тарифа 4 590 ₽ × 24 мес., одной суммой школа цену не показывает
+    priceFrom: true,
+    priceMonthly: 4590,
+    priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
     hook: 'Путь в Data Science с нуля: Python, анализ данных и машинное обучение на практических проектах для портфолио.',
     scores: { practice: 9.4, program: 9.4, support: 9.2, result: 9.4 },
@@ -369,35 +375,44 @@ export const coursesB = [
     short: 'Data Scientist',
     url: 'https://eduson.academy/data-scientist',
     image: null,
-    duration: '9 месяцев',
+    duration: '8–9 месяцев', // стартовый формат 8 мес., с трудоустройством 9 мес.
     schedule: null,
-    price: null,
+    price: 210000, // ориентир: 8 750 ₽ × 24 мес., одним платежом не подтверждена
+    priceFrom: true,
+    priceMonthly: 8750,
+    priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
     hook: 'Python, SQL, машинное обучение и нейросети на бизнес-кейсах — для тех, кто начинает без опыта программирования.',
     scores: { practice: 9.4, program: 9.0, support: 9.0, result: 9.0 },
   },
   {
     school: 'netology',
-    title: 'Data Scientist',
-    short: 'Data Scientist',
+    title: 'Data Scientist с нуля',
+    short: 'Data Scientist с нуля',
     url: 'https://netology.ru/programs/data-scientist',
     image: null,
-    duration: null,
+    duration: '7–15 месяцев', // базовый 7 мес. (в форме записи указано 9), расширенный 15 мес.
     schedule: null,
-    price: null,
+    price: 83400, // одним платежом, базовый тариф; расширенный — 156 200 ₽
+    priceFrom: true,
+    priceMonthly: 4089, // 4 089 ₽ × 24 мес.
+    priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
     hook: 'Базовая программа Нетологии по Data Science: от анализа данных до первых моделей машинного обучения.',
     scores: { practice: 9.0, program: 9.0, support: 9.2, result: 9.0 },
   },
   {
     school: 'gb',
-    title: 'Data Science',
-    short: 'Data Science',
+    title: 'Data Scientist с AI',
+    short: 'Data Scientist с AI',
     url: 'https://gb.ru/geek_university/developer/analyst/data-science-gb',
     image: null,
-    duration: null,
+    duration: null, // официальная страница срок не называет, агрегаторы пишут 9–12 мес. — не показываем
     schedule: null,
-    price: null,
+    price: 115776, // сумма рассрочки базового тарифа 3 216 ₽ × 36 мес., одним платежом не подтверждена
+    priceFrom: true,
+    priceMonthly: 3216,
+    priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
     hook: 'Программа GeekBrains по анализу данных и машинному обучению на Python.',
     scores: { practice: 8.8, program: 9.0, support: 8.8, result: 8.8 },
