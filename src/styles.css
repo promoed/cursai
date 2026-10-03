@@ -1627,65 +1627,80 @@ td:nth-child(4) {
   }
 }
 /* Белая скульптура: все фигуры белые в любой теме, форму рисуют только тени */
-/* Колода карточек направлений: верхняя карточка — кнопка, остальные выглядывают сзади веером */
-.deck {
+/* Две колонки карточек направлений едут навстречу друг другу; сверху и снизу мягко растворяются */
+.reel {
   position: absolute;
-  inset: 0;
+  /* колонки начинаются ниже верхнего края, чтобы не подходить к слову «Рейтинг» */
+  inset: 70px 0 -24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  overflow: hidden;
+  pointer-events: auto;
+  -webkit-mask-image: linear-gradient(transparent, #000 26%, #000 78%, transparent);
+  mask-image: linear-gradient(transparent, #000 26%, #000 78%, transparent);
+  animation: rise 1.2s var(--ease) both 0.3s;
 }
-.deck-card {
-  position: absolute;
-  right: 6px;
-  bottom: 24px;
-  z-index: calc(10 - var(--p));
+.reel-track {
+  display: grid;
+  gap: 14px;
+  padding-bottom: 14px;
+  animation: reel-up 26s linear infinite;
+  will-change: transform;
+}
+/* Вторая колонка едет вниз и стартует со сдвигом, чтобы колонки не шли «в ногу» */
+.reel-down .reel-track {
+  animation-name: reel-down;
+  animation-duration: 30s;
+}
+.reel-down {
+  margin-top: -60px;
+}
+.reel:hover .reel-track,
+.reel:focus-within .reel-track {
+  animation-play-state: paused;
+}
+@keyframes reel-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+@keyframes reel-down {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.reel-card {
   display: grid;
   align-content: space-between;
-  width: 300px;
-  height: 210px;
-  padding: 22px 24px;
-  border-radius: 28px;
+  gap: 14px;
+  min-height: 132px;
+  padding: 16px 18px 18px;
+  border-radius: 24px;
   background: var(--c);
   color: #121212;
   text-decoration: none;
-  box-shadow: 0 26px 44px -26px rgba(18, 18, 18, 0.6);
-  /* видны три карточки, остальные спрятаны за ними */
-  opacity: clamp(0, 3 - var(--p), 1);
-  pointer-events: none;
-  transform: translate(calc(var(--p) * -14px), calc(var(--p) * -17px)) rotate(calc(var(--p) * -2.6deg)) scale(calc(1 - var(--p) * 0.04));
   transition:
-    transform 0.75s var(--spring),
-    opacity 0.5s var(--ease);
-  animation: deck-in 0.9s var(--spring) both;
-  animation-delay: calc(0.35s + (5 - var(--p)) * 0.08s);
+    transform 0.4s var(--spring),
+    box-shadow 0.3s var(--ease);
 }
-@keyframes deck-in {
-  from {
-    opacity: 0;
-    transform: translateY(-60px) rotate(-14deg) scale(0.9);
-  }
+.reel-card:hover {
+  transform: scale(1.04) rotate(-1.5deg);
+  box-shadow: 0 20px 34px -22px rgba(18, 18, 18, 0.6);
 }
-.deck-card.is-top {
-  pointer-events: auto;
-}
-.deck-card.is-top:hover {
-  transform: translateY(-6px) rotate(-1deg);
-  box-shadow: 0 32px 52px -24px rgba(18, 18, 18, 0.7);
-}
-/* Верхняя карточка уходит вниз-влево и встает в конец колоды */
-.deck-card.is-out {
-  opacity: 0;
-  transform: translate(-90px, 70px) rotate(-16deg) scale(0.94);
-  transition:
-    transform 0.45s var(--ease),
-    opacity 0.4s var(--ease);
-}
-.deck-n {
-  font-size: 0.88rem;
+.reel-n {
+  font-size: 0.82rem;
   font-weight: 600;
 }
-.deck-label {
-  font: 400 1.85rem/1.05 var(--f-display);
+.reel-label {
+  font: 700 1.12rem/1.18 var(--f-body);
   letter-spacing: -0.01em;
-  word-spacing: 0.12em;
 }
 
 /* Меню разделов сайта в шапке */

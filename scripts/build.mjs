@@ -567,19 +567,25 @@ const miniCover = (c) => {
 // На странице Б у всех карточек один акцентный цвет — фиолетовый из палитры сайта
 const ACCENT = '#9C8CFF';
 
-// Декор первого экрана главной: колода цветных карточек направлений. Карточки сами перетасовываются
-// (верхняя уходит назад), клик по карточке открывает это направление в рейтинге.
+// Декор первого экрана главной: две колонки карточек направлений плавно и бесконечно едут навстречу
+// друг другу (чистый CSS, без скриптов). Наведение останавливает движение, клик открывает направление.
 const deckDirs = directionsB.filter((d) => d.tags);
+const reelCard = (d, i, copy) => {
+  const n = allB.filter((c) => dirsOf(c).includes(d)).length;
+  const a11y = copy ? ' tabindex="-1" aria-hidden="true"' : '';
+  return `<a class="reel-card" href="?dir=${d.key}" data-dir="${d.key}" style="--c:${palette[i % palette.length]}"${a11y}><span class="reel-n">${n} ${plural(n)}</span><span class="reel-label">${esc(d.label)}</span></a>`;
+};
+// Колонка повторена дважды подряд: сдвиг ровно на половину высоты дает бесшовную петлю
+const reelCol = (items, cls) => `<div class="reel-col ${cls}"><div class="reel-track">${[0, 1]
+  .map((copy) => items.map(([d, i]) => reelCard(d, i, copy)).join(''))
+  .join('')}</div></div>`;
+const indexed = deckDirs.map((d, i) => [d, i]);
 const heroArt = `
       <div class="hero-art">
-        <div class="deck" role="group" aria-label="Направления рейтинга">
-          ${deckDirs
-            .map((d, i) => {
-              const n = allB.filter((c) => dirsOf(c).includes(d)).length;
-              return `<a class="deck-card" href="?dir=${d.key}" data-dir="${d.key}" style="--c:${palette[i % palette.length]}; --p:${i}" tabindex="${i ? -1 : 0}"><span class="deck-n">${n} ${plural(n)}</span><span class="deck-label">${esc(d.label)}</span></a>`;
-            })
-            .join('\n          ')}
-        </div>
+        <nav class="reel" aria-label="Направления рейтинга">
+          ${reelCol(indexed.filter((_, i) => i % 2 === 0), 'reel-up')}
+          ${reelCol(indexed.filter((_, i) => i % 2 === 1), 'reel-down')}
+        </nav>
       </div>`;
 
 // Подробности для вида «Плитки»: в сетке скрыты. Показываем только то, что заполнено в данных курса.

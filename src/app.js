@@ -247,57 +247,17 @@
     if (saved && document.querySelector('[data-filter="' + saved + '"]')) applyFilter(saved, false);
   }
 
-  /* Колода направлений на первом экране главной: карточки тасуются сами, на наведении пауза.
-     Клик по карточке выбирает направление так же, как плитка в рейтинге, и прокручивает к списку. */
-  var deck = document.querySelector('.deck');
-  if (deck) {
-    var deckCards = Array.prototype.slice.call(deck.querySelectorAll('.deck-card'));
-    var deckOrder = deckCards.slice();
-    var deckPaused = false;
-    var placeDeck = function () {
-      deckOrder.forEach(function (c, i) {
-        c.style.setProperty('--p', i);
-        c.classList.toggle('is-top', i === 0);
-        c.tabIndex = i ? -1 : 0;
-        if (i) c.setAttribute('aria-hidden', 'true');
-        else c.removeAttribute('aria-hidden');
-      });
-    };
-    placeDeck();
-    if (!reduce) {
-      setInterval(function () {
-        if (deckPaused || document.hidden) return;
-        var top = deckOrder[0];
-        top.classList.add('is-out');
-        setTimeout(function () {
-          top.classList.remove('is-out');
-          deckOrder.push(deckOrder.shift());
-          placeDeck();
-        }, 450);
-      }, 3000);
-    }
-    deck.addEventListener('mouseenter', function () {
-      deckPaused = true;
+  /* Карточки направлений на первом экране главной: клик выбирает направление так же,
+     как плитка в рейтинге, и прокручивает к списку */
+  Array.prototype.forEach.call(document.querySelectorAll('.reel-card'), function (c) {
+    c.addEventListener('click', function (e) {
+      var tile = document.querySelector('.direction[data-filter="' + c.getAttribute('data-dir') + '"]');
+      if (!tile) return;
+      e.preventDefault();
+      tile.click();
+      document.getElementById('rating').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
     });
-    deck.addEventListener('mouseleave', function () {
-      deckPaused = false;
-    });
-    deck.addEventListener('focusin', function () {
-      deckPaused = true;
-    });
-    deck.addEventListener('focusout', function () {
-      deckPaused = false;
-    });
-    deckCards.forEach(function (c) {
-      c.addEventListener('click', function (e) {
-        var tile = document.querySelector('.direction[data-filter="' + c.getAttribute('data-dir') + '"]');
-        if (!tile) return;
-        e.preventDefault();
-        tile.click();
-        document.getElementById('rating').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
-      });
-    });
-  }
+  });
 
   /* Вид списка на странице Б: «Сетка» (компактные карточки) или «Плитки» (карточка с подробностями).
      Выбор запоминается на этом устройстве. */
