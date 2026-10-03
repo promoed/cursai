@@ -36,7 +36,9 @@
   syncToggle();
 
   var courses = Array.prototype.slice.call(document.querySelectorAll('.course, .mcard'));
-  var tinted = Array.prototype.slice.call(document.querySelectorAll('.course, [data-tint]'));
+  var tinted = Array.prototype.slice.call(document.querySelectorAll('.course, .mcard, [data-tint]'));
+  /* Страница Б (карточки .mcard): фон не перекрашивается под курс, место в плашке берем с карточки */
+  var cardPage = !!document.querySelector('.mcard');
   var rail = document.querySelector('.rail');
   var railLinks = rail ? Array.prototype.slice.call(rail.querySelectorAll('a')) : [];
   var dock = document.getElementById('dock');
@@ -52,18 +54,23 @@
     dock.hidden = !current || (banner && !banner.hidden);
   }
 
+  function placeOf(rank) {
+    var badge = cardPage && document.querySelector('#kurs-' + rank + ' .mcard-rank');
+    return badge ? badge.textContent : rank;
+  }
+
   function setCurrent(rank) {
     if (rank === current) return;
     current = rank;
     var c = data[rank - 1];
-    body.style.setProperty('--page', c ? c.color : 'var(--bg)');
+    if (!cardPage) body.style.setProperty('--page', c ? c.color : 'var(--bg)');
     railLinks.forEach(function (a) {
       a.classList.toggle('is-active', Number(a.getAttribute('data-rank')) === rank);
     });
     if (rail) rail.classList.toggle('is-on', !!c);
     syncDock();
     if (dock && c) {
-      dockNum.textContent = c.rank;
+      dockNum.textContent = placeOf(c.rank);
       dockNum.parentNode.style.setProperty('--c', c.color);
       dockTitle.textContent = c.short;
       dockMeta.textContent = c.school + ' · ' + c.score;
@@ -115,6 +122,10 @@
   var directions = Array.prototype.slice.call(document.querySelectorAll('.direction'));
   var status = document.getElementById('filter-status');
   var currentFilter = 'all';
+  var heroSub = directions.length ? document.getElementById('hero-sub') : null;
+  var baseHeading = heroSub ? heroSub.textContent : '';
+  var baseTitle = document.title;
+  var picks = Array.prototype.slice.call(document.querySelectorAll('.pick[data-tags]'));
   function plural(n) {
     var m10 = n % 10;
     var m100 = n % 100;
@@ -146,11 +157,31 @@
             if (sr) sr.textContent = place + ' место. ';
           }
         }
+        /* «Лучший выбор» — у первого места в выбранном направлении */
+        if (directions.length) el.classList.toggle('is-best', match && shown === 1);
       });
       directions.forEach(function (d) {
-        if (d.getAttribute('data-filter') === key) d.setAttribute('aria-current', 'true');
+        var on = d.getAttribute('data-filter') === key;
+        if (on) d.setAttribute('aria-current', 'true');
         else d.removeAttribute('aria-current');
+        /* Заголовок первого экрана и вкладки под выбранное направление */
+        if (on && heroSub) {
+          heroSub.textContent = d.getAttribute('data-heading');
+          document.title = baseTitle.replace(baseHeading, heroSub.textContent);
+        }
       });
+      /* Финальный блок: три лучших курса выбранного направления */
+      var picked = 0;
+      picks.forEach(function (p) {
+        var match = key === 'all' || p.getAttribute('data-tags').split(' ').indexOf(key) !== -1;
+        p.hidden = !match || picked >= 3;
+        if (!p.hidden) p.querySelector('.pick-num').textContent = ++picked;
+      });
+      if (cardPage && current) {
+        var cur = document.getElementById('kurs-' + current);
+        if (cur && cur.hidden) setCurrent(0);
+        else if (dockNum) dockNum.textContent = placeOf(current);
+      }
       railLinks.forEach(function (a) {
         var target = document.getElementById('kurs-' + a.getAttribute('data-rank'));
         a.hidden = target ? target.hidden : false;
@@ -198,7 +229,16 @@
     if (dir && document.querySelector('.direction[data-filter="' + dir[1] + '"]')) {
       applyFilter(dir[1], false);
       var target = document.getElementById('rating');
-      if (target && !location.hash) target.scrollIntoView();
+      /* Прокрутка к списку после первой отрисовки, чтобы браузер успел зафиксировать скорость загрузки */
+      if (target && !location.hash) {
+        var jump = function () {
+          requestAnimationFrame(function () {
+            target.scrollIntoView({ behavior: 'instant' });
+          });
+        };
+        if (document.readyState === 'complete') jump();
+        else window.addEventListener('load', jump);
+      }
     }
   } else {
     var saved = store('nr-filter');

@@ -13,14 +13,15 @@ export const criteria = [
   { key: 'result', label: 'Результат', weight: 0.2, hint: 'Что остается на руках после курса' },
 ];
 
+// heading — окончание заголовка страницы Б при выбранном направлении: «Рейтинг» + heading
 export const filters = [
-  { key: 'all', label: 'Все курсы' },
-  { key: 'self', label: 'Для себя' },
-  { key: 'work', label: 'Для работы' },
-  { key: 'marketing', label: 'Маркетинг' },
-  { key: 'business', label: 'Бизнес' },
-  { key: 'agents', label: 'ИИ-агенты' },
-  { key: 'career', label: 'Новая профессия' },
+  { key: 'all', label: 'Все курсы', heading: 'курсов по нейросетям для работы и творчества' },
+  { key: 'self', label: 'Для себя', heading: 'курсов по нейросетям для себя' },
+  { key: 'work', label: 'Для работы', heading: 'курсов по нейросетям для работы' },
+  { key: 'marketing', label: 'Маркетинг', heading: 'курсов по нейросетям для маркетинга' },
+  { key: 'business', label: 'Бизнес', heading: 'курсов по нейросетям для бизнеса' },
+  { key: 'agents', label: 'ИИ-агенты', heading: 'курсов по созданию ИИ-агентов' },
+  { key: 'career', label: 'Новая профессия', heading: 'курсов для новой профессии в ИИ' },
 ];
 
 // logo: картинка курса по умолчанию (файл обрезан по краям надписи), logoBg: фон карточки под логотипом

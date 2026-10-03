@@ -248,11 +248,11 @@ const directions = filters
     const n = f.key === 'all' ? courses.length : courses.filter((c) => c.tags.includes(f.key)).length;
     const all = f.key === 'all';
     const style = all ? `--i:${i}` : `--c:${palette[(i - 1) % palette.length]}; --i:${i}`;
-    return `<a class="direction${all ? ' direction-all' : ''}" href="${all ? 'b.html' : `?dir=${f.key}`}" data-filter="${f.key}"${all ? ' aria-current="true"' : ''} style="${style}">${esc(f.label)}<span class="direction-n">${n} ${plural(n)}</span></a>`;
+    return `<a class="direction${all ? ' direction-all' : ''}" href="${all ? 'b.html' : `?dir=${f.key}`}" data-filter="${f.key}" data-heading="${esc(f.heading)}"${all ? ' aria-current="true"' : ''} style="${style}">${esc(f.label)}<span class="direction-n">${n} ${plural(n)}</span></a>`;
   })
   .join('\n        ');
 
-const heroSub = 'курсов по нейросетям для работы и творчества';
+const heroSub = filters.find((f) => f.key === 'all').heading;
 const bLead = 'Сравните курсы по своему направлению — и выберите тот, который подходит под ваши задачи.';
 const heroLead = `Освойте ИИ для работы, творчества и собственных проектов. Сравните ${courses.length} ${plural(courses.length)} по программе, практике и поддержке — и выберите тот, который подходит под ваши задачи и уровень.`;
 const methodSection = `
@@ -292,7 +292,17 @@ const finalPicks = (urlKey) =>
     )
     .join('');
 const finalPicksA = finalPicks('urlA');
-const finalPicksB = finalPicks('urlB');
+// На странице Б в финальном блоке все курсы: app.js показывает первые три из выбранного направления
+const finalPicksB = courses
+  .map(
+    (c) => `
+          <a class="pick" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="pick" data-school="${esc(schools[c.school].name)}" data-tags="${c.tags.join(' ')}" style="--c:${c.color}"${c.rank > 3 ? ' hidden' : ''}>
+            <span class="pick-num">${c.rank}</span>
+            <span class="pick-text"><b>${esc(c.title)}</b><span>${esc(schools[c.school].name)} · ${fmt(c.total)}</span></span>
+            ${arrow}
+          </a>`
+  )
+  .join('');
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -416,8 +426,7 @@ const html = `${head}
     <div class="wrap">
       <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
       <h1 class="hero-title">
-        <span class="mega">Топ<span class="mega-dash">-</span>10</span>
-        <span class="hero-sub">${heroSub}</span>
+        <span class="mega">Топ<span class="mega-dash">-</span>10</span> <span class="hero-sub">${heroSub}</span>
       </h1>
       <div class="hero-row">
         <p class="hero-lead">${heroLead}</p>
@@ -566,10 +575,11 @@ const courseCard = (c) => {
     .filter(Boolean)
     .join('');
   return `
-        <article class="mcard" id="kurs-${c.rank}" data-tags="${c.tags.join(' ')}" data-rank="${c.rank}" style="--c:${ACCENT}" aria-labelledby="mt-${c.rank}">
+        <article class="mcard${c.rank === 1 ? ' is-best' : ''}" id="kurs-${c.rank}" data-tags="${c.tags.join(' ')}" data-rank="${c.rank}" style="--c:${ACCENT}" aria-labelledby="mt-${c.rank}">
           <div class="mcard-cover">
             ${miniCover(c)}
             <span class="mcard-rank" aria-hidden="true">${c.rank}</span>
+            <span class="mcard-best">Лучший выбор</span>
           </div>
           <div class="mcard-body">
             <p class="mcard-row">
@@ -614,27 +624,24 @@ ${themeBoot}
 </header>
 
 <main>
-  <section class="hero hero-b">
+  <section class="hero hero-b" data-tint="base">
     <div class="wrap">${heroArt}
       <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
       <h1 class="hero-title">
-        <span class="mega mega-word">Рейтинг</span>
-        <span class="hero-sub">${heroSub}</span>
+        <span class="mega mega-word">Рейтинг</span> <span class="hero-sub" id="hero-sub">${heroSub}</span>
       </h1>
       <div class="hero-row">
         <p class="hero-lead">${bLead}</p>
         <div class="hero-cta">
-          <a class="btn btn-ink" href="#kurs-1">Смотреть рейтинг ${arrow}</a>
-          <a class="btn btn-line" href="#rating">Подобрать под задачу</a>
+          <a class="btn btn-ink" href="#rating">Смотреть рейтинг ${arrow}</a>
         </div>
       </div>
     </div>
   </section>
-${methodSection}
 
   <section class="mcards" id="rating" aria-labelledby="rating-title">
     <div class="wrap">
-      <div class="dir-bar">
+      <div class="dir-bar" data-tint="base">
         <h2 class="h2" id="rating-title">Рейтинг курсов</h2>
         <nav class="directions" aria-label="Направления курсов">
         ${directions}
@@ -645,8 +652,9 @@ ${methodSection}
       </div>
     </div>
   </section>
+${methodSection}
 
-  <section class="faq" id="faq" aria-labelledby="faq-title">
+  <section class="faq" id="faq" data-tint="base" aria-labelledby="faq-title">
     <div class="wrap faq-in">
       <h2 class="h2" id="faq-title">Частые вопросы</h2>
       <div class="qa-list">${faqHtml}
@@ -654,7 +662,7 @@ ${methodSection}
     </div>
   </section>
 
-  <section class="final">
+  <section class="final" data-tint="base">
     <div class="wrap">
       <h2 class="final-title">Лучшее время начать было вчера. Следующее лучшее — сегодня.</h2>
       <div class="picks">${finalPicksB}
@@ -685,10 +693,18 @@ ${methodSection}
   </div>
 </div>
 
+<div class="dock dock-b" id="dock" hidden>
+  <div class="dock-in" style="--c:${ACCENT}">
+    <span class="dock-num" id="dock-num">1</span>
+    <span class="dock-text"><b id="dock-title">${esc(courses[0].short)}</b><span id="dock-meta">${esc(schools[courses[0].school].name)} · ${fmt(courses[0].total)}</span></span>
+    <a class="btn btn-ink btn-sm" id="dock-link" href="${esc(courses[0].urlB)}" target="_blank" rel="${rel}" data-course="1" data-place="dock" data-school="${esc(schools[courses[0].school].name)}">Подробнее ${arrow}</a>
+  </div>
+</div>
+
 <script>
 window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
 window.NR_GOAL = 'rating_course_click';
-window.NR_COURSES = ${JSON.stringify(courses.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlB, color: c.color })))};
+window.NR_COURSES = ${JSON.stringify(courses.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlB, color: ACCENT })))};
 ${js}
 </script>
 </body>
