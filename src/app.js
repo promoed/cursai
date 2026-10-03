@@ -379,4 +379,56 @@
     });
     if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', goal, detail);
   });
+
+  /* Страница «О нас»: блоки проявляются при прокрутке, цифры досчитывают до значения,
+     линия хронологии заполняется по мере чтения. Без анимаций все видно сразу. */
+  var line = document.querySelector('.ab-line');
+  if (line && !reduce && 'IntersectionObserver' in window) {
+    var countUp = function (el) {
+      var to = Number(el.getAttribute('data-count'));
+      var t0 = performance.now();
+      var tick = function (now) {
+        var k = Math.min(1, (now - t0) / 1400);
+        el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3)));
+        if (k < 1) requestAnimationFrame(tick);
+      };
+      el.textContent = '0';
+      requestAnimationFrame(tick);
+    };
+    var shown = new IntersectionObserver(
+      function (list) {
+        list.forEach(function (item) {
+          if (!item.isIntersecting) return;
+          item.target.classList.remove('is-wait');
+          Array.prototype.forEach.call(item.target.querySelectorAll('[data-count]'), countUp);
+          shown.unobserve(item.target);
+        });
+      },
+      { rootMargin: '0px 0px -12% 0px' }
+    );
+    Array.prototype.forEach.call(document.querySelectorAll('[data-reveal]'), function (el) {
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.88) return;
+      el.classList.add('is-wait');
+      shown.observe(el);
+    });
+    var fill = function () {
+      var r = line.getBoundingClientRect();
+      var p = (window.innerHeight * 0.6 - r.top) / r.height;
+      line.style.setProperty('--p', Math.max(0, Math.min(1, p)).toFixed(3));
+    };
+    var queued = false;
+    window.addEventListener(
+      'scroll',
+      function () {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(function () {
+          queued = false;
+          fill();
+        });
+      },
+      { passive: true }
+    );
+    fill();
+  }
 })();

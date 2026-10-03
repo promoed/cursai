@@ -4,6 +4,7 @@
 import { readFile, writeFile, mkdir, copyFile, rm, readdir } from 'node:fs/promises';
 import { criteria, filters, directionsB, schools, courses, coursesB, faq, faqB } from '../src/courses.mjs';
 import { policy, consent } from '../src/legal.mjs';
+import { marquee, timeline, bigStat, manifesto } from '../src/about.mjs';
 
 const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
@@ -97,7 +98,7 @@ const missing = allB.flatMap((c) =>
 );
 if (missing.length) console.warn(`Не заполнено (поле не будет показано):\n${missing.join('\n')}`);
 
-const text = [JSON.stringify(allB), JSON.stringify(faq), JSON.stringify(faqB), JSON.stringify(filters), JSON.stringify(directionsB)].join('');
+const text = [JSON.stringify({ marquee, timeline, bigStat, manifesto }), JSON.stringify(allB), JSON.stringify(faq), JSON.stringify(faqB), JSON.stringify(filters), JSON.stringify(directionsB)].join('');
 if (/[ёЁ]/.test(text)) throw new Error('В текстах есть буква «ё»');
 
 // [текст](#kurs-N) -> ссылка на курс; в JSON-LD уходит чистый текст
@@ -515,6 +516,7 @@ ${methodSection}
     <p>Страница содержит партнерские ссылки: если вы купите курс по ссылке, мы можем получить вознаграждение. На оценки это не влияет. Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться.</p>
     <p class="foot-links">
       <a href="b.html">Рейтинг курсов</a>
+      <a href="about.html">О нас</a>
       <a href="privacy.html">Политика конфиденциальности</a>
       <a href="consent.html">Согласие на cookie</a>
       <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
@@ -737,6 +739,7 @@ ${methodSection}
     <p>Страница содержит партнерские ссылки: если вы купите курс по ссылке, мы можем получить вознаграждение. На оценки это не влияет. Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться.</p>
     <p class="foot-links">
       <a href="index.html">Лучшие курсы по нейросетям</a>
+      <a href="about.html">О нас</a>
       <a href="privacy.html">Политика конфиденциальности</a>
       <a href="consent.html">Согласие на cookie</a>
       <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
@@ -766,6 +769,187 @@ window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
 window.NR_GOAL = 'rating_course_click';
 window.NR_DIR_ALIAS = ${JSON.stringify(dirAliases)};
 window.NR_COURSES = ${JSON.stringify(allB.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlB, color: ACCENT })))};
+${js}
+</script>
+</body>
+</html>
+`;
+
+// ============ Страница «О нас» ============
+// Общая для обеих страниц рейтинга: манифест сайта и короткая история прогресса ИИ.
+// Декор первого экрана — схема нейросети: слои узлов, по связям бегут цветные сигналы.
+const net = (() => {
+  const layers = [4, 5, 5, 3];
+  const xs = [70, 230, 390, 550];
+  const pts = layers.map((n, l) => Array.from({ length: n }, (_, i) => [xs[l], Math.round(260 + (i - (n - 1) / 2) * 92)]));
+  const edges = [];
+  for (let l = 0; l < layers.length - 1; l++) for (const a of pts[l]) for (const b of pts[l + 1]) edges.push([a, b]);
+  const line = ([a, b]) => `x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"`;
+  const signals = edges.filter((_, i) => i % 3 === 1);
+  return `
+        <svg class="ab-net" viewBox="0 0 620 520" aria-hidden="true">
+          <g class="ab-edges">${edges.map((e) => `<line ${line(e)}/>`).join('')}</g>
+          <g class="ab-signals">${signals.map((e, i) => `<line ${line(e)} pathLength="100" style="--s:${palette[i % 6]}; --d:${((i * 0.73) % 6).toFixed(2)}s"/>`).join('')}</g>
+          <g class="ab-nodes">${pts
+            .flat()
+            .map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 4 === 0 ? 13 : 9}" style="--n:${palette[i % 6]}; --d:${((i * 0.41) % 4).toFixed(2)}s"/>`)
+            .join('')}</g>
+        </svg>`;
+})();
+const spark = '<svg class="ab-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1c.9 5.8 4.2 9.1 10 10-5.8.9-9.1 4.2-10 10-.9-5.8-4.2-9.1-10-10 5.8-.9 9.1-4.2 10-10z"/></svg>';
+const marqueeRow = marquee.map((w) => `<span>${esc(w)}</span>${spark}`).join('');
+const schoolCount = new Set(allB.map((c) => c.school)).size;
+const dirCount = directionsB.filter((d) => d.key !== 'all').length;
+const numbers = [
+  [allB.length, 'курсов в рейтинге'],
+  [schoolCount, 'онлайн-школ'],
+  [dirCount, 'направлений'],
+  [criteria.length, 'критерия оценки'],
+];
+const aboutTitle = `О нас · ${SITE.name}`;
+const aboutDescription = 'Course Ai — независимая подборка онлайн-курсов по нейросетям. Зачем мы собираем рейтинг и как ИИ изменил мир за последние годы.';
+const aboutHtml = `<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>${esc(aboutTitle)}</title>
+<meta name="description" content="${esc(aboutDescription)}">
+${SITE.url ? `<link rel="canonical" href="${SITE.url}about.html">` : ''}
+<link rel="icon" href="${favicon}">
+${analyticsHints}
+${fonts}
+<style>${css}</style>
+${themeBoot}
+</head>
+<body class="about">
+<header class="mtop">
+  <div class="wrap mtop-in">
+    <a class="logo" href="index.html"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</a>
+    <nav class="ab-nav" aria-label="Разделы сайта">
+      <a href="index.html">Топ-10</a>
+      <a href="b.html">Рейтинг</a>
+      <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
+        <span class="theme-knob" aria-hidden="true"></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="ab-hero">
+    <div class="wrap">
+      <div class="ab-stage">
+        <div class="ab-hero-text">
+          <p class="ab-kicker">О проекте ${esc(SITE.name)}</p>
+          <h1 class="ab-title"><span class="ab-mega">Будущее</span> <span class="ab-sub">начинается с того, чему вы учитесь сегодня</span></h1>
+          <p class="ab-lead">Мы собираем лучшие онлайн-курсы, где учат работать с нейросетями. Сравниваем программы, чтобы вы тратили время на учебу, а не на поиски.</p>
+          <div class="hero-cta">
+            <a class="btn ab-btn" href="index.html">Топ-10 курсов ${arrow}</a>
+            <a class="btn ab-btn-line" href="b.html">Рейтинг по направлениям</a>
+          </div>
+        </div>
+        <div class="ab-art">${net}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ab-marquee">
+    <p class="sr-only">Что умеют нейросети: ${esc(marquee.join(', '))}</p>
+    <div class="ab-track" aria-hidden="true">${marqueeRow}${marqueeRow}</div>
+  </div>
+
+  <section class="ab-time" aria-labelledby="ab-time-title">
+    <div class="wrap">
+      <p class="ab-kicker">Как это было</p>
+      <h2 class="h2 ab-h2" id="ab-time-title">Несколько лет, которые изменили все</h2>
+      <ol class="ab-line">${timeline
+        .map(
+          (t, i) => `
+        <li class="ab-step" data-reveal style="--c:${palette[i % palette.length]}">
+          <span class="ab-year">${esc(t.year)}</span>
+          <div class="ab-step-body">
+            <h3>${esc(t.title)}</h3>
+            <p>${esc(t.text)}</p>
+          </div>
+        </li>`
+        )
+        .join('')}
+      </ol>
+    </div>
+  </section>
+
+  <section class="ab-stat" aria-label="Скорость распространения ИИ">
+    <div class="wrap ab-stat-in" data-reveal>
+      <p class="ab-stat-num"><b data-count="${bigStat.value}">${bigStat.value}</b> ${esc(bigStat.unit)}</p>
+      <p class="ab-stat-text">${esc(bigStat.text)}</p>
+    </div>
+  </section>
+
+  <section class="ab-mani" aria-labelledby="ab-mani-title">
+    <div class="wrap">
+      <p class="ab-kicker">Манифест</p>
+      <h2 class="h2 ab-h2" id="ab-mani-title">Зачем мы это делаем</h2>
+      <p class="ab-mani-lead">За нейросетями будущее работы и творчества. Но курсов стало так много, что выбрать сложно. Мы читаем программы, сравниваем практику и цены и оставляем лучшие.</p>
+      <ol class="ab-cards">${manifesto
+        .map(
+          (m, i) => `
+        <li class="ab-card" data-reveal style="--c:${palette[[2, 0, 3, 5][i]]}; --i:${i}">
+          <span class="ab-card-n">0${i + 1}</span>
+          <h3>${esc(m.title)}</h3>
+          <p>${esc(m.text)}</p>
+        </li>`
+        )
+        .join('')}
+      </ol>
+    </div>
+  </section>
+
+  <section class="ab-nums" aria-label="${esc(SITE.name)} в цифрах">
+    <div class="wrap">
+      <ul class="ab-nums-in">${numbers.map(([n, label]) => `<li data-reveal><b data-count="${n}">${n}</b><span>${label}</span></li>`).join('')}</ul>
+    </div>
+  </section>
+
+  <section class="ab-final">
+    <div class="wrap">
+      <div class="ab-final-in" data-reveal>
+        <h2 class="ab-final-title">Лучший момент начать — сейчас</h2>
+        <p>Выберите курс под свою задачу: для работы, бизнеса, творчества или новой профессии.</p>
+        <div class="hero-cta">
+          <a class="btn ab-btn" href="index.html">Топ-10 курсов по нейросетям ${arrow}</a>
+          <a class="btn ab-btn-line" href="b.html">Рейтинг по направлениям</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
+    <p class="foot-links">
+      <a href="index.html">Лучшие курсы по нейросетям</a>
+      <a href="b.html">Рейтинг курсов</a>
+      <a href="privacy.html">Политика конфиденциальности</a>
+      <a href="consent.html">Согласие на cookie</a>
+      <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
+    </p>
+  </div>
+</footer>
+
+<div class="consent" id="consent" role="dialog" aria-labelledby="consent-title" hidden>
+  <p class="consent-title" id="consent-title">Мы используем cookie</p>
+  <p class="consent-text">Сайт использует Яндекс Метрику для статистики посещений. Продолжая пользоваться сайтом, вы соглашаетесь с этим. Подробнее в <a href="privacy.html">политике</a> и <a href="consent.html">согласии</a>.</p>
+  <div class="consent-actions">
+    <button type="button" class="btn btn-ink btn-sm" id="consent-all">Хорошо</button>
+    <button type="button" class="btn btn-line btn-sm" id="consent-min">Отказаться</button>
+  </div>
+</div>
+
+<script>
+window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
 ${js}
 </script>
 </body>
@@ -830,7 +1014,7 @@ await rm(out, { recursive: true, force: true });
 await mkdir(new URL('images/', out), { recursive: true });
 await mkdir(new URL('fonts/', out), { recursive: true });
 
-const pages = { [artifact ? 'preview.html' : 'index.html']: html, 'b.html': bHtml, ...legal };
+const pages = { [artifact ? 'preview.html' : 'index.html']: html, 'b.html': bHtml, 'about.html': aboutHtml, ...legal };
 for (const [name, page] of Object.entries(pages)) await writeFile(new URL(name, out), minifyHtml(page));
 
 const used = new Set(Object.values(schools).map((sc) => sc.logo).concat(courses.map((c) => c.image)).filter(Boolean));
@@ -845,7 +1029,7 @@ if (!artifact) {
   if (SITE.url) {
     await writeFile(
       new URL('sitemap.xml', out),
-      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${SITE.url}</loc></url></urlset>\n`
+      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${SITE.url}</loc></url><url><loc>${SITE.url}about.html</loc></url></urlset>\n`
     );
   }
   await copyFile(new URL('src/htaccess', root), new URL('.htaccess', out));

@@ -2172,6 +2172,495 @@ td:nth-child(4) {
   }
 }
 
+/* ============ Страница «О нас» ============ */
+.about main {
+  overflow-x: clip;
+}
+.ab-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.4vw, 28px);
+}
+.ab-nav a {
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+.ab-nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.ab-kicker {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.ab-h2 {
+  max-width: 18ch;
+  margin-top: 12px;
+}
+
+/* Первый экран: темная панель с мягким цветным свечением и схемой нейросети */
+.ab-hero {
+  padding-top: clamp(16px, 2.5vw, 28px);
+}
+.ab-stage,
+.ab-final-in {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: clamp(28px, 4vw, 48px);
+  background: #121212;
+  color: #f3f2ee;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.ab-stage::before,
+.ab-final-in::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -30%;
+  background:
+    radial-gradient(circle at 72% 32%, rgba(156, 140, 255, 0.42), transparent 34%),
+    radial-gradient(circle at 18% 88%, rgba(255, 122, 89, 0.26), transparent 30%),
+    radial-gradient(circle at 92% 92%, rgba(61, 214, 160, 0.2), transparent 26%);
+  animation: ab-glow 16s ease-in-out infinite alternate;
+}
+@keyframes ab-glow {
+  to {
+    transform: translate(-6%, 5%) rotate(8deg);
+  }
+}
+.ab-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 56px);
+  min-height: min(680px, calc(100svh - 110px));
+  padding: clamp(28px, 5vw, 72px);
+}
+.ab-stage .ab-kicker {
+  color: rgba(243, 242, 238, 0.62);
+  animation: rise 0.9s var(--ease) both 0.05s;
+}
+.ab-title {
+  margin-top: 18px;
+}
+/* «Будущее» переливается цветами палитры сайта */
+.ab-mega,
+.ab-stat-num b {
+  background: linear-gradient(90deg, #ffd23f, #ff7a59, #ff8fc7, #9c8cff, #5ab0ff, #3dd6a0, #ffd23f) 0 0 / 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: ab-shine 9s linear infinite;
+}
+@keyframes ab-shine {
+  to {
+    background-position: -200% 0;
+  }
+}
+.ab-mega {
+  display: block;
+  font: 400 clamp(3rem, 8.2vw, 6.6rem) / 0.95 var(--f-display);
+  letter-spacing: -0.03em;
+  animation:
+    ab-shine 9s linear infinite,
+    rise 1s var(--ease) both 0.12s;
+}
+.ab-sub {
+  display: block;
+  max-width: 19ch;
+  margin-top: 14px;
+  font: 700 clamp(1.35rem, 2.6vw, 2.1rem) / 1.15 var(--f-body);
+  letter-spacing: -0.02em;
+  animation: rise 1s var(--ease) both 0.24s;
+}
+.ab-lead {
+  max-width: 44ch;
+  margin: 22px 0 30px;
+  color: rgba(243, 242, 238, 0.74);
+  font-size: clamp(1rem, 1.3vw, 1.12rem);
+  line-height: 1.6;
+  animation: rise 1s var(--ease) both 0.36s;
+}
+.ab-hero .hero-cta {
+  animation: rise 1s var(--ease) both 0.48s;
+}
+.ab-btn {
+  background: #9c8cff;
+  color: #121212;
+}
+.ab-btn:hover {
+  background: #b3a6ff;
+}
+.ab-btn-line {
+  box-shadow: inset 0 0 0 1.5px rgba(243, 242, 238, 0.4);
+  color: #f3f2ee;
+}
+.ab-btn-line:hover {
+  background: rgba(243, 242, 238, 0.1);
+}
+
+/* Схема нейросети: слои узлов, по связям бегут сигналы */
+.ab-art {
+  animation: rise 1.2s var(--ease) both 0.3s;
+}
+.ab-net {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  animation: ab-float 9s ease-in-out infinite;
+}
+@keyframes ab-float {
+  50% {
+    transform: translateY(-12px);
+  }
+}
+.ab-edges line {
+  stroke: rgba(243, 242, 238, 0.13);
+  stroke-width: 1.2;
+}
+.ab-signals line {
+  stroke: var(--s);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-dasharray: 12 100;
+  animation: ab-signal 3.2s cubic-bezier(0.45, 0, 0.55, 1) infinite both;
+  animation-delay: var(--d);
+}
+@keyframes ab-signal {
+  from {
+    stroke-dashoffset: 12;
+  }
+  70%,
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+.ab-nodes circle {
+  fill: #121212;
+  stroke: var(--n);
+  stroke-width: 3;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ab-node 4s ease-in-out infinite;
+  animation-delay: var(--d);
+}
+@keyframes ab-node {
+  45%,
+  55% {
+    fill: var(--n);
+    transform: scale(1.25);
+  }
+}
+
+/* Бегущая строка */
+.ab-marquee {
+  margin: clamp(40px, 6vw, 72px) -2vw 0;
+  padding: clamp(14px, 2vw, 22px) 0;
+  background: #9c8cff;
+  color: #121212;
+  transform: rotate(-1.4deg);
+  overflow: hidden;
+}
+.ab-track {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 2.4vw, 32px);
+  width: max-content;
+  animation: ab-marquee 34s linear infinite;
+}
+.ab-track span {
+  font: 400 clamp(1.5rem, 3.6vw, 2.8rem) / 1 var(--f-display);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.ab-spark {
+  flex: none;
+  width: clamp(20px, 2.6vw, 32px);
+  height: clamp(20px, 2.6vw, 32px);
+  fill: #121212;
+}
+@keyframes ab-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Хронология: линия заполняется по мере прокрутки, годы как цветные наклейки */
+.ab-time {
+  padding-block: clamp(72px, 10vw, 136px) clamp(40px, 6vw, 72px);
+}
+.ab-line {
+  --rail: clamp(22px, 3vw, 40px);
+  position: relative;
+  margin-top: clamp(32px, 5vw, 56px);
+  padding-left: var(--rail);
+}
+.ab-line::before,
+.ab-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 6px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--line);
+}
+.ab-line::after {
+  background: linear-gradient(#ffd23f, #ff7a59, #9c8cff, #3dd6a0, #5ab0ff, #ff8fc7);
+  transform: scaleY(var(--p, 1));
+  transform-origin: top;
+}
+.ab-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(150px, 240px) minmax(0, 1fr);
+  align-items: start;
+  gap: 12px 40px;
+  padding-block: clamp(22px, 3vw, 34px);
+  border-top: 1px solid var(--line);
+}
+.ab-step:first-child {
+  border-top: 0;
+}
+.ab-step::before {
+  content: '';
+  position: absolute;
+  top: clamp(32px, 4vw, 44px);
+  left: calc(var(--rail) * -1 + 7.5px);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 4px var(--bg);
+  transform: translateX(-50%);
+}
+.ab-year {
+  justify-self: start;
+  padding: 0.12em 0.38em 0.18em;
+  border-radius: 16px;
+  background: var(--c);
+  color: #121212;
+  font: 400 clamp(1.7rem, 3.6vw, 2.8rem) / 1 var(--f-display);
+  transform: rotate(-2deg);
+}
+.ab-step:nth-child(even) .ab-year {
+  transform: rotate(1.5deg);
+}
+.ab-step-body h3 {
+  font: 700 clamp(1.2rem, 2vw, 1.55rem) / 1.2 var(--f-body);
+  letter-spacing: -0.01em;
+}
+.ab-step-body p {
+  max-width: 62ch;
+  margin-top: 8px;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+
+/* Появление блоков при прокрутке */
+[data-reveal] {
+  transition:
+    opacity 0.9s var(--ease),
+    transform 0.9s var(--ease);
+  transition-delay: calc(var(--i, 0) * 0.08s);
+}
+.is-wait {
+  opacity: 0;
+  transform: translateY(36px);
+}
+.ab-card.is-wait {
+  transform: translateY(36px) rotate(var(--r));
+}
+
+/* Крупная цифра */
+.ab-stat {
+  padding-block: clamp(32px, 5vw, 64px);
+}
+.ab-stat-in {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(20px, 4vw, 56px);
+  padding-block: clamp(28px, 4vw, 48px);
+  border-block: 2px solid var(--ink);
+}
+.ab-stat-num {
+  font: 400 clamp(2rem, 4vw, 3.2rem) / 0.9 var(--f-display);
+  white-space: nowrap;
+}
+.ab-stat-num b {
+  font-size: clamp(4.4rem, 13vw, 10.5rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.ab-stat-text {
+  max-width: 34ch;
+  font: 600 clamp(1.1rem, 2vw, 1.45rem) / 1.4 var(--f-body);
+}
+
+/* Манифест: цветные карточки-наклейки */
+.ab-mani {
+  padding-block: clamp(64px, 9vw, 120px) clamp(40px, 6vw, 72px);
+}
+.ab-mani-lead {
+  max-width: 60ch;
+  margin-top: 18px;
+  color: var(--ink-2);
+  font-size: clamp(1.02rem, 1.4vw, 1.18rem);
+  line-height: 1.6;
+}
+.ab-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: clamp(32px, 5vw, 52px);
+}
+.ab-card {
+  --r: -1.2deg;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-height: 300px;
+  padding: 24px 24px 28px;
+  border-radius: 28px;
+  background: var(--c);
+  color: #121212;
+  transform: rotate(var(--r));
+  transition:
+    opacity 0.9s var(--ease),
+    transform 0.5s var(--spring),
+    box-shadow 0.3s var(--ease);
+  transition-delay: calc(var(--i, 0) * 0.08s);
+}
+.ab-card:nth-child(even) {
+  --r: 1deg;
+}
+.ab-card:hover {
+  transform: translateY(-8px) rotate(0deg);
+  box-shadow: 0 26px 44px -26px rgba(18, 18, 18, 0.7);
+  transition-delay: 0s;
+}
+.ab-card-n {
+  font: 400 3.2rem/0.9 var(--f-display);
+  letter-spacing: -0.04em;
+}
+.ab-card h3 {
+  margin-top: auto;
+  padding-top: 28px;
+  font: 700 1.3rem/1.2 var(--f-body);
+  letter-spacing: -0.01em;
+}
+.ab-card p {
+  color: rgba(18, 18, 18, 0.82);
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+/* Цифры проекта */
+.ab-nums {
+  padding-block: clamp(32px, 5vw, 64px);
+}
+.ab-nums-in {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+.ab-nums-in li {
+  display: grid;
+  gap: 8px;
+  padding-top: 18px;
+  border-top: 2px solid var(--ink);
+}
+.ab-nums-in b {
+  font: 400 clamp(3rem, 7vw, 5.6rem) / 0.9 var(--f-display);
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.ab-nums-in span {
+  color: var(--ink-2);
+  font-weight: 600;
+}
+
+/* Финальный призыв */
+.ab-final {
+  padding-block: clamp(32px, 5vw, 64px) clamp(56px, 8vw, 104px);
+}
+.ab-final-in {
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  padding: clamp(40px, 7vw, 96px) clamp(24px, 5vw, 72px);
+  text-align: center;
+}
+.ab-final-title {
+  max-width: 16ch;
+  font: 400 clamp(2.2rem, 5.6vw, 4.4rem) / 1 var(--f-display);
+  letter-spacing: -0.02em;
+}
+.ab-final-in p {
+  max-width: 48ch;
+  color: rgba(243, 242, 238, 0.74);
+  font-size: 1.08rem;
+  line-height: 1.6;
+}
+.ab-final-in .hero-cta {
+  justify-content: center;
+  margin-top: 10px;
+}
+
+@media (max-width: 1000px) {
+  .ab-cards,
+  .ab-nums-in {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 860px) {
+  .ab-stage {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+  .ab-art {
+    max-width: 460px;
+    width: 100%;
+    justify-self: center;
+  }
+  .ab-stat-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .ab-nav a {
+    font-size: 0.88rem;
+  }
+  .ab-step {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ab-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ab-card {
+    min-height: 0;
+  }
+  .ab-card h3 {
+    padding-top: 12px;
+  }
+  .ab-nums-in {
+    gap: 28px 16px;
+  }
+  .ab-hero .hero-cta .btn,
+  .ab-final-in .hero-cta .btn {
+    width: 100%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
