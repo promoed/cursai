@@ -1588,34 +1588,81 @@ td:nth-child(4) {
   min-height: 60px;
 }
 
-.mhero {
-  padding-block: clamp(28px, 5vw, 56px) clamp(20px, 4vw, 32px);
-  text-align: center;
-}
-.mhero-kicker {
-  font-weight: 500;
-  color: var(--ink-3);
-}
-.mhero-title {
-  margin-top: 10px;
-  font: 700 clamp(1.9rem, 4.2vw, 2.9rem) / 1.08 var(--f-body);
-  letter-spacing: -0.025em;
-}
-.mhero-lead {
-  max-width: 54ch;
-  margin: 14px auto 0;
-  color: var(--ink-2);
-  font-size: 1.02rem;
-  line-height: 1.55;
+/* «Рейтинг» длиннее «Топ-10», поэтому кегль чуть меньше, чтобы слово помещалось в ширину */
+.mega-word {
+  font-size: clamp(3.6rem, 15vw, 12rem);
 }
 
 .mcards {
   padding-block: 0 clamp(40px, 6vw, 72px);
+  border-top: 2px solid var(--ink);
 }
-.mfilter-wrap {
+.dir-bar {
   display: grid;
+  gap: 20px;
+  padding-block: clamp(48px, 7vw, 88px) clamp(24px, 4vw, 40px);
+}
+
+/* Цветные плитки направлений, по мотивам наклеек первого экрана */
+.directions {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 12px;
-  margin-bottom: clamp(22px, 4vw, 34px);
+}
+.direction {
+  display: grid;
+  align-content: space-between;
+  gap: 18px;
+  min-height: 104px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: var(--c);
+  color: #121212;
+  font: 700 1.05rem/1.2 var(--f-body);
+  text-decoration: none;
+  transform: rotate(calc((var(--i) - 3) * 0.5deg));
+  transition: transform 0.4s var(--spring), box-shadow 0.3s var(--ease);
+}
+.directions .direction:nth-child(even) {
+  transform: rotate(calc((3 - var(--i)) * 0.45deg));
+}
+.direction-all {
+  background: var(--ink);
+  color: var(--bg);
+}
+.directions .direction:hover {
+  transform: translateY(-4px) rotate(-1.5deg);
+  box-shadow: 0 20px 34px -22px rgba(18, 18, 18, 0.6);
+}
+.directions .direction[aria-current='true'] {
+  transform: translateY(-4px) rotate(0deg);
+  box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--ink);
+}
+.direction-n {
+  font-size: 0.82rem;
+  font-weight: 600;
+  opacity: 0.86;
+}
+@media (max-width: 1100px) {
+  .directions {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .directions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .direction {
+    min-height: 88px;
+    padding: 14px 16px;
+  }
+  .direction-all {
+    grid-column: 1 / -1;
+    min-height: 0;
+  }
+  .directions .direction-all:not([aria-current='true']) {
+    transform: rotate(-0.4deg);
+  }
 }
 .mgrid {
   display: grid;

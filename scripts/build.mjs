@@ -46,6 +46,13 @@ const fmt = (n) => n.toFixed(1).replace('.', ',');
 const rub = (n) => (n == null ? '' : `${String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0')}\u00a0₽`);
 // Полная стоимость или рассрочка; from добавляет приставку "от" (несколько тарифов у школы), perMonth — "/мес"
 const priceText = (n, { from, perMonth } = {}) => (n == null ? null : `${from ? 'от ' : ''}${rub(n)}${perMonth ? '/мес' : ''}`);
+const plural = (n) => {
+  const m10 = n % 10;
+  const m100 = n % 100;
+  if (m10 === 1 && m100 !== 11) return 'курс';
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'курса';
+  return 'курсов';
+};
 const verdict = (n) => (n >= 9.5 ? 'превосходно' : n >= 9.2 ? 'отлично' : 'очень хорошо');
 const rel = 'nofollow sponsored noopener';
 
@@ -235,6 +242,28 @@ const chips = filters
   })
   .join('\n          ');
 
+// Цветные плитки направлений на странице Б. Ссылка ?dir=ключ открывает страницу сразу с выбранным направлением —
+// ее можно ставить в рекламу. Места курсов внутри направления пересчитываются с 1 (см. applyFilter в app.js).
+const directions = filters
+  .map((f, i) => {
+    const n = f.key === 'all' ? courses.length : courses.filter((c) => c.tags.includes(f.key)).length;
+    const all = f.key === 'all';
+    const style = all ? `--i:${i}` : `--c:${palette[(i - 1) % palette.length]}; --i:${i}`;
+    return `<a class="direction${all ? ' direction-all' : ''}" href="${all ? 'b.html' : `?dir=${f.key}`}" data-filter="${f.key}"${all ? ' aria-current="true"' : ''} style="${style}">${esc(f.label)}<span class="direction-n">${n} ${plural(n)}</span></a>`;
+  })
+  .join('\n        ');
+
+const heroSub = 'курсов по нейросетям для работы и творчества';
+const heroLead = `Освойте ИИ для работы, творчества и собственных проектов. Сравните ${courses.length} ${plural(courses.length)} по программе, практике и поддержке — и выберите тот, который подходит под ваши задачи и уровень.`;
+const methodSection = `
+  <section class="method" data-tint="base" aria-labelledby="method-title">
+    <div class="wrap method-in">
+      <h2 class="h2" id="method-title">Как мы ставили оценки</h2>
+      <ul class="weights">${weights}
+      </ul>
+    </div>
+  </section>`;
+
 const faqHtml = faq
   .map(
     (f, i) => `
@@ -388,10 +417,10 @@ const html = `${head}
       <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
       <h1 class="hero-title">
         <span class="mega">Топ<span class="mega-dash">-</span>10</span>
-        <span class="hero-sub">курсов по нейросетям для работы и творчества</span>
+        <span class="hero-sub">${heroSub}</span>
       </h1>
       <div class="hero-row">
-        <p class="hero-lead">Освойте ИИ для работы, творчества и собственных проектов. Сравните 10 курсов по программе, практике и поддержке — и выберите тот, который подходит под ваши задачи и уровень.</p>
+        <p class="hero-lead">${heroLead}</p>
         <div class="hero-cta">
           <a class="btn btn-ink" href="#kurs-1">Смотреть рейтинг ${arrow}</a>
           <a class="btn btn-line" href="#pick">Подобрать под задачу</a>
@@ -401,14 +430,7 @@ const html = `${head}
       </ol>
     </div>
   </section>
-
-  <section class="method" data-tint="base" aria-labelledby="method-title">
-    <div class="wrap method-in">
-      <h2 class="h2" id="method-title">Как мы ставили оценки</h2>
-      <ul class="weights">${weights}
-      </ul>
-    </div>
-  </section>
+${methodSection}
 
   <div class="rating" id="rating">
     <div class="wrap pick-bar" id="pick" data-tint="base">
@@ -494,9 +516,8 @@ ${js}
 ${artifact ? '' : '</body>\n</html>'}
 `;
 
-// ============ Вариант Б: минималистичная страница для А/Б теста ============
-// Только первый экран без большого заголовка, компактные карточки курсов и таблица сравнения.
-// Тот же визуальный код (шрифты, цвета, тема), без фильтра, методики, FAQ и финальной секции.
+// ============ Страница Б: рейтинг по направлениям ============
+// Первый экран и методика как на главной, затем цветные плитки направлений и компактные карточки курсов.
 const tagLabel = Object.fromEntries(filters.filter((f) => f.key !== 'all').map((f) => [f.key, f.label]));
 const calIco = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 6.2h11M5.3 2v2.4M10.7 2v2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
 
@@ -523,7 +544,7 @@ const courseCard = (c) => {
     .filter(Boolean)
     .join('');
   return `
-        <article class="mcard" id="kurs-${c.rank}" data-tags="${c.tags.join(' ')}" style="--c:${c.color}" aria-labelledby="mt-${c.rank}">
+        <article class="mcard" id="kurs-${c.rank}" data-tags="${c.tags.join(' ')}" data-rank="${c.rank}" style="--c:${c.color}" aria-labelledby="mt-${c.rank}">
           <div class="mcard-cover">
             ${miniCover(c)}
             <span class="mcard-rank" aria-hidden="true">${c.rank}</span>
@@ -534,7 +555,7 @@ const courseCard = (c) => {
               <span class="mcard-score"><b>${fmt(c.total)}</b><small>/10</small></span>
             </p>
             <p class="mcard-award">${esc(c.award)}</p>
-            <h2 class="mcard-title" id="mt-${c.rank}"><span class="sr-only">${c.rank} место. </span>${esc(c.title)}</h2>
+            <h3 class="mcard-title" id="mt-${c.rank}"><span class="sr-only mcard-place">${c.rank} место. </span>${esc(c.title)}</h3>
             <p class="mcard-hook">${esc(c.hook)}</p>
             ${priceRow ? `<p class="mcard-price-row">${priceRow}</p>` : ''}
             ${facts ? `<p class="mcard-facts">${facts}</p>` : ''}
@@ -546,7 +567,7 @@ const courseCard = (c) => {
         </article>`;
 };
 
-const bTitle = `Топ-10 курсов по нейросетям ${SITE.year}`;
+const bTitle = `Рейтинг ${heroSub} ${SITE.year}`;
 const bHtml = `<!doctype html>
 <html lang="ru">
 <head>
@@ -572,21 +593,32 @@ ${themeBoot}
 </header>
 
 <main>
-  <section class="mhero">
+  <section class="hero">
     <div class="wrap">
-      <p class="mhero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
-      <h1 class="mhero-title">Топ-10 курсов по нейросетям ${SITE.year}</h1>
-      <p class="mhero-lead">Сравнили программы Нетологии, Skillbox, Яндекс Практикума, Eduson и GeekBrains по практике, содержанию, поддержке и результату.</p>
+      <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
+      <h1 class="hero-title">
+        <span class="mega mega-word">Рейтинг</span>
+        <span class="hero-sub">${heroSub}</span>
+      </h1>
+      <div class="hero-row">
+        <p class="hero-lead">${heroLead}</p>
+        <div class="hero-cta">
+          <a class="btn btn-ink" href="#kurs-1">Смотреть рейтинг ${arrow}</a>
+          <a class="btn btn-line" href="#rating">Подобрать под задачу</a>
+        </div>
+      </div>
     </div>
   </section>
+${methodSection}
 
-  <section class="mcards">
+  <section class="mcards" id="rating" aria-labelledby="rating-title">
     <div class="wrap">
-      <div class="mfilter-wrap">
-        <div class="filter" role="group" aria-label="Подобрать курс под задачу">
-          ${chips}
-        </div>
-        <p class="filter-status" id="filter-status" aria-live="polite">Показаны все 10 курсов</p>
+      <div class="dir-bar">
+        <h2 class="h2" id="rating-title">Рейтинг курсов</h2>
+        <nav class="directions" aria-label="Направления курсов">
+        ${directions}
+        </nav>
+        <p class="filter-status" id="filter-status" aria-live="polite">Показаны все ${courses.length} ${plural(courses.length)}</p>
       </div>
       <div class="mgrid">${courses.map(courseCard).join('')}
       </div>

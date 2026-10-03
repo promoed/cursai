@@ -112,7 +112,9 @@
 
   /* Подбор под задачу */
   var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var directions = Array.prototype.slice.call(document.querySelectorAll('.direction'));
   var status = document.getElementById('filter-status');
+  var currentFilter = 'all';
   function plural(n) {
     var m10 = n % 10;
     var m100 = n % 100;
@@ -121,6 +123,7 @@
     return 'курсов';
   }
   function applyFilter(key, animate) {
+    currentFilter = key;
     var run = function () {
       var shown = 0;
       courses.forEach(function (el) {
@@ -129,7 +132,19 @@
         if (match) {
           shown++;
           el.classList.remove('await');
+          /* На странице направлений места считаются заново внутри выбранного направления */
+          if (directions.length) {
+            var place = key === 'all' ? el.getAttribute('data-rank') : String(shown);
+            var badge = el.querySelector('.mcard-rank');
+            var sr = el.querySelector('.mcard-place');
+            if (badge) badge.textContent = place;
+            if (sr) sr.textContent = place + ' место. ';
+          }
         }
+      });
+      directions.forEach(function (d) {
+        if (d.getAttribute('data-filter') === key) d.setAttribute('aria-current', 'true');
+        else d.removeAttribute('aria-current');
       });
       railLinks.forEach(function (a) {
         var target = document.getElementById('kurs-' + a.getAttribute('data-rank'));
@@ -141,8 +156,10 @@
       var label = document.querySelector('[data-filter="' + key + '"]').firstChild.textContent.trim();
       status.textContent =
         key === 'all'
-          ? 'Показаны все 10 курсов'
-          : 'Задача «' + label + '»: ' + shown + ' ' + plural(shown) + ' из 10, места в рейтинге сохранены';
+          ? 'Показаны все ' + courses.length + ' ' + plural(courses.length)
+          : directions.length
+            ? 'Направление «' + label + '»: ' + shown + ' ' + plural(shown)
+            : 'Задача «' + label + '»: ' + shown + ' ' + plural(shown) + ' из ' + courses.length + ', места в рейтинге сохранены';
     };
     if (animate && document.startViewTransition && !reduce) document.startViewTransition(run);
     else run();
@@ -154,8 +171,35 @@
       store('nr-filter', key);
     });
   });
-  var saved = store('nr-filter');
-  if (saved && document.querySelector('[data-filter="' + saved + '"]')) applyFilter(saved, false);
+  function setDirUrl(key) {
+    try {
+      history.replaceState(null, '', key === 'all' ? location.pathname : location.pathname + '?dir=' + key);
+    } catch (e) {}
+  }
+
+  if (directions.length) {
+    /* Направления: ссылка вида b.html?dir=marketing сразу открывает нужный список — на нее можно вести рекламу */
+    directions.forEach(function (d) {
+      d.addEventListener('click', function (e) {
+        e.preventDefault();
+        var key = d.getAttribute('data-filter');
+        setDirUrl(key);
+        applyFilter(key, true);
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: 'direction_click', direction: key });
+        if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', 'direction_click', { direction: key });
+      });
+    });
+    var dir = /[?&]dir=([\w-]+)/.exec(location.search);
+    if (dir && document.querySelector('.direction[data-filter="' + dir[1] + '"]')) {
+      applyFilter(dir[1], false);
+      var target = document.getElementById('rating');
+      if (target && !location.hash) target.scrollIntoView();
+    }
+  } else {
+    var saved = store('nr-filter');
+    if (saved && document.querySelector('[data-filter="' + saved + '"]')) applyFilter(saved, false);
+  }
 
   /* Cookie и статистика (152-ФЗ): Метрика запускается сразу при заходе на сайт.
      Уведомление внизу экрана информирует об этом и дает отказаться на этом устройстве —
@@ -230,7 +274,8 @@
     var target = document.getElementById(link.getAttribute('href').slice(1));
     if (target && target.hidden) {
       applyFilter('all', false);
-      store('nr-filter', 'all');
+      if (directions.length) setDirUrl('all');
+      else store('nr-filter', 'all');
     }
   });
 
@@ -246,6 +291,7 @@
       place: link.getAttribute('data-place') || '',
       school: link.getAttribute('data-school') || '',
     };
+    if (directions.length) detail.direction = currentFilter;
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: 'course_click',
@@ -253,6 +299,7 @@
       course_url: detail.url,
       course_place: detail.place,
       course_school: detail.school,
+      course_direction: detail.direction || '',
     });
     if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', 'course_click', detail);
   });
