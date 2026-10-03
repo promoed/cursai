@@ -150,7 +150,7 @@
           el.classList.remove('await');
           /* На странице направлений места считаются заново внутри выбранного направления */
           if (directions.length) {
-            var place = key === 'all' ? el.getAttribute('data-rank') : String(shown);
+            var place = key === 'all' ? el.getAttribute('data-all') || el.getAttribute('data-rank') : String(shown);
             var badge = el.querySelector('.mcard-rank');
             var sr = el.querySelector('.mcard-place');
             if (badge) badge.textContent = place;

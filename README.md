@@ -34,7 +34,10 @@ https://cursai.ru/b.html?dir=marketing   Маркетинг
 https://cursai.ru/b.html?dir=business    Бизнес
 https://cursai.ru/b.html?dir=agents      ИИ-агенты
 https://cursai.ru/b.html?dir=career      Новая профессия
+https://cursai.ru/b.html?dir=datascience Data Science
 ```
+
+Курсы только для этой страницы (сейчас Data Science) лежат в `coursesB` в `src/courses.mjs`, а их направление отмечено в `filters` флагом `onlyB: true` — на главной их нет. В «Все курсы» на странице Б все курсы стоят по итоговой оценке.
 
 UTM-метки можно добавлять как обычно: `b.html?dir=marketing&utm_source=yandex`. Направления берутся из `filters` в `src/courses.mjs`, курс попадает в направление по своим `tags`.
 

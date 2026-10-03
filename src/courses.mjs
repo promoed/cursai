@@ -22,6 +22,8 @@ export const filters = [
   { key: 'business', label: 'Бизнес', heading: 'курсов по нейросетям для бизнеса' },
   { key: 'agents', label: 'ИИ-агенты', heading: 'курсов по созданию ИИ-агентов' },
   { key: 'career', label: 'Новая профессия', heading: 'курсов для новой профессии в ИИ' },
+  // onlyB: направление есть только на странице «Рейтинг курсов» (b.html), на главной его нет
+  { key: 'datascience', label: 'Data Science', heading: 'курсов по Data Science', onlyB: true },
 ];
 
 // logo: картинка курса по умолчанию (файл обрезан по краям надписи), logoBg: фон карточки под логотипом
@@ -327,6 +329,78 @@ export const courses = [
       'Помощь в трудоустройстве',
     ],
     scores: { practice: 8.8, program: 9.0, support: 8.8, result: 9.0 },
+  },
+];
+
+// Курсы только для страницы «Рейтинг курсов» (b.html). На главной (Топ-10 по нейросетям) их нет.
+// Порядок в массиве = порядок внутри направления, оценки должны идти по убыванию (сборка проверит).
+// В «Все курсы» на странице Б все курсы сортируются по итоговой оценке.
+// Цены и сроки не заполнены: страницы школ недоступны для проверки, на сайт идут только подтвержденные цифры.
+export const coursesB = [
+  {
+    school: 'netology',
+    title: 'Data Scientist: расширенный курс',
+    short: 'Data Scientist: расширенный',
+    url: 'https://netology.ru/programs/prodatascience',
+    image: null,
+    duration: null,
+    schedule: null,
+    price: null,
+    tags: ['datascience'],
+    hook: 'Самая полная программа по Data Science в подборке: от SQL и Python до глубокого обучения, NLP и компьютерного зрения.',
+    scores: { practice: 9.6, program: 9.8, support: 9.4, result: 9.4 },
+  },
+  {
+    school: 'skillbox',
+    title: 'Профессия Data Scientist',
+    short: 'Профессия Data Scientist',
+    url: 'https://skillbox.ru/course/profession-data-scientist/',
+    image: null,
+    duration: null,
+    schedule: null,
+    price: null,
+    tags: ['datascience'],
+    hook: 'Путь в Data Science с нуля: Python, анализ данных и машинное обучение на практических проектах для портфолио.',
+    scores: { practice: 9.4, program: 9.4, support: 9.2, result: 9.4 },
+  },
+  {
+    school: 'eduson',
+    title: 'Data Scientist',
+    short: 'Data Scientist',
+    url: 'https://eduson.academy/data-scientist',
+    image: null,
+    duration: '9 месяцев',
+    schedule: null,
+    price: null,
+    tags: ['datascience'],
+    hook: 'Python, SQL, машинное обучение и нейросети на бизнес-кейсах — для тех, кто начинает без опыта программирования.',
+    scores: { practice: 9.4, program: 9.0, support: 9.0, result: 9.0 },
+  },
+  {
+    school: 'netology',
+    title: 'Data Scientist',
+    short: 'Data Scientist',
+    url: 'https://netology.ru/programs/data-scientist',
+    image: null,
+    duration: null,
+    schedule: null,
+    price: null,
+    tags: ['datascience'],
+    hook: 'Базовая программа Нетологии по Data Science: от анализа данных до первых моделей машинного обучения.',
+    scores: { practice: 9.0, program: 9.0, support: 9.2, result: 9.0 },
+  },
+  {
+    school: 'gb',
+    title: 'Data Science',
+    short: 'Data Science',
+    url: 'https://gb.ru/geek_university/developer/analyst/data-science-gb',
+    image: null,
+    duration: null,
+    schedule: null,
+    price: null,
+    tags: ['datascience'],
+    hook: 'Программа GeekBrains по анализу данных и машинному обучению на Python.',
+    scores: { practice: 8.8, program: 9.0, support: 8.8, result: 8.8 },
   },
 ];
 

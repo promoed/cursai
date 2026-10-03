@@ -2,7 +2,7 @@
 //   node scripts/build.mjs             -> site/ (готовая папка для хостинга)
 //   node scripts/build.mjs --artifact  -> dist/ (превью: главная страница без обертки html/head)
 import { readFile, writeFile, mkdir, copyFile, rm, readdir } from 'node:fs/promises';
-import { criteria, filters, schools, courses, faq } from '../src/courses.mjs';
+import { criteria, filters, schools, courses, coursesB, faq } from '../src/courses.mjs';
 import { policy, consent } from '../src/legal.mjs';
 
 const root = new URL('../', import.meta.url);
@@ -69,17 +69,35 @@ courses.forEach((c, i) => {
   }
 });
 
-const noAffiliate = courses.filter((c) => !c.affiliateA).map((c) => `  #${c.rank} ${c.short}`);
+// Курсы только для страницы Б: номера продолжают общий список (kurs-11, kurs-12...), чтобы не ломать ссылки на курсы главной
+coursesB.forEach((c, i) => {
+  c.rank = courses.length + i + 1;
+  c.total = total(c);
+  c.color = palette[(courses.length + i) % palette.length];
+  c.urlA = c.affiliateA || c.url;
+  c.urlB = c.affiliateB || c.url;
+  if (i > 0 && c.total > coursesB[i - 1].total) {
+    throw new Error(`Оценка курса страницы Б «${c.short}» выше, чем у предыдущего: поправьте критерии`);
+  }
+});
+// Все курсы страницы Б (по номеру) и порядок «Все курсы» — по итоговой оценке; placeAll — место в этом общем списке
+const allB = courses.concat(coursesB);
+const bOrder = [...allB].sort((a, b) => b.total - a.total || a.rank - b.rank);
+bOrder.forEach((c, i) => {
+  c.placeAll = i + 1;
+});
+
+const noAffiliate = allB.filter((c) => !(c.affiliateA || c.affiliateB)).map((c) => `  #${c.rank} ${c.short}${c.rank > courses.length ? ' (только стр. Б)' : ''}`);
 if (noAffiliate.length) console.warn(`Нет партнерской ссылки, кнопка ведет на сайт школы напрямую:\n${noAffiliate.join('\n')}`);
 
-const missing = courses.flatMap((c) =>
+const missing = allB.flatMap((c) =>
   [['duration', 'срок'], ['schedule', 'занятия'], ['price', 'цена']]
     .filter(([k]) => c[k] == null)
     .map(([, label]) => `  #${c.rank} ${c.short}: ${label}`)
 );
 if (missing.length) console.warn(`Не заполнено (поле не будет показано):\n${missing.join('\n')}`);
 
-const text = [JSON.stringify(courses), JSON.stringify(faq), JSON.stringify(filters)].join('');
+const text = [JSON.stringify(allB), JSON.stringify(faq), JSON.stringify(filters)].join('');
 if (/[ёЁ]/.test(text)) throw new Error('В текстах есть буква «ё»');
 
 // [текст](#kurs-N) -> ссылка на курс; в JSON-LD уходит чистый текст
@@ -235,6 +253,7 @@ const weights = criteria
   .join('');
 
 const chips = filters
+  .filter((f) => !f.onlyB)
   .map((f) => {
     const n = f.key === 'all' ? courses.length : courses.filter((c) => c.tags.includes(f.key)).length;
     return `<button type="button" class="chip" id="f-${f.key}" data-filter="${f.key}" aria-pressed="${f.key === 'all'}">${esc(f.label)}<span class="chip-n">${n}</span></button>`;
@@ -245,7 +264,7 @@ const chips = filters
 // ее можно ставить в рекламу. Места курсов внутри направления пересчитываются с 1 (см. applyFilter в app.js).
 const directions = filters
   .map((f, i) => {
-    const n = f.key === 'all' ? courses.length : courses.filter((c) => c.tags.includes(f.key)).length;
+    const n = f.key === 'all' ? allB.length : allB.filter((c) => c.tags.includes(f.key)).length;
     const all = f.key === 'all';
     const style = all ? `--i:${i}` : `--c:${palette[(i - 1) % palette.length]}; --i:${i}`;
     return `<a class="direction${all ? ' direction-all' : ''}" href="${all ? 'b.html' : `?dir=${f.key}`}" data-filter="${f.key}" data-heading="${esc(f.heading)}"${all ? ' aria-current="true"' : ''} style="${style}">${esc(f.label)}<span class="direction-n">${n} ${plural(n)}</span></a>`;
@@ -293,11 +312,11 @@ const finalPicks = (urlKey) =>
     .join('');
 const finalPicksA = finalPicks('urlA');
 // На странице Б в финальном блоке все курсы: app.js показывает первые три из выбранного направления
-const finalPicksB = courses
+const finalPicksB = bOrder
   .map(
     (c) => `
-          <a class="pick" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="pick" data-school="${esc(schools[c.school].name)}" data-tags="${c.tags.join(' ')}" style="--c:${c.color}"${c.rank > 3 ? ' hidden' : ''}>
-            <span class="pick-num">${c.rank}</span>
+          <a class="pick" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="pick" data-school="${esc(schools[c.school].name)}" data-tags="${c.tags.join(' ')}" style="--c:${c.color}"${c.placeAll > 3 ? ' hidden' : ''}>
+            <span class="pick-num">${c.placeAll}</span>
             <span class="pick-text"><b>${esc(c.title)}</b><span>${esc(schools[c.school].name)} · ${fmt(c.total)}</span></span>
             ${arrow}
           </a>`
@@ -571,10 +590,10 @@ const courseCard = (c) => {
     .filter(Boolean)
     .join('');
   return `
-        <article class="mcard${c.rank === 1 ? ' is-best' : ''}" id="kurs-${c.rank}" data-tags="${c.tags.join(' ')}" data-rank="${c.rank}" style="--c:${ACCENT}" aria-labelledby="mt-${c.rank}">
+        <article class="mcard${c.placeAll === 1 ? ' is-best' : ''}" id="kurs-${c.rank}" data-tags="${c.tags.join(' ')}" data-rank="${c.rank}" data-all="${c.placeAll}" style="--c:${ACCENT}" aria-labelledby="mt-${c.rank}">
           <div class="mcard-cover">
             ${miniCover(c)}
-            <span class="mcard-rank" aria-hidden="true">${c.rank}</span>
+            <span class="mcard-rank" aria-hidden="true">${c.placeAll}</span>
             <span class="mcard-best">Лучший выбор</span>
           </div>
           <div class="mcard-body">
@@ -582,7 +601,7 @@ const courseCard = (c) => {
               <span class="mcard-school">${esc(s.name)}</span>
               <span class="mcard-score"><b>${fmt(c.total)}</b><small>/10</small></span>
             </p>
-            <h3 class="mcard-title" id="mt-${c.rank}"><span class="sr-only mcard-place">${c.rank} место. </span>${esc(c.title)}</h3>
+            <h3 class="mcard-title" id="mt-${c.rank}"><span class="sr-only mcard-place">${c.placeAll} место. </span>${esc(c.title)}</h3>
             <p class="mcard-hook">${esc(c.hook)}</p>
             ${priceRow ? `<p class="mcard-price-row">${priceRow}</p>` : ''}
             ${facts ? `<p class="mcard-facts">${facts}</p>` : ''}
@@ -642,9 +661,9 @@ ${themeBoot}
         <nav class="directions" aria-label="Направления курсов">
         ${directions}
         </nav>
-        <p class="filter-status" id="filter-status" aria-live="polite">Все курсы: ${courses.length} лучших ${plural(courses.length)}</p>
+        <p class="filter-status" id="filter-status" aria-live="polite">Все курсы: ${allB.length} лучших ${plural(allB.length)}</p>
       </div>
-      <div class="mgrid">${courses.map(courseCard).join('')}
+      <div class="mgrid">${bOrder.map(courseCard).join('')}
       </div>
     </div>
   </section>
@@ -700,7 +719,7 @@ ${methodSection}
 <script>
 window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
 window.NR_GOAL = 'rating_course_click';
-window.NR_COURSES = ${JSON.stringify(courses.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlB, color: ACCENT })))};
+window.NR_COURSES = ${JSON.stringify(allB.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlB, color: ACCENT })))};
 ${js}
 </script>
 </body>

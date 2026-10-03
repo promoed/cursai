@@ -1700,7 +1700,7 @@ td:nth-child(4) {
 /* Цветные плитки направлений, по мотивам наклеек первого экрана */
 .directions {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 12px;
 }
 .direction {
@@ -1749,13 +1749,6 @@ td:nth-child(4) {
   .direction {
     min-height: 88px;
     padding: 14px 16px;
-  }
-  .direction-all {
-    grid-column: 1 / -1;
-    min-height: 0;
-  }
-  .directions .direction-all:not([aria-current='true']) {
-    transform: rotate(-0.4deg);
   }
 }
 .mgrid {
