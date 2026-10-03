@@ -253,7 +253,7 @@ const directions = filters
   .join('\n        ');
 
 const heroSub = 'курсов по нейросетям для работы и творчества';
-const bLead = `Сравните ${courses.length} ${plural(courses.length)} по программе, практике, стоимости — и выберите тот, который подходит под ваши задачи.`;
+const bLead = 'Сравните курсы по своему направлению — и выберите тот, который подходит под ваши задачи.';
 const heroLead = `Освойте ИИ для работы, творчества и собственных проектов. Сравните ${courses.length} ${plural(courses.length)} по программе, практике и поддержке — и выберите тот, который подходит под ваши задачи и уровень.`;
 const methodSection = `
   <section class="method" data-tint="base" aria-labelledby="method-title">
@@ -481,10 +481,10 @@ ${methodSection}
     <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
     <p>Страница содержит партнерские ссылки: если вы купите курс по ссылке, мы можем получить вознаграждение. На оценки это не влияет. Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться.</p>
     <p class="foot-links">
+      <a href="b.html">Рейтинг курсов</a>
       <a href="privacy.html">Политика конфиденциальности</a>
       <a href="consent.html">Согласие на cookie</a>
       <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
-      <a href="b.html" class="foot-quiet">Компактная версия</a>
     </p>
   </div>
 </footer>
@@ -532,22 +532,23 @@ const miniCover = (c) => {
 // На странице Б у всех карточек один акцентный цвет (оранжевый, как дефис в «Топ-10»)
 const ACCENT = '#FF7A59';
 
-// Декор первого экрана страницы Б: веер наклеек топ-3 и печать с лучшим баллом, плавно покачиваются
+// Декор первого экрана страницы Б: карточка-диаграмма рейтинга (столбцы 1–5 плавно «дышат»),
+// вращающаяся печать со звездой и две плавающие фигуры. Без брендов и конкретных курсов.
+const barHeights = [100, 82, 66, 52, 40];
 const heroArt = `
       <div class="hero-art" aria-hidden="true">
-        ${courses
-          .slice(0, 3)
-          .map(
-            (c) => `<div class="art-card art-card-${c.rank}" style="--c:${c.color}"><b>${c.rank}</b><span>${esc(schools[c.school].name)}</span><em>${fmt(c.total)}</em></div>`
-          )
-          .reverse()
-          .join('\n        ')}
+        <svg class="art-tri" viewBox="0 0 120 120"><path d="M60 0l60 120H0z"/></svg>
+        <div class="art-chart">
+          <span class="art-chart-kicker">Топ направления</span>
+          <div class="art-bars">
+            ${barHeights.map((h, i) => `<span class="art-bar" style="--h:${h}%; --c:${palette[i]}; --d:${-i * 0.7}s"><b>${i + 1}</b></span>`).join('')}
+          </div>
+        </div>
         <div class="art-seal">
           <svg class="art-ring" viewBox="0 0 120 120"><defs><path id="art-ring-path" d="M60 60m-47 0a47 47 0 1 1 94 0a47 47 0 1 1-94 0"/></defs><text><textPath href="#art-ring-path" textLength="292" lengthAdjust="spacing">РЕЙТИНГ КУРСОВ · ${SITE.year} · РЕЙТИНГ КУРСОВ · ${SITE.year} ·</textPath></text></svg>
-          <b>${fmt(courses[0].total)}</b>
-          <span>лучший балл</span>
+          <svg class="art-star" viewBox="0 0 24 24"><path d="M12 1.5l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.6l-6.4 3.5L7 14l-5.3-5 7.2-.9z"/></svg>
         </div>
-        <span class="art-dot"></span>
+        <svg class="art-quarter" viewBox="0 0 120 120"><path d="M0 120A120 120 0 0 1 120 0v120z"/></svg>
       </div>`;
 
 const courseCard = (c) => {
@@ -575,7 +576,6 @@ const courseCard = (c) => {
               <span class="mcard-school">${esc(s.name)}</span>
               <span class="mcard-score"><b>${fmt(c.total)}</b><small>/10</small></span>
             </p>
-            <p class="mcard-award">${esc(c.award)}</p>
             <h3 class="mcard-title" id="mt-${c.rank}"><span class="sr-only mcard-place">${c.rank} место. </span>${esc(c.title)}</h3>
             <p class="mcard-hook">${esc(c.hook)}</p>
             ${priceRow ? `<p class="mcard-price-row">${priceRow}</p>` : ''}
@@ -668,6 +668,7 @@ ${methodSection}
     <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
     <p>Страница содержит партнерские ссылки: если вы купите курс по ссылке, мы можем получить вознаграждение. На оценки это не влияет. Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться.</p>
     <p class="foot-links">
+      <a href="index.html">Лучшие курсы по нейросетям</a>
       <a href="privacy.html">Политика конфиденциальности</a>
       <a href="consent.html">Согласие на cookie</a>
       <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
