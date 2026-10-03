@@ -564,38 +564,44 @@ const miniCover = (c) => {
 // На странице Б у всех карточек один акцентный цвет — фиолетовый из палитры сайта
 const ACCENT = '#9C8CFF';
 
-// Декор первого экрана страницы Б: мозаика 2×2 из цветных плиток с геометрическими фигурами
-// (те же фигуры, что у номеров курсов на главной). Плитки появляются по очереди, фигуры плавно двигаются.
-const mosaic = [
-  { c: palette[0], cls: 'm-circle', shape: '<circle cx="60" cy="60" r="44"/>' },
-  { c: palette[2], cls: 'm-quarter', shape: '<path d="M16 104A88 88 0 0 1 104 16v88z"/>' },
-  { c: palette[3], cls: 'm-tri', shape: '<path d="M60 18l46 84H14z"/>' },
-  { c: 'var(--ink)', cls: 'm-half', shape: '<path d="M14 66a46 46 0 0 1 92 0z"/>' },
-];
+// Декор первого экрана страницы Б: абстрактная «орбита». В центре фиолетовый круг с искрой ИИ,
+// вокруг два тонких кольца, по которым медленно движутся цветные точки (курсы вокруг выбора).
 const heroArt = `
       <div class="hero-art" aria-hidden="true">
-        <div class="mosaic">
-          ${mosaic.map((t, i) => `<span class="tile" style="--t:${t.c}; --i:${i}"><svg class="${t.cls}" viewBox="0 0 120 120">${t.shape}</svg></span>`).join('\n          ')}
-        </div>
+        <svg class="orbit" viewBox="0 0 340 340">
+          <circle class="o-ring" cx="170" cy="170" r="118"/>
+          <circle class="o-ring o-ring-dash" cx="170" cy="170" r="160"/>
+          <circle class="o-core" cx="170" cy="170" r="78" fill="${ACCENT}"/>
+          <path class="o-spark" d="M170 124c4 26 20 42 46 46-26 4-42 20-46 46-4-26-20-42-46-46 26-4 42-20 46-46z"/>
+          <path class="o-spark o-spark-sm" d="M205 120c1.6 9 6 13.4 15 15-9 1.6-13.4 6-15 15-1.6-9-6-13.4-15-15 9-1.6 13.4-6 15-15z"/>
+          <g class="o-orb o-orb-a">
+            <circle cx="170" cy="52" r="15" fill="${palette[0]}"/>
+            <circle cx="288" cy="170" r="8" fill="${palette[3]}"/>
+          </g>
+          <g class="o-orb o-orb-b">
+            <circle cx="10" cy="170" r="12" fill="${palette[1]}"/>
+            <circle cx="283" cy="283" r="9" fill="${palette[4]}"/>
+            <circle cx="170" cy="330" r="7" fill="${palette[5]}"/>
+          </g>
+        </svg>
       </div>`;
 
 // Подробности для вида «Плитки»: в сетке скрыты. Показываем только то, что заполнено в данных курса.
 const more = (c) => {
+  // Колонка фактов всегда одинаковая: четыре коротких поля 2×2. Длинное «Кому» уходит строкой под плюсы.
   const facts = [
     ['Полная стоимость', priceText(c.price, { from: c.priceFrom })],
     ['В рассрочку', priceText(c.priceMonthly, { from: c.priceMonthlyFrom, perMonth: true })],
     ['Срок', c.duration],
-    ['Занятия', c.schedule],
     ['Уровень', c.level],
-    ['Формат', c.format],
-    ['Кому', c.audience],
   ]
     .filter(([, v]) => v)
     .map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`)
     .join('');
   const main = [
     c.learn ? `<p class="learn">${esc(c.learn)}</p>` : '',
-    c.pros ? `<ul class="pros" aria-label="Преимущества курса">${c.pros.map((p) => `<li>${check}<span>${esc(p)}</span></li>`).join('')}</ul>` : '',
+    c.pros ? `<ul class="pros" aria-label="Преимущества курса">${c.pros.slice(0, 3).map((p) => `<li>${check}<span>${esc(p)}</span></li>`).join('')}</ul>` : '',
+    c.audience ? `<p class="mcard-who"><b>Кому:</b> ${esc(c.audience)}</p>` : '',
   ].join('');
   // Без описания и плюсов факты встают в ряд на всю ширину карточки
   return main
