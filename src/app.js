@@ -380,6 +380,30 @@
     if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', goal, detail);
   });
 
+  /* Почта для сотрудничества: копирование в буфер и цель Метрики contact_click */
+  function contactGoal(how) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'contact_click', contact_action: how });
+    if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', 'contact_click', { action: how });
+  }
+  document.addEventListener('click', function (e) {
+    var mail = e.target.closest && e.target.closest('a[href^="mailto:"]');
+    if (mail) contactGoal('mailto');
+    var copy = e.target.closest && e.target.closest('[data-copy]');
+    if (!copy) return;
+    var label = copy.textContent;
+    var done = function () {
+      copy.textContent = 'Скопировано';
+      setTimeout(function () {
+        copy.textContent = label;
+      }, 1800);
+    };
+    try {
+      navigator.clipboard.writeText(copy.getAttribute('data-copy')).then(done, function () {});
+    } catch (err) {}
+    contactGoal('copy');
+  });
+
   /* Страница «О нас»: блоки проявляются при прокрутке, цифры досчитывают до значения,
      линия хронологии заполняется по мере чтения. Без анимаций все видно сразу. */
   var line = document.querySelector('.ab-line');

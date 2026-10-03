@@ -4,7 +4,7 @@
 import { readFile, writeFile, mkdir, copyFile, rm, readdir } from 'node:fs/promises';
 import { criteria, filters, directionsB, schools, courses, coursesB, faq, faqB } from '../src/courses.mjs';
 import { policy, consent } from '../src/legal.mjs';
-import { marquee, timeline, bigStat, manifesto } from '../src/about.mjs';
+import { timeline, bigStat, outlook } from '../src/about.mjs';
 
 const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
@@ -30,6 +30,8 @@ const SITE = {
     inn: '',
     email: 'gvrsoon@yandex.ru',
   },
+  // Почта для сотрудничества: выводится на странице «О нас»
+  contact: 'aconyone@gmail.com',
 };
 
 if (!SITE.operator.email) {
@@ -98,7 +100,7 @@ const missing = allB.flatMap((c) =>
 );
 if (missing.length) console.warn(`Не заполнено (поле не будет показано):\n${missing.join('\n')}`);
 
-const text = [JSON.stringify({ marquee, timeline, bigStat, manifesto }), JSON.stringify(allB), JSON.stringify(faq), JSON.stringify(faqB), JSON.stringify(filters), JSON.stringify(directionsB)].join('');
+const text = [JSON.stringify({ timeline, bigStat, outlook }), JSON.stringify(allB), JSON.stringify(faq), JSON.stringify(faqB), JSON.stringify(filters), JSON.stringify(directionsB)].join('');
 if (/[ёЁ]/.test(text)) throw new Error('В текстах есть буква «ё»');
 
 // [текст](#kurs-N) -> ссылка на курс; в JSON-LD уходит чистый текст
@@ -776,38 +778,11 @@ ${js}
 `;
 
 // ============ Страница «О нас» ============
-// Общая для обеих страниц рейтинга: манифест сайта и короткая история прогресса ИИ.
-// Декор первого экрана — схема нейросети: слои узлов, по связям бегут цветные сигналы.
-const net = (() => {
-  const layers = [4, 5, 5, 3];
-  const xs = [70, 230, 390, 550];
-  const pts = layers.map((n, l) => Array.from({ length: n }, (_, i) => [xs[l], Math.round(260 + (i - (n - 1) / 2) * 92)]));
-  const edges = [];
-  for (let l = 0; l < layers.length - 1; l++) for (const a of pts[l]) for (const b of pts[l + 1]) edges.push([a, b]);
-  const line = ([a, b]) => `x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"`;
-  const signals = edges.filter((_, i) => i % 3 === 1);
-  return `
-        <svg class="ab-net" viewBox="0 0 620 520" aria-hidden="true">
-          <g class="ab-edges">${edges.map((e) => `<line ${line(e)}/>`).join('')}</g>
-          <g class="ab-signals">${signals.map((e, i) => `<line ${line(e)} pathLength="100" style="--s:${palette[i % 6]}; --d:${((i * 0.73) % 6).toFixed(2)}s"/>`).join('')}</g>
-          <g class="ab-nodes">${pts
-            .flat()
-            .map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 4 === 0 ? 13 : 9}" style="--n:${palette[i % 6]}; --d:${((i * 0.41) % 4).toFixed(2)}s"/>`)
-            .join('')}</g>
-        </svg>`;
-})();
+// Общая для обеих страниц рейтинга: о проекте, почта для сотрудничества, история прогресса ИИ и вывод.
 const spark = '<svg class="ab-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1c.9 5.8 4.2 9.1 10 10-5.8.9-9.1 4.2-10 10-.9-5.8-4.2-9.1-10-10 5.8-.9 9.1-4.2 10-10z"/></svg>';
-const marqueeRow = marquee.map((w) => `<span>${esc(w)}</span>${spark}`).join('');
-const schoolCount = new Set(allB.map((c) => c.school)).size;
-const dirCount = directionsB.filter((d) => d.key !== 'all').length;
-const numbers = [
-  [allB.length, 'курсов в рейтинге'],
-  [schoolCount, 'онлайн-школ'],
-  [dirCount, 'направлений'],
-  [criteria.length, 'критерия оценки'],
-];
+const mail = esc(SITE.contact);
 const aboutTitle = `О нас · ${SITE.name}`;
-const aboutDescription = 'Course Ai — независимая подборка онлайн-курсов по нейросетям. Зачем мы собираем рейтинг и как ИИ изменил мир за последние годы.';
+const aboutDescription = 'Course Ai — независимая подборка онлайн-курсов по нейросетям. Как ИИ изменил мир за последние годы и почему учиться работать с ним стоит уже сейчас.';
 const aboutHtml = `<!doctype html>
 <html lang="ru">
 <head>
@@ -837,32 +812,40 @@ ${themeBoot}
 </header>
 
 <main>
-  <section class="ab-hero">
+  <section class="hero ab-hero">
     <div class="wrap">
-      <div class="ab-stage">
+      <p class="hero-kicker">О проекте ${esc(SITE.name)}</p>
+      <h1 class="hero-title">
+        <span class="mega mega-word">Будущее</span> <span class="hero-sub">за теми, кто умеет работать с ИИ</span>
+      </h1>
+      <div class="ab-hero-row">
         <div class="ab-hero-text">
-          <p class="ab-kicker">О проекте ${esc(SITE.name)}</p>
-          <h1 class="ab-title"><span class="ab-mega">Будущее</span> <span class="ab-sub">начинается с того, чему вы учитесь сегодня</span></h1>
-          <p class="ab-lead">Мы собираем лучшие онлайн-курсы, где учат работать с нейросетями. Сравниваем программы, чтобы вы тратили время на учебу, а не на поиски.</p>
+          <p class="hero-lead">${esc(SITE.name)} — независимая подборка онлайн-курсов, где учат работать с нейросетями. Мы сравниваем программы, практику и цены, чтобы вы быстрее нашли свой курс и начали учиться.</p>
           <div class="hero-cta">
-            <a class="btn ab-btn" href="index.html">Топ-10 курсов ${arrow}</a>
-            <a class="btn ab-btn-line" href="b.html">Рейтинг по направлениям</a>
+            <a class="btn btn-ink" href="index.html">Топ-10 курсов ${arrow}</a>
+            <a class="btn btn-line" href="b.html">Рейтинг по направлениям</a>
           </div>
         </div>
-        <div class="ab-art">${net}
-        </div>
+        <aside class="ab-contact" aria-labelledby="ab-contact-title">
+          <span class="ab-paper ab-paper-1" aria-hidden="true"></span>
+          <span class="ab-paper ab-paper-2" aria-hidden="true"></span>
+          <div class="ab-card">
+            <p class="ab-card-kicker">${spark}Сотрудничество</p>
+            <h2 class="ab-card-title" id="ab-contact-title">Школам, авторам курсов и партнерам</h2>
+            <p class="ab-card-text">Обсудим размещение курса в рейтинге, обновление данных о программе или совместный проект.</p>
+            <a class="ab-mail" href="mailto:${mail}">${mail}</a>
+            <div class="ab-card-actions">
+              <a class="btn btn-sm ab-btn-dark" href="mailto:${mail}">Написать ${arrow}</a>
+              <button class="btn btn-sm ab-btn-outline" type="button" data-copy="${mail}">Скопировать почту</button>
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
   </section>
 
-  <div class="ab-marquee">
-    <p class="sr-only">Что умеют нейросети: ${esc(marquee.join(', '))}</p>
-    <div class="ab-track" aria-hidden="true">${marqueeRow}${marqueeRow}</div>
-  </div>
-
   <section class="ab-time" aria-labelledby="ab-time-title">
     <div class="wrap">
-      <p class="ab-kicker">Как это было</p>
       <h2 class="h2 ab-h2" id="ab-time-title">Несколько лет, которые изменили все</h2>
       <ol class="ab-line">${timeline
         .map(
@@ -887,28 +870,21 @@ ${themeBoot}
     </div>
   </section>
 
-  <section class="ab-mani" aria-labelledby="ab-mani-title">
+  <section class="ab-out" aria-labelledby="ab-out-title">
     <div class="wrap">
-      <p class="ab-kicker">Манифест</p>
-      <h2 class="h2 ab-h2" id="ab-mani-title">Зачем мы это делаем</h2>
-      <p class="ab-mani-lead">За нейросетями будущее работы и творчества. Но курсов стало так много, что выбрать сложно. Мы читаем программы, сравниваем практику и цены и оставляем лучшие.</p>
-      <ol class="ab-cards">${manifesto
+      <h2 class="h2 ab-h2" id="ab-out-title">${esc(outlook.title)}</h2>
+      <p class="ab-out-lead">${esc(outlook.lead)}</p>
+      <ol class="ab-theses">${outlook.theses
         .map(
-          (m, i) => `
-        <li class="ab-card" data-reveal style="--c:${palette[[2, 0, 3, 5][i]]}; --i:${i}">
-          <span class="ab-card-n">0${i + 1}</span>
-          <h3>${esc(m.title)}</h3>
-          <p>${esc(m.text)}</p>
+          (t, i) => `
+        <li data-reveal style="--c:${palette[[2, 0, 3, 1][i]]}; --i:${i % 2}">
+          <span class="ab-thesis-n">${i + 1}</span>
+          <h3>${esc(t.title)}</h3>
+          <p>${esc(t.text)}</p>
         </li>`
         )
         .join('')}
       </ol>
-    </div>
-  </section>
-
-  <section class="ab-nums" aria-label="${esc(SITE.name)} в цифрах">
-    <div class="wrap">
-      <ul class="ab-nums-in">${numbers.map(([n, label]) => `<li data-reveal><b data-count="${n}">${n}</b><span>${label}</span></li>`).join('')}</ul>
     </div>
   </section>
 
@@ -918,9 +894,10 @@ ${themeBoot}
         <h2 class="ab-final-title">Лучший момент начать — сейчас</h2>
         <p>Выберите курс под свою задачу: для работы, бизнеса, творчества или новой профессии.</p>
         <div class="hero-cta">
-          <a class="btn ab-btn" href="index.html">Топ-10 курсов по нейросетям ${arrow}</a>
-          <a class="btn ab-btn-line" href="b.html">Рейтинг по направлениям</a>
+          <a class="btn ab-btn-dark" href="index.html">Топ-10 курсов по нейросетям ${arrow}</a>
+          <a class="btn ab-btn-outline" href="b.html">Рейтинг по направлениям</a>
         </div>
+        <p class="ab-final-mail">Сотрудничество: <a href="mailto:${mail}">${mail}</a></p>
       </div>
     </div>
   </section>
@@ -928,7 +905,7 @@ ${themeBoot}
 
 <footer class="foot">
   <div class="wrap foot-in">
-    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}. Сотрудничество: <a href="mailto:${mail}">${mail}</a></p>
     <p class="foot-links">
       <a href="index.html">Лучшие курсы по нейросетям</a>
       <a href="b.html">Рейтинг курсов</a>
