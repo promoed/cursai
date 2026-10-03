@@ -23,12 +23,16 @@ AddType image/webp .webp
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# Старые адреса: страница рейтинга переехала с b.html на главную, «О нас» — на /about/.
+# Старые адреса: страница рейтинга переехала с b.html на главную.
 # 301-редирект сохраняет параметры (?dir=marketing&utm_source=...), поэтому рекламные ссылки продолжают работать.
+# /about/ и /top-10/ отдаются файлами about.html и top-10.html из корня — работает и без папок about/ и top-10/.
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteRule ^b\.html$ / [R=301,L]
-  RewriteRule ^about\.html$ /about/ [R=301,L]
+  RewriteRule ^about$ /about/ [R=301,L]
+  RewriteRule ^top-10$ /top-10/ [R=301,L]
+  RewriteRule ^about/(index\.html)?$ /about.html [L]
+  RewriteRule ^top-10/(index\.html)?$ /top-10.html [L]
 </IfModule>
 
 # Ненайденный адрес — честная страница 404 (не главная), чтобы пропавший файл сразу был заметен

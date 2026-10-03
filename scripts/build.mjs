@@ -1052,7 +1052,10 @@ const pages = artifact
       'top-10/index.html': rootify(html),
       'about/index.html': rootify(aboutHtml),
       'b.html': redirect('/'),
-      'about.html': redirect('/about/'),
+      // Те же страницы плоскими файлами в корне: .htaccess отдает их по адресам /about/ и /top-10/,
+      // так что адреса работают, даже если хостинг не загрузил папки или не отдает index.html из них
+      'about.html': rootify(aboutHtml),
+      'top-10.html': rootify(html),
       '404.html': rootify(notFoundHtml),
       ...Object.fromEntries(Object.entries(legal).map(([k, v]) => [k, rootify(v)])),
     };
@@ -1068,7 +1071,7 @@ for (const f of await readdir(new URL('src/fonts/', root))) await copyFile(new U
 if (!artifact) {
   await writeFile(
     new URL('robots.txt', out),
-    `User-agent: *\nDisallow: /privacy.html\nDisallow: /consent.html\nDisallow: /b.html\nDisallow: /about.html\n${SITE.url ? `\nSitemap: ${SITE.url}sitemap.xml\n` : ''}`
+    `User-agent: *\nDisallow: /privacy.html\nDisallow: /consent.html\nDisallow: /b.html\nDisallow: /about.html\nDisallow: /top-10.html\n${SITE.url ? `\nSitemap: ${SITE.url}sitemap.xml\n` : ''}`
   );
   if (SITE.url) {
     await writeFile(
