@@ -384,9 +384,9 @@ export const coursesB = [
     image: null,
     duration: '12 месяцев',
     schedule: null,
-    price: 110160, // сумма рассрочки базового тарифа 4 590 ₽ × 24 мес., одной суммой школа цену не показывает
+    price: 195264, // сумма рассрочки базового тарифа 5 424 ₽ × 36 мес., одной суммой школа цену не показывает
     priceFrom: true,
-    priceMonthly: 4590,
+    priceMonthly: 5424, // рассрочка на 36 мес., первый платеж через 3 месяца после старта
     priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
     level: 'С нуля',
@@ -411,9 +411,9 @@ export const coursesB = [
     image: null,
     duration: '8–9 месяцев', // стартовый формат 8 мес., с трудоустройством 9 мес.
     schedule: null,
-    price: 210000, // ориентир: 8 750 ₽ × 24 мес., одним платежом не подтверждена
+    price: 109896, // сумма беспроцентной рассрочки 4 579 ₽ × 24 мес.
     priceFrom: true,
-    priceMonthly: 8750,
+    priceMonthly: 4579, // беспроцентная рассрочка на 24 мес.
     priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
     level: 'С нуля',
