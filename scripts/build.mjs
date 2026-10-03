@@ -10,7 +10,7 @@ const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
 
 const SITE = {
-  name: 'Course Ai',
+  name: 'Cursai',
   domain: 'cursai.ru',
   updated: 'октябрь 2026',
   year: 2026,
@@ -796,7 +796,7 @@ const spark = '<svg class="ab-spark" viewBox="0 0 24 24" aria-hidden="true"><pat
 const mail = esc(SITE.contact);
 const copyIco = '<svg class="ico ico-copy" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 3.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
 const aboutTitle = `О нас · ${SITE.name}`;
-const aboutDescription = 'Course Ai — независимая подборка онлайн-курсов по нейросетям. Как ИИ изменил мир за последние годы и почему учиться работать с ним стоит уже сейчас.';
+const aboutDescription = 'Cursai — независимая подборка онлайн-курсов по нейросетям. Как ИИ изменил мир за последние годы и почему учиться работать с ним стоит уже сейчас.';
 const aboutHtml = `<!doctype html>
 <html lang="ru">
 <head>
@@ -835,7 +835,7 @@ ${themeBoot}
       </h1>
       <div class="ab-hero-row">
         <div class="ab-hero-text">
-          <p class="hero-lead">Cursai — рейтинг курсов для тех, кто хочет использовать ИИ в работе, творчестве и собственных проектах. Мы собираем программы по нейросетям и современным профессиям, где ИИ — часть практики. Сравниваем содержание, задания, поддержку и стоимость, чтобы вам было проще выбрать обучение под свои задачи.</p>
+          <p class="hero-lead">${esc(SITE.name)} — рейтинг курсов для тех, кто хочет использовать ИИ в работе, творчестве и собственных проектах. Мы собираем программы по нейросетям и современным профессиям, где ИИ — часть практики. Сравниваем содержание, задания, поддержку и стоимость, чтобы вам было проще выбрать обучение под свои задачи.</p>
         </div>
         <aside class="ab-contact" aria-labelledby="ab-contact-title">
           <span class="ab-paper ab-paper-1" aria-hidden="true"></span>
