@@ -1958,6 +1958,184 @@ td:nth-child(4) {
   color: #121212;
 }
 
+/* Заголовок направления и переключатель вида в одну строку */
+.dir-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin-top: clamp(16px, 3vw, 32px);
+}
+.dir-status-row .dir-status {
+  margin-top: 0;
+}
+.views {
+  display: inline-flex;
+  flex: none;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 99px;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+.view {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 99px;
+  background: none;
+  color: var(--ink-2);
+  font: 600 0.92rem/1 var(--f-body);
+  cursor: pointer;
+  transition: background-color 0.25s var(--ease), color 0.25s var(--ease);
+}
+.view .ico {
+  fill: currentColor;
+}
+.view:hover {
+  color: var(--ink);
+}
+.view[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+/* Подробности карточки видны только в виде «Плитки» */
+.mcard-more {
+  display: none;
+}
+.mcard-bars {
+  display: grid;
+  gap: 12px;
+}
+.mcard-bars li {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) 2.2em;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+.mcard-bars i {
+  height: 8px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--c) var(--v), var(--paper-line) var(--v));
+}
+.mcard-bars b {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Вид «Плитки»: одна карточка в ряд, логотип слева, программа, плюсы, факты и оценки */
+.mgrid.is-list {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+}
+.is-list .mcard {
+  flex-direction: row;
+}
+.is-list .mcard:hover {
+  transform: none;
+}
+.is-list .mcard-cover {
+  flex: 0 0 clamp(220px, 26%, 320px);
+  aspect-ratio: auto;
+}
+.is-list .mcard-logo {
+  padding: 22% 18%;
+}
+.is-list .mcard-body {
+  gap: 12px;
+  padding: clamp(20px, 3vw, 32px);
+}
+.is-list .mcard-title {
+  display: block;
+  min-height: 0;
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  line-height: 1.2;
+}
+.is-list .mcard-hook {
+  display: block;
+  min-height: 0;
+  font-size: 1rem;
+}
+.is-list .mcard-price-row,
+.is-list .mcard-facts {
+  display: none;
+}
+.is-list .mcard-more {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+  gap: 20px clamp(24px, 4vw, 48px);
+  padding-top: 16px;
+  border-top: 1px solid var(--paper-line);
+}
+.mcard-main,
+.mcard-aside {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  min-width: 0;
+}
+.is-list .learn {
+  font-size: 0.98rem;
+}
+.is-list .pros {
+  padding-top: 0;
+  border-top: 0;
+}
+.is-list .stub {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+.is-list .stub div:first-child dd {
+  white-space: nowrap;
+}
+.is-list .mcard-tags {
+  margin-top: 4px;
+}
+.is-list .mcard-cta {
+  align-self: flex-start;
+  width: auto;
+  padding-inline: 28px;
+}
+@media (max-width: 900px) {
+  .is-list .mcard-more {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .is-list .mcard {
+    flex-direction: column;
+  }
+  .is-list .mcard-cover {
+    flex: none;
+    aspect-ratio: 16 / 7;
+  }
+  .is-list .mcard-logo {
+    padding: 8% 20%;
+  }
+  .is-list .stub {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .is-list .mcard-cta {
+    align-self: stretch;
+    width: 100%;
+  }
+}
+@media (max-width: 640px) {
+  .views {
+    width: 100%;
+  }
+  .view {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 420px) {
   .mgrid {
     grid-template-columns: minmax(0, 1fr);

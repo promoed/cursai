@@ -579,6 +579,36 @@ const heroArt = `
         </div>
       </div>`;
 
+// Подробности для вида «Плитки»: в сетке скрыты. Показываем только то, что заполнено в данных курса.
+const more = (c) => {
+  const facts = [
+    ['Полная стоимость', priceText(c.price, { from: c.priceFrom })],
+    ['В рассрочку', priceText(c.priceMonthly, { from: c.priceMonthlyFrom, perMonth: true })],
+    ['Срок', c.duration],
+    ['Занятия', c.schedule],
+    ['Уровень', c.level],
+    ['Формат', c.format],
+    ['Кому', c.audience],
+  ]
+    .filter(([, v]) => v)
+    .map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`)
+    .join('');
+  const bars = criteria
+    .map((k) => `<li><span>${k.label}</span><i style="--v:${c.scores[k.key] * 10}%"></i><b>${fmt(c.scores[k.key])}</b></li>`)
+    .join('');
+  return `
+              <div class="mcard-main">${c.learn ? `
+                <h4 class="kicker">Что вы узнаете</h4>
+                <p class="learn">${esc(c.learn)}</p>` : ''}${c.pros ? `
+                <ul class="pros" aria-label="Преимущества курса">${c.pros.map((p) => `<li>${check}<span>${esc(p)}</span></li>`).join('')}</ul>` : ''}
+                <dl class="stub">${facts}</dl>
+              </div>
+              <div class="mcard-aside">
+                <h4 class="kicker">Оценки</h4>
+                <ul class="mcard-bars">${bars}</ul>
+              </div>`;
+};
+
 const courseCard = (c) => {
   const s = schools[c.school];
   const tags = dirsOf(c).map((d) => d.label);
@@ -609,6 +639,8 @@ const courseCard = (c) => {
             <p class="mcard-hook">${esc(c.hook)}</p>
             ${priceRow ? `<p class="mcard-price-row">${priceRow}</p>` : ''}
             ${facts ? `<p class="mcard-facts">${facts}</p>` : ''}
+            <div class="mcard-more">${more(c)}
+            </div>
             <ul class="mcard-tags">
               ${shown.map((t) => `<li>${esc(t)}</li>`).join('')}${rest > 0 ? `<li>+ еще ${rest}</li>` : ''}
             </ul>
@@ -665,9 +697,15 @@ ${themeBoot}
         <nav class="directions" aria-label="Направления курсов">
         ${directions}
         </nav>
-        <h2 class="h2 dir-status" id="filter-status" aria-live="polite">Все курсы: ${allB.length} лучших ${plural(allB.length)}</h2>
+        <div class="dir-status-row">
+          <h2 class="h2 dir-status" id="filter-status" aria-live="polite">Все курсы: ${allB.length} лучших ${plural(allB.length)}</h2>
+          <div class="views" role="group" aria-label="Вид списка">
+            <button type="button" class="view" data-view="grid" aria-pressed="true"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1.2"/><rect x="9" y="2" width="5" height="5" rx="1.2"/><rect x="2" y="9" width="5" height="5" rx="1.2"/><rect x="9" y="9" width="5" height="5" rx="1.2"/></svg>Сетка</button>
+            <button type="button" class="view" data-view="list" aria-pressed="false"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="5" rx="1.2"/><rect x="2" y="9" width="12" height="5" rx="1.2"/></svg>Плитки</button>
+          </div>
+        </div>
       </div>
-      <div class="mgrid">${bOrder.map(courseCard).join('')}
+      <div class="mgrid" id="mgrid">${bOrder.map(courseCard).join('')}
       </div>
     </div>
   </section>

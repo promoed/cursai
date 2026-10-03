@@ -247,9 +247,37 @@
     if (saved && document.querySelector('[data-filter="' + saved + '"]')) applyFilter(saved, false);
   }
 
+  /* Вид списка на странице Б: «Сетка» (компактные карточки) или «Плитки» (карточка с подробностями).
+     Выбор запоминается на этом устройстве. */
+  var grid = document.getElementById('mgrid');
+  var views = Array.prototype.slice.call(document.querySelectorAll('.view'));
+  function applyView(view) {
+    grid.classList.toggle('is-list', view === 'list');
+    views.forEach(function (v) {
+      v.setAttribute('aria-pressed', String(v.getAttribute('data-view') === view));
+    });
+  }
+  if (grid && views.length) {
+    if (store('nr-view') === 'list') applyView('list');
+    views.forEach(function (v) {
+      v.addEventListener('click', function () {
+        var view = v.getAttribute('data-view');
+        if (v.getAttribute('aria-pressed') === 'true') return;
+        /* Список меняет высоту страницы: держим верх списка на месте, чтобы не потерять место чтения */
+        var top = grid.getBoundingClientRect().top;
+        applyView(view);
+        if (top < 0) window.scrollBy(0, grid.getBoundingClientRect().top - top);
+        store('nr-view', view);
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: 'view_switch', view: view });
+        if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', 'view_switch', { view: view });
+      });
+    });
+  }
+
   /* Cookie и статистика (152-ФЗ): Метрика запускается сразу при заходе на сайт.
      Уведомление внизу экрана информирует об этом и дает отказаться на этом устройстве —
-     тогда при следующих visitах Метрика не загружается. */
+     тогда при следующих визитах Метрика не загружается. */
   var analyticsOn = false;
   function loadAnalytics() {
     var id = window.NR_YM_ID;
