@@ -2,7 +2,7 @@
 //   node scripts/build.mjs             -> site/ (готовая папка для хостинга)
 //   node scripts/build.mjs --artifact  -> dist/ (превью: главная страница без обертки html/head)
 import { readFile, writeFile, mkdir, copyFile, rm, readdir } from 'node:fs/promises';
-import { criteria, filters, schools, courses, coursesB, faq } from '../src/courses.mjs';
+import { criteria, filters, directionsB, schools, courses, coursesB, faq, faqB } from '../src/courses.mjs';
 import { policy, consent } from '../src/legal.mjs';
 
 const root = new URL('../', import.meta.url);
@@ -97,7 +97,7 @@ const missing = allB.flatMap((c) =>
 );
 if (missing.length) console.warn(`Не заполнено (поле не будет показано):\n${missing.join('\n')}`);
 
-const text = [JSON.stringify(allB), JSON.stringify(faq), JSON.stringify(filters)].join('');
+const text = [JSON.stringify(allB), JSON.stringify(faq), JSON.stringify(faqB), JSON.stringify(filters), JSON.stringify(directionsB)].join('');
 if (/[ёЁ]/.test(text)) throw new Error('В текстах есть буква «ё»');
 
 // [текст](#kurs-N) -> ссылка на курс; в JSON-LD уходит чистый текст
@@ -262,9 +262,12 @@ const chips = filters
 
 // Цветные плитки направлений на странице Б. Ссылка ?dir=ключ открывает страницу сразу с выбранным направлением —
 // ее можно ставить в рекламу. Места курсов внутри направления пересчитываются с 1 (см. applyFilter в app.js).
-const directions = filters
+// Направления страницы Б, в которые попадает курс (по меткам из directionsB.tags)
+const dirsOf = (c) => directionsB.filter((d) => d.tags && c.tags.some((t) => d.tags.includes(t)));
+const dirAliases = Object.fromEntries(directionsB.flatMap((d) => (d.aliases || []).map((a) => [a, d.key])));
+const directions = directionsB
   .map((f, i) => {
-    const n = f.key === 'all' ? allB.length : allB.filter((c) => c.tags.includes(f.key)).length;
+    const n = f.key === 'all' ? allB.length : allB.filter((c) => dirsOf(c).includes(f)).length;
     const all = f.key === 'all';
     const style = all ? `--i:${i}` : `--c:${palette[(i - 1) % palette.length]}; --i:${i}`;
     return `<a class="direction${all ? ' direction-all' : ''}" href="${all ? 'b.html' : `?dir=${f.key}`}" data-filter="${f.key}" data-heading="${esc(f.heading)}"${all ? ' aria-current="true"' : ''} style="${style}">${esc(f.label)}<span class="direction-n">${n} ${plural(n)}</span></a>`;
@@ -283,7 +286,7 @@ const methodSection = `
     </div>
   </section>`;
 
-const faqHtml = faq
+const faqList = (list) => list
   .map(
     (f, i) => `
         <details class="qa"${i === 0 ? ' open' : ''}>
@@ -292,6 +295,8 @@ const faqHtml = faq
         </details>`
   )
   .join('');
+const faqHtml = faqList(faq);
+const faqHtmlB = faqList(faqB);
 
 const index = courses
   .map((c) => `<a href="#kurs-${c.rank}" style="--c:${c.color}" data-rank="${c.rank}" aria-label="${c.rank} место: ${esc(c.short)}"><span>${c.rank}</span></a>`)
@@ -315,7 +320,7 @@ const finalPicksA = finalPicks('urlA');
 const finalPicksB = bOrder
   .map(
     (c) => `
-          <a class="pick" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="pick" data-school="${esc(schools[c.school].name)}" data-tags="${c.tags.join(' ')}" style="--c:${c.color}"${c.placeAll > 3 ? ' hidden' : ''}>
+          <a class="pick" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="pick" data-school="${esc(schools[c.school].name)}" data-tags="${dirsOf(c).map((d) => d.key).join(' ')}" style="--c:${c.color}"${c.placeAll > 3 ? ' hidden' : ''}>
             <span class="pick-num">${c.placeAll}</span>
             <span class="pick-text"><b>${esc(c.title)}</b><span>${esc(schools[c.school].name)} · ${fmt(c.total)}</span></span>
             ${arrow}
@@ -546,7 +551,6 @@ ${artifact ? '' : '</body>\n</html>'}
 
 // ============ Страница Б: рейтинг по направлениям ============
 // Первый экран и методика как на главной, затем цветные плитки направлений и компактные карточки курсов.
-const tagLabel = Object.fromEntries(filters.filter((f) => f.key !== 'all').map((f) => [f.key, f.label]));
 const calIco = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 6.2h11M5.3 2v2.4M10.7 2v2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
 
 const miniCover = (c) => {
@@ -577,7 +581,7 @@ const heroArt = `
 
 const courseCard = (c) => {
   const s = schools[c.school];
-  const tags = c.tags.map((t) => tagLabel[t]).filter(Boolean);
+  const tags = dirsOf(c).map((d) => d.label);
   const shown = tags.slice(0, 2);
   const rest = tags.length - shown.length;
   const facts = [c.duration ? `<span>${calIco}${esc(c.duration)}</span>` : '']
@@ -590,7 +594,7 @@ const courseCard = (c) => {
     .filter(Boolean)
     .join('');
   return `
-        <article class="mcard${c.placeAll === 1 ? ' is-best' : ''}" id="kurs-${c.rank}" data-tags="${c.tags.join(' ')}" data-rank="${c.rank}" data-all="${c.placeAll}" style="--c:${ACCENT}" aria-labelledby="mt-${c.rank}">
+        <article class="mcard${c.placeAll === 1 ? ' is-best' : ''}" id="kurs-${c.rank}" data-tags="${dirsOf(c).map((d) => d.key).join(' ')}" data-rank="${c.rank}" data-all="${c.placeAll}" style="--c:${ACCENT}" aria-labelledby="mt-${c.rank}">
           <div class="mcard-cover">
             ${miniCover(c)}
             <span class="mcard-rank" aria-hidden="true">${c.placeAll}</span>
@@ -672,7 +676,7 @@ ${methodSection}
   <section class="faq" id="faq" data-tint="base" aria-labelledby="faq-title">
     <div class="wrap faq-in">
       <h2 class="h2" id="faq-title">Частые вопросы</h2>
-      <div class="qa-list">${faqHtml}
+      <div class="qa-list">${faqHtmlB}
       </div>
     </div>
   </section>
@@ -719,6 +723,7 @@ ${methodSection}
 <script>
 window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
 window.NR_GOAL = 'rating_course_click';
+window.NR_DIR_ALIAS = ${JSON.stringify(dirAliases)};
 window.NR_COURSES = ${JSON.stringify(allB.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlB, color: ACCENT })))};
 ${js}
 </script>

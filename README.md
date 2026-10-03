@@ -28,10 +28,9 @@ site/
 
 ```
 https://cursai.ru/b.html                 все курсы
-https://cursai.ru/b.html?dir=self        Для себя
-https://cursai.ru/b.html?dir=work        Для работы
-https://cursai.ru/b.html?dir=marketing   Маркетинг
-https://cursai.ru/b.html?dir=business    Бизнес
+https://cursai.ru/b.html?dir=self        ИИ для себя
+https://cursai.ru/b.html?dir=work        ИИ для работы и бизнеса (старый адрес ?dir=business ведет сюда же)
+https://cursai.ru/b.html?dir=marketing   ИИ для маркетинга
 https://cursai.ru/b.html?dir=agents      ИИ-агенты
 https://cursai.ru/b.html?dir=career      Новая профессия
 https://cursai.ru/b.html?dir=datascience Data Science
@@ -39,7 +38,7 @@ https://cursai.ru/b.html?dir=datascience Data Science
 
 Курсы только для этой страницы (сейчас Data Science) лежат в `coursesB` в `src/courses.mjs`, а их направление отмечено в `filters` флагом `onlyB: true` — на главной их нет. В «Все курсы» на странице Б все курсы стоят по итоговой оценке.
 
-UTM-метки можно добавлять как обычно: `b.html?dir=marketing&utm_source=yandex`. Направления берутся из `filters` в `src/courses.mjs`, курс попадает в направление по своим `tags`.
+UTM-метки можно добавлять как обычно: `b.html?dir=marketing&utm_source=yandex`. Плитки направлений и их заголовки берутся из `directionsB` в `src/courses.mjs`: курс попадает в направление, если у него есть одна из меток `tags` этого направления. Частые вопросы этой страницы — `faqB`, у главной свои (`faq`).
 
 Метрика: клики по кнопкам курсов на этой странице отправляют свою цель `rating_course_click` (на главной — `course_click`), чтобы конверсии страниц не смешивались. У цели есть параметры `place`, `school` и `direction` — видно, из какого направления был переход в школу. Клик по плитке направления отправляет цель `direction_click`. Все три цели создаются в Метрике как «JavaScript-событие» с этими идентификаторами.
 

@@ -226,8 +226,10 @@
       });
     });
     var dir = /[?&]dir=([\w-]+)/.exec(location.search);
-    if (dir && document.querySelector('.direction[data-filter="' + dir[1] + '"]')) {
-      applyFilter(dir[1], false);
+    /* Старые адреса объединенных направлений (например, ?dir=business) открывают новое */
+    var dirKey = dir && ((window.NR_DIR_ALIAS || {})[dir[1]] || dir[1]);
+    if (dirKey && document.querySelector('.direction[data-filter="' + dirKey + '"]')) {
+      applyFilter(dirKey, false);
       var target = document.getElementById('rating');
       /* Прокрутка к списку после первой отрисовки, чтобы браузер успел зафиксировать скорость загрузки */
       if (target && !location.hash) {
