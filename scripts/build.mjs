@@ -253,7 +253,7 @@ const directions = filters
   .join('\n        ');
 
 const heroSub = filters.find((f) => f.key === 'all').heading;
-const bLead = 'Сравните курсы по своему направлению — и выберите тот, который подходит под ваши задачи.';
+const bLead = 'Сравните курсы, где учат применять AI. Для работы, бизнеса и творчества.';
 const heroLead = `Освойте ИИ для работы, творчества и собственных проектов. Сравните ${courses.length} ${plural(courses.length)} по программе, практике и поддержке — и выберите тот, который подходит под ваши задачи и уровень.`;
 const methodSection = `
   <section class="method" data-tint="base" aria-labelledby="method-title">
@@ -541,15 +541,18 @@ const miniCover = (c) => {
 // На странице Б у всех карточек один акцентный цвет — фиолетовый из палитры сайта
 const ACCENT = '#9C8CFF';
 
-// Декор первого экрана страницы Б: минималистичный пьедестал 1–2–3 (столбцы вырастают при загрузке)
-// и звезда над первым местом, которая медленно покачивается. Без брендов и конкретных курсов.
+// Декор первого экрана страницы Б: мозаика 2×2 из цветных плиток с геометрическими фигурами
+// (те же фигуры, что у номеров курсов на главной). Плитки появляются по очереди, фигуры плавно двигаются.
+const mosaic = [
+  { c: palette[0], cls: 'm-circle', shape: '<circle cx="60" cy="60" r="44"/>' },
+  { c: palette[2], cls: 'm-quarter', shape: '<path d="M16 104A88 88 0 0 1 104 16v88z"/>' },
+  { c: palette[3], cls: 'm-tri', shape: '<path d="M60 18l46 84H14z"/>' },
+  { c: 'var(--ink)', cls: 'm-half', shape: '<path d="M14 66a46 46 0 0 1 92 0z"/>' },
+];
 const heroArt = `
       <div class="hero-art" aria-hidden="true">
-        <svg class="art-star" viewBox="0 0 24 24"><path d="M12 1.5l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.6l-6.4 3.5L7 14l-5.3-5 7.2-.9z"/></svg>
-        <div class="podium">
-          <span class="pod pod-2" style="--c:${palette[2]}"><b>2</b></span>
-          <span class="pod pod-1" style="--c:${palette[0]}"><b>1</b></span>
-          <span class="pod pod-3" style="--c:${palette[3]}"><b>3</b></span>
+        <div class="mosaic">
+          ${mosaic.map((t, i) => `<span class="tile" style="--t:${t.c}; --i:${i}"><svg class="${t.cls}" viewBox="0 0 120 120">${t.shape}</svg></span>`).join('\n          ')}
         </div>
       </div>`;
 
