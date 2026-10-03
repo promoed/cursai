@@ -567,17 +567,18 @@ const miniCover = (c) => {
 // На странице Б у всех карточек один акцентный цвет — фиолетовый из палитры сайта
 const ACCENT = '#9C8CFF';
 
-// Декор первого экрана страницы Б: белая «бумажная скульптура». На белом диске лежат белые фигуры
-// (полукруг, четверть, кольцо, капсула), объем дают только мягкие тени; фигуры медленно поворачиваются.
+// Декор первого экрана главной: колода цветных карточек направлений. Карточки сами перетасовываются
+// (верхняя уходит назад), клик по карточке открывает это направление в рейтинге.
+const deckDirs = directionsB.filter((d) => d.tags);
 const heroArt = `
-      <div class="hero-art" aria-hidden="true">
-        <div class="sculpt">
-          <span class="sc sc-disc"></span>
-          <span class="sc sc-half"></span>
-          <span class="sc sc-quarter"></span>
-          <span class="sc sc-pill"></span>
-          <span class="sc sc-ring"></span>
-          <span class="sc sc-dot"></span>
+      <div class="hero-art">
+        <div class="deck" role="group" aria-label="Направления рейтинга">
+          ${deckDirs
+            .map((d, i) => {
+              const n = allB.filter((c) => dirsOf(c).includes(d)).length;
+              return `<a class="deck-card" href="?dir=${d.key}" data-dir="${d.key}" style="--c:${palette[i % palette.length]}; --p:${i}" tabindex="${i ? -1 : 0}"><span class="deck-n">${n} ${plural(n)}</span><span class="deck-label">${esc(d.label)}</span><span class="deck-go">Смотреть ${arrow}</span></a>`;
+            })
+            .join('\n          ')}
         </div>
       </div>`;
 
@@ -676,6 +677,11 @@ ${themeBoot}
 <header class="mtop">
   <div class="wrap mtop-in">
     <span class="logo"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</span>
+    <nav class="site-nav" aria-label="Разделы сайта">
+      <a href="${U.home}" aria-current="page">Рейтинг курсов</a>
+      <a href="${U.top}">Курсы по ИИ</a>
+      <a href="${U.about}">О нас</a>
+    </nav>
     <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
       <span class="theme-knob" aria-hidden="true"></span>
     </button>
@@ -803,13 +809,14 @@ ${themeBoot}
 <header class="mtop">
   <div class="wrap mtop-in">
     <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</a>
-    <nav class="ab-nav" aria-label="Разделы сайта">
-      <a href="${U.home}">Рейтинг</a>
-      <a href="${U.top}">Топ-10</a>
-      <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
-        <span class="theme-knob" aria-hidden="true"></span>
-      </button>
+    <nav class="site-nav" aria-label="Разделы сайта">
+      <a href="${U.home}">Рейтинг курсов</a>
+      <a href="${U.top}">Курсы по ИИ</a>
+      <a href="${U.about}" aria-current="page">О нас</a>
     </nav>
+    <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
+      <span class="theme-knob" aria-hidden="true"></span>
+    </button>
   </div>
 </header>
 
