@@ -391,12 +391,17 @@
     if (mail) contactGoal('mailto');
     var copy = e.target.closest && e.target.closest('[data-copy]');
     if (!copy) return;
-    var label = copy.textContent;
+    /* Индикатор: значок копирования меняется на галочку, подсказка — на «Почта скопирована» */
+    var hint = copy.parentNode.querySelector('.ab-copy-hint');
+    var label = hint ? hint.textContent : '';
     var done = function () {
-      copy.textContent = 'Скопировано';
-      setTimeout(function () {
-        copy.textContent = label;
-      }, 1800);
+      copy.classList.add('is-copied');
+      if (hint) hint.textContent = 'Почта скопирована';
+      clearTimeout(copy._t);
+      copy._t = setTimeout(function () {
+        copy.classList.remove('is-copied');
+        if (hint) hint.textContent = label;
+      }, 2200);
     };
     try {
       navigator.clipboard.writeText(copy.getAttribute('data-copy')).then(done, function () {});

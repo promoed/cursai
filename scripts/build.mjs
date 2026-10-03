@@ -2,7 +2,7 @@
 //   node scripts/build.mjs             -> site/ (готовая папка для хостинга)
 //   node scripts/build.mjs --artifact  -> dist/ (превью: главная страница без обертки html/head)
 import { readFile, writeFile, mkdir, copyFile, rm, readdir } from 'node:fs/promises';
-import { criteria, filters, directionsB, schools, courses, coursesB, faq, faqB } from '../src/courses.mjs';
+import { criteria, filters, directionsB, schools, courses, coursesB, faq } from '../src/courses.mjs';
 import { policy, consent } from '../src/legal.mjs';
 import { timeline, bigStat, outlook } from '../src/about.mjs';
 
@@ -100,7 +100,7 @@ const missing = allB.flatMap((c) =>
 );
 if (missing.length) console.warn(`Не заполнено (поле не будет показано):\n${missing.join('\n')}`);
 
-const text = [JSON.stringify({ timeline, bigStat, outlook }), JSON.stringify(allB), JSON.stringify(faq), JSON.stringify(faqB), JSON.stringify(filters), JSON.stringify(directionsB)].join('');
+const text = [JSON.stringify({ timeline, bigStat, outlook }), JSON.stringify(allB), JSON.stringify(faq), JSON.stringify(filters), JSON.stringify(directionsB)].join('');
 if (/[ёЁ]/.test(text)) throw new Error('В текстах есть буква «ё»');
 
 // [текст](#kurs-N) -> ссылка на курс; в JSON-LD уходит чистый текст
@@ -299,7 +299,6 @@ const faqList = (list) => list
   )
   .join('');
 const faqHtml = faqList(faq);
-const faqHtmlB = faqList(faqB);
 
 const index = courses
   .map((c) => `<a href="#kurs-${c.rank}" style="--c:${c.color}" data-rank="${c.rank}" aria-label="${c.rank} место: ${esc(c.short)}"><span>${c.rank}</span></a>`)
@@ -568,26 +567,18 @@ const miniCover = (c) => {
 // На странице Б у всех карточек один акцентный цвет — фиолетовый из палитры сайта
 const ACCENT = '#9C8CFF';
 
-// Декор первого экрана страницы Б: абстрактная «орбита». В центре фиолетовый круг с искрой ИИ,
-// вокруг два тонких кольца, по которым медленно движутся цветные точки (курсы вокруг выбора).
+// Декор первого экрана страницы Б: белая «бумажная скульптура». На белом диске лежат белые фигуры
+// (полукруг, четверть, кольцо, капсула), объем дают только мягкие тени; фигуры медленно поворачиваются.
 const heroArt = `
       <div class="hero-art" aria-hidden="true">
-        <svg class="orbit" viewBox="0 0 340 340">
-          <circle class="o-ring" cx="170" cy="170" r="118"/>
-          <circle class="o-ring o-ring-dash" cx="170" cy="170" r="160"/>
-          <circle class="o-core" cx="170" cy="170" r="78" fill="${ACCENT}"/>
-          <path class="o-spark" d="M170 124c4 26 20 42 46 46-26 4-42 20-46 46-4-26-20-42-46-46 26-4 42-20 46-46z"/>
-          <path class="o-spark o-spark-sm" d="M205 120c1.6 9 6 13.4 15 15-9 1.6-13.4 6-15 15-1.6-9-6-13.4-15-15 9-1.6 13.4-6 15-15z"/>
-          <g class="o-orb o-orb-a">
-            <circle cx="170" cy="52" r="15" fill="${palette[0]}"/>
-            <circle cx="288" cy="170" r="8" fill="${palette[3]}"/>
-          </g>
-          <g class="o-orb o-orb-b">
-            <circle cx="10" cy="170" r="12" fill="${palette[1]}"/>
-            <circle cx="283" cy="283" r="9" fill="${palette[4]}"/>
-            <circle cx="170" cy="330" r="7" fill="${palette[5]}"/>
-          </g>
-        </svg>
+        <div class="sculpt">
+          <span class="sc sc-disc"></span>
+          <span class="sc sc-half"></span>
+          <span class="sc sc-quarter"></span>
+          <span class="sc sc-pill"></span>
+          <span class="sc sc-ring"></span>
+          <span class="sc sc-dot"></span>
+        </div>
       </div>`;
 
 // Подробности для вида «Плитки»: в сетке скрыты. Показываем только то, что заполнено в данных курса.
@@ -721,7 +712,7 @@ ${methodSection}
   <section class="faq" id="faq" data-tint="base" aria-labelledby="faq-title">
     <div class="wrap faq-in">
       <h2 class="h2" id="faq-title">Частые вопросы</h2>
-      <div class="qa-list">${faqHtmlB}
+      <div class="qa-list">${faqHtml}
       </div>
     </div>
   </section>
@@ -781,6 +772,7 @@ ${js}
 // Общая для обеих страниц рейтинга: о проекте, почта для сотрудничества, история прогресса ИИ и вывод.
 const spark = '<svg class="ab-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1c.9 5.8 4.2 9.1 10 10-5.8.9-9.1 4.2-10 10-.9-5.8-4.2-9.1-10-10 5.8-.9 9.1-4.2 10-10z"/></svg>';
 const mail = esc(SITE.contact);
+const copyIco = '<svg class="ico ico-copy" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 3.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
 const aboutTitle = `О нас · ${SITE.name}`;
 const aboutDescription = 'Course Ai — независимая подборка онлайн-курсов по нейросетям. Как ИИ изменил мир за последние годы и почему учиться работать с ним стоит уже сейчас.';
 const aboutHtml = `<!doctype html>
@@ -821,23 +813,17 @@ ${themeBoot}
       <div class="ab-hero-row">
         <div class="ab-hero-text">
           <p class="hero-lead">${esc(SITE.name)} — независимая подборка онлайн-курсов, где учат работать с нейросетями. Мы сравниваем программы, практику и цены, чтобы вы быстрее нашли свой курс и начали учиться.</p>
-          <div class="hero-cta">
-            <a class="btn btn-ink" href="index.html">Топ-10 курсов ${arrow}</a>
-            <a class="btn btn-line" href="b.html">Рейтинг по направлениям</a>
-          </div>
         </div>
         <aside class="ab-contact" aria-labelledby="ab-contact-title">
           <span class="ab-paper ab-paper-1" aria-hidden="true"></span>
           <span class="ab-paper ab-paper-2" aria-hidden="true"></span>
           <div class="ab-card">
-            <p class="ab-card-kicker">${spark}Сотрудничество</p>
-            <h2 class="ab-card-title" id="ab-contact-title">Школам, авторам курсов и партнерам</h2>
-            <p class="ab-card-text">Обсудим размещение курса в рейтинге, обновление данных о программе или совместный проект.</p>
-            <a class="ab-mail" href="mailto:${mail}">${mail}</a>
-            <div class="ab-card-actions">
-              <a class="btn btn-sm ab-btn-dark" href="mailto:${mail}">Написать ${arrow}</a>
-              <button class="btn btn-sm ab-btn-outline" type="button" data-copy="${mail}">Скопировать почту</button>
-            </div>
+            <h2 class="ab-card-title" id="ab-contact-title">${spark}Сотрудничество и вопросы</h2>
+            <button class="ab-mail" type="button" data-copy="${mail}" aria-describedby="ab-copy-hint">
+              <span class="ab-mail-text">${mail}</span>
+              <span class="ab-mail-ico" aria-hidden="true">${copyIco}${check}</span>
+            </button>
+            <p class="ab-copy-hint" id="ab-copy-hint" aria-live="polite">Нажмите, чтобы скопировать</p>
           </div>
         </aside>
       </div>
@@ -874,17 +860,6 @@ ${themeBoot}
     <div class="wrap">
       <h2 class="h2 ab-h2" id="ab-out-title">${esc(outlook.title)}</h2>
       <p class="ab-out-lead">${esc(outlook.lead)}</p>
-      <ol class="ab-theses">${outlook.theses
-        .map(
-          (t, i) => `
-        <li data-reveal style="--c:${palette[[2, 0, 3, 1][i]]}; --i:${i % 2}">
-          <span class="ab-thesis-n">${i + 1}</span>
-          <h3>${esc(t.title)}</h3>
-          <p>${esc(t.text)}</p>
-        </li>`
-        )
-        .join('')}
-      </ol>
     </div>
   </section>
 
@@ -892,12 +867,10 @@ ${themeBoot}
     <div class="wrap">
       <div class="ab-final-in" data-reveal>
         <h2 class="ab-final-title">Лучший момент начать — сейчас</h2>
-        <p>Выберите курс под свою задачу: для работы, бизнеса, творчества или новой профессии.</p>
         <div class="hero-cta">
           <a class="btn ab-btn-dark" href="index.html">Топ-10 курсов по нейросетям ${arrow}</a>
           <a class="btn ab-btn-outline" href="b.html">Рейтинг по направлениям</a>
         </div>
-        <p class="ab-final-mail">Сотрудничество: <a href="mailto:${mail}">${mail}</a></p>
       </div>
     </div>
   </section>
