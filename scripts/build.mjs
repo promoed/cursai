@@ -657,11 +657,11 @@ ${themeBoot}
   <section class="mcards" id="rating" aria-labelledby="rating-title">
     <div class="wrap">
       <div class="dir-bar" data-tint="base">
-        <h2 class="h2" id="rating-title">Рейтинг курсов</h2>
+        <h2 class="h2" id="rating-title">Направление</h2>
         <nav class="directions" aria-label="Направления курсов">
         ${directions}
         </nav>
-        <p class="filter-status" id="filter-status" aria-live="polite">Все курсы: ${allB.length} лучших ${plural(allB.length)}</p>
+        <h2 class="h2 dir-status" id="filter-status" aria-live="polite">Все курсы: ${allB.length} лучших ${plural(allB.length)}</h2>
       </div>
       <div class="mgrid">${bOrder.map(courseCard).join('')}
       </div>

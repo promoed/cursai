@@ -1697,6 +1697,11 @@ td:nth-child(4) {
   padding-block: clamp(48px, 7vw, 88px) clamp(24px, 4vw, 40px);
 }
 
+/* Заголовок под плитками: выбранное направление и число курсов */
+.dir-status {
+  margin-top: clamp(16px, 3vw, 32px);
+}
+
 /* Цветные плитки направлений, по мотивам наклеек первого экрана */
 .directions {
   display: grid;

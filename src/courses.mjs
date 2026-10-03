@@ -342,6 +342,7 @@ export const coursesB = [
     title: 'Data Scientist: расширенный курс',
     short: 'Data Scientist: расширенный',
     url: 'https://netology.ru/programs/prodatascience',
+    affiliateB: 'https://go.avred.online/6894aace46a4d850?erid=2VfnxxQsJbC&m=1', // партнерская ссылка (курс есть только на странице Б)
     image: null,
     duration: '15–17 месяцев', // расширенный тариф 15 мес., продвинутый 17 мес.
     schedule: null,
@@ -358,6 +359,7 @@ export const coursesB = [
     title: 'Data Scientist + ИИ',
     short: 'Data Scientist + ИИ',
     url: 'https://skillbox.ru/course/profession-data-scientist/',
+    affiliateB: 'https://go.avred.online/3b5b8b65b27a898a?erid=2VfnxwisD9b&m=1', // партнерская ссылка (курс есть только на странице Б)
     image: null,
     duration: '12 месяцев',
     schedule: null,
@@ -374,6 +376,7 @@ export const coursesB = [
     title: 'Data Scientist',
     short: 'Data Scientist',
     url: 'https://eduson.academy/data-scientist',
+    affiliateB: 'https://go.avred.online/6cf8f6ea1147d600?erid=LdtCKXSTq&m=1', // партнерская ссылка (курс есть только на странице Б)
     image: null,
     duration: '8–9 месяцев', // стартовый формат 8 мес., с трудоустройством 9 мес.
     schedule: null,
@@ -386,10 +389,28 @@ export const coursesB = [
     scores: { practice: 9.4, program: 9.0, support: 9.0, result: 9.0 },
   },
   {
+    school: 'gb',
+    title: 'Data Scientist с AI',
+    short: 'Data Scientist с AI',
+    url: 'https://gb.ru/geek_university/developer/analyst/data-science-gb',
+    affiliateB: 'https://go.avred.online/80d4ed35f96aaf60?erid=2VfnxxQa3a9&m=1', // партнерская ссылка (курс есть только на странице Б)
+    image: null,
+    duration: null, // официальная страница срок не называет, агрегаторы пишут 9–12 мес. — не показываем
+    schedule: null,
+    price: 115776, // сумма рассрочки базового тарифа 3 216 ₽ × 36 мес., одним платежом не подтверждена
+    priceFrom: true,
+    priceMonthly: 3216,
+    priceMonthlyFrom: true,
+    tags: ['datascience', 'career'],
+    hook: 'Программа GeekBrains по анализу данных и машинному обучению на Python.',
+    scores: { practice: 9.2, program: 9.0, support: 8.8, result: 8.8 },
+  },
+  {
     school: 'netology',
     title: 'Data Scientist с нуля',
     short: 'Data Scientist с нуля',
     url: 'https://netology.ru/programs/data-scientist',
+    affiliateB: 'https://go.avred.online/cd72907104f1f9c0?erid=2VfnxxQsJbC&m=1', // партнерская ссылка (курс есть только на странице Б)
     image: null,
     duration: '7–15 месяцев', // базовый 7 мес. (в форме записи указано 9), расширенный 15 мес.
     schedule: null,
@@ -400,22 +421,6 @@ export const coursesB = [
     tags: ['datascience', 'career'],
     hook: 'Базовая программа Нетологии по Data Science: от анализа данных до первых моделей машинного обучения.',
     scores: { practice: 9.0, program: 9.0, support: 9.2, result: 9.0 },
-  },
-  {
-    school: 'gb',
-    title: 'Data Scientist с AI',
-    short: 'Data Scientist с AI',
-    url: 'https://gb.ru/geek_university/developer/analyst/data-science-gb',
-    image: null,
-    duration: null, // официальная страница срок не называет, агрегаторы пишут 9–12 мес. — не показываем
-    schedule: null,
-    price: 115776, // сумма рассрочки базового тарифа 3 216 ₽ × 36 мес., одним платежом не подтверждена
-    priceFrom: true,
-    priceMonthly: 3216,
-    priceMonthlyFrom: true,
-    tags: ['datascience', 'career'],
-    hook: 'Программа GeekBrains по анализу данных и машинному обучению на Python.',
-    scores: { practice: 8.8, program: 9.0, support: 8.8, result: 8.8 },
   },
 ];
 
