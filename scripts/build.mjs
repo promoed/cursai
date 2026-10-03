@@ -593,27 +593,22 @@ const more = (c) => {
     .filter(([, v]) => v)
     .map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`)
     .join('');
-  const bars = criteria
-    .map((k) => `<li><span>${k.label}</span><i style="--v:${c.scores[k.key] * 10}%"></i><b>${fmt(c.scores[k.key])}</b></li>`)
-    .join('');
-  return `
-              <div class="mcard-main">${c.learn ? `
-                <h4 class="kicker">Что вы узнаете</h4>
-                <p class="learn">${esc(c.learn)}</p>` : ''}${c.pros ? `
-                <ul class="pros" aria-label="Преимущества курса">${c.pros.map((p) => `<li>${check}<span>${esc(p)}</span></li>`).join('')}</ul>` : ''}
-                <dl class="stub">${facts}</dl>
-              </div>
-              <div class="mcard-aside">
-                <h4 class="kicker">Оценки</h4>
-                <ul class="mcard-bars">${bars}</ul>
-              </div>`;
+  const main = [
+    c.learn ? `<p class="learn">${esc(c.learn)}</p>` : '',
+    c.pros ? `<ul class="pros" aria-label="Преимущества курса">${c.pros.map((p) => `<li>${check}<span>${esc(p)}</span></li>`).join('')}</ul>` : '',
+  ].join('');
+  // Без описания и плюсов факты встают в ряд на всю ширину карточки
+  return main
+    ? `
+              <div class="mcard-main">${main}</div>
+              <dl class="stub">${facts}</dl>`
+    : `
+              <dl class="stub stub-wide">${facts}</dl>`;
 };
 
 const courseCard = (c) => {
   const s = schools[c.school];
-  const tags = dirsOf(c).map((d) => d.label);
-  const shown = tags.slice(0, 2);
-  const rest = tags.length - shown.length;
+  const tags = dirsOf(c).map((d) => d.label).slice(0, 2);
   const facts = [c.duration ? `<span>${calIco}${esc(c.duration)}</span>` : '']
     .filter(Boolean)
     .join('');
@@ -641,10 +636,12 @@ const courseCard = (c) => {
             ${facts ? `<p class="mcard-facts">${facts}</p>` : ''}
             <div class="mcard-more">${more(c)}
             </div>
-            <ul class="mcard-tags">
-              ${shown.map((t) => `<li>${esc(t)}</li>`).join('')}${rest > 0 ? `<li>+ еще ${rest}</li>` : ''}
-            </ul>
-            <a class="btn btn-solid mcard-cta" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="cta" data-school="${esc(s.name)}">Подробнее о курсе ${arrow}</a>
+            <div class="mcard-foot">
+              <ul class="mcard-tags">
+                ${tags.map((t) => `<li>${esc(t)}</li>`).join('')}
+              </ul>
+              <a class="btn btn-solid mcard-cta" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="cta" data-school="${esc(s.name)}">Подробнее о курсе ${arrow}</a>
+            </div>
           </div>
         </article>`;
 };
