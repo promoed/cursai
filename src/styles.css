@@ -1583,14 +1583,14 @@ td:nth-child(4) {
   font-size: clamp(3.6rem, 15vw, 12rem);
 }
 
-/* Декор первого экрана страницы Б: только там, где справа есть свободное место */
+/* Декор первого экрана страницы Б: от 820px, где справа есть свободное место; на телефонах места нет */
 .hero-b .wrap {
   position: relative;
 }
 .hero-art {
   display: none;
 }
-@media (min-width: 1180px) {
+@media (min-width: 820px) {
   .hero-art {
     display: block;
     position: absolute;
@@ -1601,6 +1601,22 @@ td:nth-child(4) {
     pointer-events: none;
     transform-origin: bottom right;
     animation: rise 1s var(--ease) both 0.3s;
+  }
+}
+/* Чем уже экран, тем меньше свободного места справа от «Рейтинг»: масштаб подобран так, чтобы не задевать текст */
+@media (min-width: 820px) and (max-width: 899px) {
+  .hero-art {
+    scale: 0.54;
+  }
+}
+@media (min-width: 900px) and (max-width: 999px) {
+  .hero-art {
+    scale: 0.6;
+  }
+}
+@media (min-width: 1000px) and (max-width: 1179px) {
+  .hero-art {
+    scale: 0.68;
   }
 }
 @media (min-width: 1180px) and (max-width: 1399px) {

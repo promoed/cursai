@@ -639,7 +639,7 @@ ${methodSection}
         <nav class="directions" aria-label="Направления курсов">
         ${directions}
         </nav>
-        <p class="filter-status" id="filter-status" aria-live="polite">Показаны все ${courses.length} ${plural(courses.length)}</p>
+        <p class="filter-status" id="filter-status" aria-live="polite">Все курсы: ${courses.length} лучших ${plural(courses.length)}</p>
       </div>
       <div class="mgrid">${courses.map(courseCard).join('')}
       </div>

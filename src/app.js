@@ -122,6 +122,11 @@
     if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'курса';
     return 'курсов';
   }
+  /* «1 лучший курс», «4 лучших курса», «7 лучших курсов» */
+  function bestCourses(n) {
+    var one = n % 10 === 1 && n % 100 !== 11;
+    return n + (one ? ' лучший ' : ' лучших ') + plural(n);
+  }
   function applyFilter(key, animate) {
     currentFilter = key;
     var run = function () {
@@ -154,12 +159,11 @@
         chip.setAttribute('aria-pressed', String(chip.getAttribute('data-filter') === key));
       });
       var label = document.querySelector('[data-filter="' + key + '"]').firstChild.textContent.trim();
-      status.textContent =
-        key === 'all'
+      status.textContent = directions.length
+        ? label + ': ' + bestCourses(shown)
+        : key === 'all'
           ? 'Показаны все ' + courses.length + ' ' + plural(courses.length)
-          : directions.length
-            ? 'Направление «' + label + '»: ' + shown + ' ' + plural(shown)
-            : 'Задача «' + label + '»: ' + shown + ' ' + plural(shown) + ' из ' + courses.length + ', места в рейтинге сохранены';
+          : 'Задача «' + label + '»: ' + shown + ' ' + plural(shown) + ' из ' + courses.length + ', места в рейтинге сохранены';
     };
     if (animate && document.startViewTransition && !reduce) document.startViewTransition(run);
     else run();
