@@ -2,5 +2,6 @@ User-agent: *
 Disallow: /privacy.html
 Disallow: /consent.html
 Disallow: /b.html
+Disallow: /about.html
 
 Sitemap: https://cursai.ru/sitemap.xml

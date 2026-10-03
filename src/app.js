@@ -213,7 +213,7 @@
   }
 
   if (directions.length) {
-    /* Направления: ссылка вида b.html?dir=marketing сразу открывает нужный список — на нее можно вести рекламу */
+    /* Направления: ссылка вида cursai.ru/?dir=marketing сразу открывает нужный список — на нее можно вести рекламу */
     directions.forEach(function (d) {
       d.addEventListener('click', function (e) {
         e.preventDefault();

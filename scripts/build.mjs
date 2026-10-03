@@ -34,6 +34,12 @@ const SITE = {
   contact: 'aconyone@gmail.com',
 };
 
+// Адреса страниц. На хостинге — чистые адреса от корня сайта (главная — рейтинг, cursai.ru/top-10/, cursai.ru/about/),
+// в превью (--artifact) — плоские файлы рядом друг с другом.
+const U = artifact
+  ? { home: './', top: 'top-10.html', about: 'about.html', privacy: 'privacy.html', consent: 'consent.html' }
+  : { home: '/', top: '/top-10/', about: '/about/', privacy: '/privacy.html', consent: '/consent.html' };
+
 if (!SITE.operator.email) {
   console.warn('Укажите почту в SITE.operator.email (scripts/build.mjs): она выводится в политике и согласии.');
 }
@@ -273,7 +279,7 @@ const directions = directionsB
     const n = f.key === 'all' ? allB.length : allB.filter((c) => dirsOf(c).includes(f)).length;
     const all = f.key === 'all';
     const style = all ? `--i:${i}` : `--c:${palette[(i - 1) % palette.length]}; --i:${i}`;
-    return `<a class="direction${all ? ' direction-all' : ''}" href="${all ? 'b.html' : `?dir=${f.key}`}" data-filter="${f.key}" data-heading="${esc(f.heading)}"${all ? ' aria-current="true"' : ''} style="${style}">${esc(f.label)}<span class="direction-n">${n} ${plural(n)}</span></a>`;
+    return `<a class="direction${all ? ' direction-all' : ''}" href="${all ? U.home : `?dir=${f.key}`}" data-filter="${f.key}" data-heading="${esc(f.heading)}"${all ? ' aria-current="true"' : ''} style="${style}">${esc(f.label)}<span class="direction-n">${n} ${plural(n)}</span></a>`;
   })
   .join('\n        ');
 
@@ -399,21 +405,14 @@ const analyticsHints = `<link rel="preconnect" href="https://mc.yandex.ru">
 
 const themeBoot = `<script>try{var t=localStorage.getItem('nr-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>`;
 
-const head = artifact
-  ? `<title>${esc(SITE.name)}</title>
-<meta name="description" content="${esc(description)}">
-${analyticsHints}
-${fonts}
-<style>${css}</style>
-${themeBoot}`
-  : `<!doctype html>
+const head = `<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-${SITE.url ? `<link rel="canonical" href="${SITE.url}">\n<meta property="og:url" content="${SITE.url}">\n` : ''}${SITE.verification.map((t) => t + '\n').join('')}<meta property="og:type" content="article">
+${SITE.url ? `<link rel="canonical" href="${SITE.url}top-10/">\n<meta property="og:url" content="${SITE.url}top-10/">\n` : ''}${SITE.verification.map((t) => t + '\n').join('')}<meta property="og:type" content="article">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:locale" content="ru_RU">
@@ -433,7 +432,7 @@ const html = `${head}
 
 <header class="top">
   <div class="wrap top-in">
-    <a class="logo" href="#top" aria-label="${esc(SITE.name)}, наверх">
+    <a class="logo" href="${U.home}" aria-label="${esc(SITE.name)}, на главную">
       <span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}
     </a>
     <nav class="nav" aria-label="Разделы">
@@ -516,10 +515,10 @@ ${methodSection}
     <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
     <p>Страница содержит партнерские ссылки: если вы купите курс по ссылке, мы можем получить вознаграждение. На оценки это не влияет. Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться.</p>
     <p class="foot-links">
-      <a href="b.html">Рейтинг курсов</a>
-      <a href="about.html">О нас</a>
-      <a href="privacy.html">Политика конфиденциальности</a>
-      <a href="consent.html">Согласие на cookie</a>
+      <a href="${U.home}">Рейтинг курсов</a>
+      <a href="${U.about}">О нас</a>
+      <a href="${U.privacy}">Политика конфиденциальности</a>
+      <a href="${U.consent}">Согласие на cookie</a>
       <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
     </p>
   </div>
@@ -527,7 +526,7 @@ ${methodSection}
 
 <div class="consent" id="consent" role="dialog" aria-labelledby="consent-title" hidden>
   <p class="consent-title" id="consent-title">Мы используем cookie</p>
-  <p class="consent-text">Сайт использует Яндекс Метрику для статистики посещений. Продолжая пользоваться сайтом, вы соглашаетесь с этим. Подробнее в <a href="privacy.html">политике</a> и <a href="consent.html">согласии</a>.</p>
+  <p class="consent-text">Сайт использует Яндекс Метрику для статистики посещений. Продолжая пользоваться сайтом, вы соглашаетесь с этим. Подробнее в <a href="${U.privacy}">политике</a> и <a href="${U.consent}">согласии</a>.</p>
   <div class="consent-actions">
     <button type="button" class="btn btn-ink btn-sm" id="consent-all">Хорошо</button>
     <button type="button" class="btn btn-line btn-sm" id="consent-min">Отказаться</button>
@@ -549,7 +548,8 @@ window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
 window.NR_COURSES = ${JSON.stringify(courses.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlA, color: c.color })))};
 ${js}
 </script>
-${artifact ? '' : '</body>\n</html>'}
+</body>
+</html>
 `;
 
 // ============ Страница Б: рейтинг по направлениям ============
@@ -648,19 +648,29 @@ const courseCard = (c) => {
 };
 
 const bTitle = `Рейтинг ${heroSub} ${SITE.year}`;
+const bDescription =
+  'Рейтинг онлайн-курсов по нейросетям по направлениям: ИИ для себя, для работы и бизнеса, для маркетинга, ИИ-агенты, новая профессия и Data Science. Оценки программ, цены и сроки обучения.';
+// Частые вопросы общие с «Топ-10», поэтому разметка FAQ для поиска есть на обеих страницах
+const bJsonLd = { '@context': 'https://schema.org', '@graph': [jsonLd['@graph'][1]] };
 const bHtml = `<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(bTitle)}</title>
-<meta name="description" content="${esc(description)}">
-<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="${esc(bDescription)}">
+${SITE.url ? `<link rel="canonical" href="${SITE.url}">\n<meta property="og:url" content="${SITE.url}">\n` : ''}${artifact ? '' : SITE.verification.map((t) => t + '\n').join('')}<meta property="og:type" content="website">
+<meta property="og:title" content="${esc(bTitle)}">
+<meta property="og:description" content="${esc(bDescription)}">
+<meta property="og:locale" content="ru_RU">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="${favicon}">
 ${analyticsHints}
 ${fonts}
 <style>${css}</style>
 ${themeBoot}
+<script type="application/ld+json">${JSON.stringify(bJsonLd)}</script>
 </head>
 <body>
 <header class="mtop">
@@ -731,10 +741,10 @@ ${methodSection}
     <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
     <p>Страница содержит партнерские ссылки: если вы купите курс по ссылке, мы можем получить вознаграждение. На оценки это не влияет. Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться.</p>
     <p class="foot-links">
-      <a href="index.html">Лучшие курсы по нейросетям</a>
-      <a href="about.html">О нас</a>
-      <a href="privacy.html">Политика конфиденциальности</a>
-      <a href="consent.html">Согласие на cookie</a>
+      <a href="${U.top}">Лучшие курсы по нейросетям</a>
+      <a href="${U.about}">О нас</a>
+      <a href="${U.privacy}">Политика конфиденциальности</a>
+      <a href="${U.consent}">Согласие на cookie</a>
       <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
     </p>
   </div>
@@ -742,7 +752,7 @@ ${methodSection}
 
 <div class="consent" id="consent" role="dialog" aria-labelledby="consent-title" hidden>
   <p class="consent-title" id="consent-title">Мы используем cookie</p>
-  <p class="consent-text">Сайт использует Яндекс Метрику для статистики посещений. Продолжая пользоваться сайтом, вы соглашаетесь с этим. Подробнее в <a href="privacy.html">политике</a> и <a href="consent.html">согласии</a>.</p>
+  <p class="consent-text">Сайт использует Яндекс Метрику для статистики посещений. Продолжая пользоваться сайтом, вы соглашаетесь с этим. Подробнее в <a href="${U.privacy}">политике</a> и <a href="${U.consent}">согласии</a>.</p>
   <div class="consent-actions">
     <button type="button" class="btn btn-ink btn-sm" id="consent-all">Хорошо</button>
     <button type="button" class="btn btn-line btn-sm" id="consent-min">Отказаться</button>
@@ -782,7 +792,7 @@ const aboutHtml = `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(aboutTitle)}</title>
 <meta name="description" content="${esc(aboutDescription)}">
-${SITE.url ? `<link rel="canonical" href="${SITE.url}about.html">` : ''}
+${SITE.url ? `<link rel="canonical" href="${SITE.url}about/">` : ''}
 <link rel="icon" href="${favicon}">
 ${analyticsHints}
 ${fonts}
@@ -792,10 +802,10 @@ ${themeBoot}
 <body class="about">
 <header class="mtop">
   <div class="wrap mtop-in">
-    <a class="logo" href="index.html"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</a>
+    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</a>
     <nav class="ab-nav" aria-label="Разделы сайта">
-      <a href="index.html">Топ-10</a>
-      <a href="b.html">Рейтинг</a>
+      <a href="${U.home}">Рейтинг</a>
+      <a href="${U.top}">Топ-10</a>
       <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
         <span class="theme-knob" aria-hidden="true"></span>
       </button>
@@ -861,8 +871,8 @@ ${themeBoot}
       <div class="ab-final-in" data-reveal>
         <h2 class="ab-final-title">Лучший момент начать — сейчас</h2>
         <div class="hero-cta">
-          <a class="btn ab-btn-dark" href="index.html">Топ-10 курсов по нейросетям ${arrow}</a>
-          <a class="btn ab-btn-outline" href="b.html">Рейтинг по направлениям</a>
+          <a class="btn ab-btn-dark" href="${U.home}">Рейтинг по направлениям ${arrow}</a>
+          <a class="btn ab-btn-outline" href="${U.top}">Топ-10 курсов по нейросетям</a>
         </div>
       </div>
     </div>
@@ -873,10 +883,10 @@ ${themeBoot}
   <div class="wrap foot-in">
     <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}. Сотрудничество: <a href="mailto:${mail}">${mail}</a></p>
     <p class="foot-links">
-      <a href="index.html">Лучшие курсы по нейросетям</a>
-      <a href="b.html">Рейтинг курсов</a>
-      <a href="privacy.html">Политика конфиденциальности</a>
-      <a href="consent.html">Согласие на cookie</a>
+      <a href="${U.home}">Рейтинг курсов</a>
+      <a href="${U.top}">Лучшие курсы по нейросетям</a>
+      <a href="${U.privacy}">Политика конфиденциальности</a>
+      <a href="${U.consent}">Согласие на cookie</a>
       <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
     </p>
   </div>
@@ -884,7 +894,7 @@ ${themeBoot}
 
 <div class="consent" id="consent" role="dialog" aria-labelledby="consent-title" hidden>
   <p class="consent-title" id="consent-title">Мы используем cookie</p>
-  <p class="consent-text">Сайт использует Яндекс Метрику для статистики посещений. Продолжая пользоваться сайтом, вы соглашаетесь с этим. Подробнее в <a href="privacy.html">политике</a> и <a href="consent.html">согласии</a>.</p>
+  <p class="consent-text">Сайт использует Яндекс Метрику для статистики посещений. Продолжая пользоваться сайтом, вы соглашаетесь с этим. Подробнее в <a href="${U.privacy}">политике</a> и <a href="${U.consent}">согласии</a>.</p>
   <div class="consent-actions">
     <button type="button" class="btn btn-ink btn-sm" id="consent-all">Хорошо</button>
     <button type="button" class="btn btn-line btn-sm" id="consent-min">Отказаться</button>
@@ -926,8 +936,8 @@ ${themeBoot}
 <body class="legal-page">
 <header class="top">
   <div class="wrap top-in">
-    <a class="logo" href="index.html"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</a>
-    <a class="btn btn-line btn-sm legal-back" href="index.html">К рейтингу</a>
+    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</a>
+    <a class="btn btn-line btn-sm legal-back" href="${U.home}">К рейтингу</a>
   </div>
 </header>
 <main class="wrap legal">
@@ -946,8 +956,8 @@ ${themeBoot}
 const policyDoc = policy(SITE);
 const consentDoc = consent(SITE);
 const legal = {
-  'privacy.html': legalPage(policyDoc, { href: 'consent.html', title: consentDoc.title }),
-  'consent.html': legalPage(consentDoc, { href: 'privacy.html', title: policyDoc.title }),
+  'privacy.html': legalPage(policyDoc, { href: U.consent, title: consentDoc.title }),
+  'consent.html': legalPage(consentDoc, { href: U.privacy, title: policyDoc.title }),
 };
 if (/[ёЁ]/.test(Object.values(legal).join(''))) throw new Error('В юридических текстах есть буква «ё»');
 if (/[ёЁ]/.test(bHtml)) throw new Error('В варианте Б есть буква «ё»');
@@ -957,8 +967,39 @@ await rm(out, { recursive: true, force: true });
 await mkdir(new URL('images/', out), { recursive: true });
 await mkdir(new URL('fonts/', out), { recursive: true });
 
-const pages = { [artifact ? 'preview.html' : 'index.html']: html, 'b.html': bHtml, 'about.html': aboutHtml, ...legal };
-for (const [name, page] of Object.entries(pages)) await writeFile(new URL(name, out), minifyHtml(page));
+// Старые адреса (b.html, about.html) ведут на новые; ?dir= и #якорь сохраняются, чтобы рекламные ссылки не сломались.
+// На Apache то же делает 301-редирект в .htaccess, эта страница — запасной вариант для другого хостинга.
+const redirect = (to) => `<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>${esc(SITE.name)}</title>
+<meta name="robots" content="noindex">
+${SITE.url ? `<link rel="canonical" href="${SITE.url}${to.slice(1)}">` : ''}
+<script>location.replace('${to}' + location.search + location.hash)</script>
+<meta http-equiv="refresh" content="0; url=${to}">
+</head>
+<body><a href="${to}">Перейти на ${esc(SITE.name)}</a></body>
+</html>
+`;
+// В превью главная страница публикуется без обертки html/head — ее добавляет просмотрщик
+const bare = (t) => t.replace(/^<!doctype html>\s*<html[^>]*>\s*<head>\s*/, '').replace('</head>\n<body>', '').replace(/<\/body>\s*<\/html>\s*$/, '');
+// На хостинге картинки и шрифты берутся от корня сайта: так они работают и на вложенных страницах (/top-10/, /about/)
+const rootify = (t) => t.replace(/(["(])(images|fonts)\//g, '$1/$2/');
+const pages = artifact
+  ? { 'preview.html': bare(bHtml), 'top-10.html': html, 'about.html': aboutHtml, ...legal }
+  : {
+      'index.html': rootify(bHtml),
+      'top-10/index.html': rootify(html),
+      'about/index.html': rootify(aboutHtml),
+      'b.html': redirect('/'),
+      'about.html': redirect('/about/'),
+      ...Object.fromEntries(Object.entries(legal).map(([k, v]) => [k, rootify(v)])),
+    };
+for (const [name, page] of Object.entries(pages)) {
+  if (name.includes('/')) await mkdir(new URL(name.replace(/[^/]+$/, ''), out), { recursive: true });
+  await writeFile(new URL(name, out), minifyHtml(page));
+}
 
 const used = new Set(Object.values(schools).map((sc) => sc.logo).concat(courses.map((c) => c.image)).filter(Boolean));
 for (const file of used) await copyFile(new URL(file, root), new URL(file, out));
@@ -967,12 +1008,12 @@ for (const f of await readdir(new URL('src/fonts/', root))) await copyFile(new U
 if (!artifact) {
   await writeFile(
     new URL('robots.txt', out),
-    `User-agent: *\nDisallow: /privacy.html\nDisallow: /consent.html\nDisallow: /b.html\n${SITE.url ? `\nSitemap: ${SITE.url}sitemap.xml\n` : ''}`
+    `User-agent: *\nDisallow: /privacy.html\nDisallow: /consent.html\nDisallow: /b.html\nDisallow: /about.html\n${SITE.url ? `\nSitemap: ${SITE.url}sitemap.xml\n` : ''}`
   );
   if (SITE.url) {
     await writeFile(
       new URL('sitemap.xml', out),
-      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${SITE.url}</loc></url><url><loc>${SITE.url}about.html</loc></url></urlset>\n`
+      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${SITE.url}</loc></url><url><loc>${SITE.url}top-10/</loc></url><url><loc>${SITE.url}about/</loc></url></urlset>\n`
     );
   }
   await copyFile(new URL('src/htaccess', root), new URL('.htaccess', out));
