@@ -284,7 +284,7 @@ const directions = directionsB
   .join('\n        ');
 
 const heroSub = filters.find((f) => f.key === 'all').heading;
-const bLead = 'Сравните курсы, где учат применять AI. Для работы, бизнеса и творчества.';
+const bLead = 'Еще недавно нейросети были темой для исследователей. Сегодня с ними можно обсуждать идеи, писать код, создавать изображения и видео. Выберите курс, который сделает их вашим инструментом.';
 const heroLead = `Освойте ИИ для работы, творчества и собственных проектов. Сравните ${courses.length} ${plural(courses.length)} по программе, практике и поддержке — и выберите тот, который подходит под ваши задачи и уровень.`;
 const methodSection = `
   <section class="method" data-tint="base" aria-labelledby="method-title">
