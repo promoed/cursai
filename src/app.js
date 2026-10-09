@@ -378,18 +378,22 @@
       school: link.getAttribute('data-school') || '',
     };
     if (directions.length) detail.direction = currentFilter;
-    /* У страницы рейтинга по направлениям своя цель (NR_GOAL), чтобы конверсии страниц не смешивались */
-    var goal = window.NR_GOAL || 'course_click';
+    /* Общая цель course_click уходит со всех страниц — на нее оптимизируется реклама в Директе.
+       У страницы рейтинга дополнительно своя цель (NR_GOAL), чтобы конверсии страниц можно было сравнить. */
+    var goals = ['course_click'];
+    if (window.NR_GOAL && window.NR_GOAL !== 'course_click') goals.push(window.NR_GOAL);
     window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: goal,
-      course_rank: detail.rank,
-      course_url: detail.url,
-      course_place: detail.place,
-      course_school: detail.school,
-      course_direction: detail.direction || '',
+    goals.forEach(function (goal) {
+      window.dataLayer.push({
+        event: goal,
+        course_rank: detail.rank,
+        course_url: detail.url,
+        course_place: detail.place,
+        course_school: detail.school,
+        course_direction: detail.direction || '',
+      });
+      if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', goal, detail);
     });
-    if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', goal, detail);
   });
 
   /* Почта для сотрудничества: копирование в буфер и цель Метрики contact_click */
