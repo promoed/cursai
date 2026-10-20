@@ -91,9 +91,17 @@ coursesB.forEach((c, i) => {
 });
 // Все курсы страницы Б (по номеру) и порядок «Все курсы» — по итоговой оценке; placeAll — место в этом общем списке
 const allB = courses.concat(coursesB);
-const bOrder = [...allB].sort((a, b) => b.total - a.total || a.rank - b.rank);
+// Курсы направлений с флагом solo (сейчас Data Science) видны только по кнопке своего направления:
+// в «Все курсы» их нет, места и «Лучший выбор» в общем списке считаются без них
+const soloTags = directionsB.filter((d) => d.solo).flatMap((d) => d.tags);
+allB.forEach((c) => {
+  c.solo = c.tags.some((t) => soloTags.includes(t));
+});
+const inAll = allB.filter((c) => !c.solo);
+const byTotal = (a, b) => b.total - a.total || a.rank - b.rank;
+const bOrder = [...inAll].sort(byTotal).concat(allB.filter((c) => c.solo).sort(byTotal));
 bOrder.forEach((c, i) => {
-  c.placeAll = i + 1;
+  c.placeAll = c.solo ? null : i + 1;
 });
 
 const noAffiliate = allB.filter((c) => !(c.affiliateA || c.affiliateB)).map((c) => `  #${c.rank} ${c.short}${c.rank > courses.length ? ' (только стр. Б)' : ''}`);
@@ -276,7 +284,7 @@ const dirsOf = (c) => directionsB.filter((d) => d.tags && c.tags.some((t) => d.t
 const dirAliases = Object.fromEntries(directionsB.flatMap((d) => (d.aliases || []).map((a) => [a, d.key])));
 const directions = directionsB
   .map((f, i) => {
-    const n = f.key === 'all' ? allB.length : allB.filter((c) => dirsOf(c).includes(f)).length;
+    const n = f.key === 'all' ? inAll.length : allB.filter((c) => dirsOf(c).includes(f)).length;
     const all = f.key === 'all';
     const style = all ? `--i:${i}` : `--c:${palette[(i - 1) % palette.length]}; --i:${i}`;
     return `<a class="direction${all ? ' direction-all' : ''}" href="${all ? U.home : `?dir=${f.key}`}" data-filter="${f.key}" data-heading="${esc(f.heading)}"${all ? ' aria-current="true"' : ''} style="${style}">${esc(f.label)}<span class="direction-n">${n} ${plural(n)}</span></a>`;
@@ -328,8 +336,8 @@ const finalPicksA = finalPicks('urlA');
 const finalPicksB = bOrder
   .map(
     (c) => `
-          <a class="pick" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="pick" data-school="${esc(schools[c.school].name)}" data-tags="${dirsOf(c).map((d) => d.key).join(' ')}" style="--c:${c.color}"${c.placeAll > 3 ? ' hidden' : ''}>
-            <span class="pick-num">${c.placeAll}</span>
+          <a class="pick" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="pick" data-school="${esc(schools[c.school].name)}" data-tags="${dirsOf(c).map((d) => d.key).join(' ')}"${c.solo ? ' data-solo' : ''} style="--c:${c.color}"${c.solo || c.placeAll > 3 ? ' hidden' : ''}>
+            <span class="pick-num">${c.placeAll || ''}</span>
             <span class="pick-text"><b>${esc(c.title)}</b><span>${esc(schools[c.school].name)} · ${fmt(c.total)}</span></span>
             ${arrow}
           </a>`
@@ -627,10 +635,10 @@ const courseCard = (c) => {
     .filter(Boolean)
     .join('');
   return `
-        <article class="mcard${c.placeAll === 1 ? ' is-best' : ''}" id="kurs-${c.rank}" data-tags="${dirsOf(c).map((d) => d.key).join(' ')}" data-rank="${c.rank}" data-all="${c.placeAll}" style="--c:${ACCENT}" aria-labelledby="mt-${c.rank}">
+        <article class="mcard${c.placeAll === 1 ? ' is-best' : ''}" id="kurs-${c.rank}" data-tags="${dirsOf(c).map((d) => d.key).join(' ')}" data-rank="${c.rank}"${c.solo ? ' data-solo hidden' : ` data-all="${c.placeAll}"`} style="--c:${ACCENT}" aria-labelledby="mt-${c.rank}">
           <div class="mcard-cover">
             ${miniCover(c)}
-            <span class="mcard-rank" aria-hidden="true">${c.placeAll}</span>
+            <span class="mcard-rank" aria-hidden="true">${c.placeAll || ''}</span>
             <span class="mcard-best">Лучший выбор</span>
           </div>
           <div class="mcard-body">
@@ -638,7 +646,7 @@ const courseCard = (c) => {
               <span class="mcard-school">${esc(s.name)}</span>
               <span class="mcard-score"><b>${fmt(c.total)}</b><small>/10</small></span>
             </p>
-            <h3 class="mcard-title" id="mt-${c.rank}"><span class="sr-only mcard-place">${c.placeAll} место. </span>${esc(c.title)}</h3>
+            <h3 class="mcard-title" id="mt-${c.rank}"><span class="sr-only mcard-place">${c.placeAll ? `${c.placeAll} место. ` : ''}</span>${esc(c.title)}</h3>
             <p class="mcard-hook">${esc(c.hook)}</p>
             ${priceRow ? `<p class="mcard-price-row">${priceRow}</p>` : ''}
             ${facts ? `<p class="mcard-facts">${facts}</p>` : ''}
@@ -718,7 +726,7 @@ ${themeBoot}
         ${directions}
         </nav>
         <div class="dir-status-row">
-          <h2 class="h2 dir-status" id="filter-status" aria-live="polite">Все курсы: ${allB.length} лучших ${plural(allB.length)}</h2>
+          <h2 class="h2 dir-status" id="filter-status" aria-live="polite">Все курсы: ${inAll.length} лучших ${plural(inAll.length)}</h2>
           <div class="views" role="group" aria-label="Вид списка">
             <button type="button" class="view" data-view="grid" aria-pressed="true"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1.2"/><rect x="9" y="2" width="5" height="5" rx="1.2"/><rect x="2" y="9" width="5" height="5" rx="1.2"/><rect x="9" y="9" width="5" height="5" rx="1.2"/></svg>Сетка</button>
             <button type="button" class="view" data-view="list" aria-pressed="false"><svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="5" rx="1.2"/><rect x="2" y="9" width="12" height="5" rx="1.2"/></svg>Плитки</button>

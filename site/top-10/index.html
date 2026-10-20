@@ -146,7 +146,8 @@ window.NR_COURSES = [{"rank":1,"short":"Нейросети с нуля","school"
     var run = function () {
       var shown = 0;
       courses.forEach(function (el) {
-        var match = key === 'all' || el.getAttribute('data-tags').split(' ').indexOf(key) !== -1;
+        /* Курсы с data-solo (направление Data Science) в «Все курсы» не показываются — только по своей кнопке */
+        var match = key === 'all' ? !el.hasAttribute('data-solo') : el.getAttribute('data-tags').split(' ').indexOf(key) !== -1;
         el.hidden = !match;
         if (match) {
           shown++;
@@ -176,7 +177,7 @@ window.NR_COURSES = [{"rank":1,"short":"Нейросети с нуля","school"
       /* Финальный блок: три лучших курса выбранного направления */
       var picked = 0;
       picks.forEach(function (p) {
-        var match = key === 'all' || p.getAttribute('data-tags').split(' ').indexOf(key) !== -1;
+        var match = key === 'all' ? !p.hasAttribute('data-solo') : p.getAttribute('data-tags').split(' ').indexOf(key) !== -1;
         p.hidden = !match || picked >= 3;
         if (!p.hidden) p.querySelector('.pick-num').textContent = ++picked;
       });
