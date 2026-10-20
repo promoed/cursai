@@ -34,8 +34,7 @@ export const directionsB = [
   { key: 'marketing', label: 'ИИ для маркетинга', tags: ['marketing'], heading: 'курсов по нейросетям для маркетинга' },
   { key: 'agents', label: 'ИИ-агенты', tags: ['agents'], heading: 'курсов по созданию ИИ-агентов' },
   { key: 'career', label: 'Новая профессия', tags: ['career'], heading: 'курсов для новой профессии в ИИ' },
-  // solo: курсы этого направления видны только по его кнопке — в «Все курсы» они не попадают
-  { key: 'datascience', label: 'Data Science', tags: ['datascience'], heading: 'курсов по Data Science', solo: true },
+  { key: 'datascience', label: 'Data Science', tags: ['datascience'], heading: 'курсов по Data Science' },
 ];
 
 // logo: картинка курса по умолчанию (файл обрезан по краям надписи), logoBg: фон карточки под логотипом
@@ -362,7 +361,7 @@ export const coursesB = [
     priceFrom: true,
     priceMonthly: 5104, // 5 104 ₽ × 36 мес.
     priceMonthlyFrom: true,
-    tags: ['datascience'],
+    tags: ['datascience', 'career'],
     level: 'С нуля',
     format: 'Вебинары до 2 раз в неделю после 19:00 по Москве, гибкие дедлайны',
     audience: 'Тем, кто хочет пройти путь от нуля до уверенного специалиста',
@@ -389,7 +388,7 @@ export const coursesB = [
     priceFrom: true,
     priceMonthly: 5424, // рассрочка на 36 мес., первый платеж через 3 месяца после старта
     priceMonthlyFrom: true,
-    tags: ['datascience'],
+    tags: ['datascience', 'career'],
     level: 'С нуля',
     format: 'Видеоуроки и практика на реальных данных',
     audience: 'Тем, кто хочет выбрать между машинным обучением и анализом данных',
@@ -416,7 +415,7 @@ export const coursesB = [
     priceFrom: true,
     priceMonthly: 4579, // беспроцентная рассрочка на 24 мес.
     priceMonthlyFrom: true,
-    tags: ['datascience'],
+    tags: ['datascience', 'career'],
     level: 'С нуля',
     format: 'В своем темпе, без жестких дедлайнов, доступ навсегда',
     audience: 'Тем, кто хочет быстро войти в профессию и учиться в своем темпе',
@@ -442,7 +441,7 @@ export const coursesB = [
     priceFrom: true,
     priceMonthly: 3216,
     priceMonthlyFrom: true,
-    tags: ['datascience'],
+    tags: ['datascience', 'career'],
     level: 'С нуля',
     format: 'Видеоуроки и онлайн-занятия с экспертами, 3–5 часов в неделю',
     audience: 'Тем, кто хочет попробовать разные роли в работе с данными и выбрать свою',
@@ -468,7 +467,7 @@ export const coursesB = [
     priceFrom: true,
     priceMonthly: 4089, // 4 089 ₽ × 24 мес.
     priceMonthlyFrom: true,
-    tags: ['datascience'],
+    tags: ['datascience', 'career'],
     level: 'С нуля, без опыта в IT',
     format: 'Видеолекции и вебинары по расписанию',
     audience: 'Новичкам без опыта в IT и гуманитариям',
