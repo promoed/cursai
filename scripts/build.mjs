@@ -54,7 +54,8 @@ const total = (c) => Math.round(criteria.reduce((sum, k) => sum + c.scores[k.key
 const fmt = (n) => n.toFixed(1).replace('.', ',');
 const rub = (n) => (n == null ? '' : `${String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0')}\u00a0₽`);
 // Полная стоимость или рассрочка; from добавляет приставку "от" (несколько тарифов у школы), perMonth — "/мес"
-const priceText = (n, { from, perMonth } = {}) => (n == null ? null : `${from ? 'от ' : ''}${rub(n)}${perMonth ? '/мес' : ''}`);
+// 0 — бесплатный курс
+const priceText = (n, { from, perMonth } = {}) => (n == null ? null : n === 0 ? 'Бесплатно' : `${from ? 'от ' : ''}${rub(n)}${perMonth ? '/мес' : ''}`);
 const plural = (n) => {
   const m10 = n % 10;
   const m100 = n % 100;
@@ -85,8 +86,10 @@ coursesB.forEach((c, i) => {
   c.color = palette[(courses.length + i) % palette.length];
   c.urlA = c.affiliateA || c.url;
   c.urlB = c.affiliateB || c.url;
-  if (i > 0 && c.total > coursesB[i - 1].total) {
-    throw new Error(`Оценка курса страницы Б «${c.short}» выше, чем у предыдущего: поправьте критерии`);
+  // На главной курсы сортируются по оценке сами, поэтому порядок проверяем только внутри своего направления (первая метка)
+  const prev = coursesB.slice(0, i).filter((p) => p.tags[0] === c.tags[0]).pop();
+  if (prev && c.total > prev.total) {
+    throw new Error(`Оценка курса страницы Б «${c.short}» выше, чем у предыдущего в том же направлении: поправьте критерии`);
   }
 });
 // Все курсы страницы Б (по номеру) и порядок «Все курсы» — по итоговой оценке; placeAll — место в этом общем списке
@@ -621,7 +624,7 @@ const courseCard = (c) => {
     .filter(Boolean)
     .join('');
   const priceRow = [
-    c.price ? `<span class="mcard-price">${priceText(c.price, { from: c.priceFrom })}</span>` : '',
+    c.price != null ? `<span class="mcard-price">${priceText(c.price, { from: c.priceFrom })}</span>` : '',
     c.priceMonthly ? `<span class="mcard-price-sub">${priceText(c.priceMonthly, { from: c.priceMonthlyFrom, perMonth: true })}</span>` : '',
   ]
     .filter(Boolean)
