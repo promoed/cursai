@@ -54,10 +54,10 @@ https://cursai.ru/?dir=marketing    ИИ для маркетинга
 https://cursai.ru/?dir=agents       ИИ-агенты
 https://cursai.ru/?dir=career       Новая профессия
 https://cursai.ru/?dir=datascience  Data Science
-https://cursai.ru/?dir=design       ИИ для дизайна
+https://cursai.ru/?dir=design       Графический дизайн с ИИ
 ```
 
-Курсы только для этой страницы (сейчас Data Science и ИИ для дизайна) лежат в `coursesB` в `src/courses.mjs`, а их направление отмечено в `filters` флагом `onlyB: true` — на топ-10 их нет. В «Все курсы» на главной все курсы стоят по итоговой оценке.
+Курсы только для этой страницы (сейчас Data Science и Графический дизайн с ИИ) лежат в `coursesB` в `src/courses.mjs`, а их направление отмечено в `filters` флагом `onlyB: true` — на топ-10 их нет. В «Все курсы» на главной все курсы стоят по итоговой оценке.
 
 UTM-метки можно добавлять как обычно: `cursai.ru/?dir=marketing&utm_source=yandex`. Плитки направлений и их заголовки берутся из `directionsB` в `src/courses.mjs`: курс попадает в направление, если у него есть одна из меток `tags` этого направления. Частые вопросы общие с топ-10 — `faq`.
 

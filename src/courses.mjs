@@ -35,7 +35,7 @@ export const directionsB = [
   { key: 'agents', label: 'ИИ-агенты', tags: ['agents'], heading: 'курсов по созданию ИИ-агентов' },
   { key: 'career', label: 'Новая профессия', tags: ['career'], heading: 'курсов для новой профессии в ИИ' },
   { key: 'datascience', label: 'Data Science', tags: ['datascience'], heading: 'курсов по Data Science' },
-  { key: 'design', label: 'ИИ для дизайна', tags: ['design'], heading: 'курсов по дизайну с нейросетями' },
+  { key: 'design', label: 'Графический дизайн с ИИ', tags: ['design'], heading: 'курсов по графическому дизайну с ИИ' },
 ];
 
 // logo: картинка курса по умолчанию (файл обрезан по краям надписи), logoBg: фон карточки под логотипом
@@ -481,7 +481,7 @@ export const coursesB = [
     ],
     scores: { practice: 9.0, program: 9.0, support: 9.2, result: 9.0 },
   },
-  // ===== ИИ для дизайна: данные со страниц школ, октябрь 2026 =====
+  // ===== Графический дизайн с ИИ: данные со страниц школ, октябрь 2026 =====
   {
     school: 'netology',
     title: 'Графический дизайнер. Расширенный + ИИ',
@@ -495,7 +495,7 @@ export const coursesB = [
     priceFrom: true,
     priceMonthly: 4221, // 36 мес. без переплат; «+ Нейросети» — 4 753 ₽/мес
     priceMonthlyFrom: true,
-    tags: ['design'],
+    tags: ['design', 'career'],
     level: 'С нуля',
     format: 'Вебинары и практика, можно взять паузу до 6 месяцев',
     audience: 'Тем, кто хочет стать графическим дизайнером и работать в найме или на фрилансе',
@@ -521,7 +521,7 @@ export const coursesB = [
     priceFrom: true,
     priceMonthly: 5919, // на 36 мес.; расширенный — 8 369 ₽/мес
     priceMonthlyFrom: true,
-    tags: ['design'],
+    tags: ['design', 'career'],
     level: 'С нуля',
     format: 'Интерактивный учебник, практика и встречи с ментором',
     audience: 'Новичкам, которые хотят освоить профессию и выйти в найм или на фриланс',
@@ -547,7 +547,7 @@ export const coursesB = [
     priceFrom: true,
     priceMonthly: 4269, // базовый тариф, 36 мес. под 0%, без первого взноса
     priceMonthlyFrom: true,
-    tags: ['design'],
+    tags: ['design', 'career'],
     level: 'С нуля',
     format: 'Видеоуроки и живые занятия с экспертами',
     audience: 'Тем, кто хочет войти в дизайн с упором на практику и гарантией трудоустройства',
@@ -569,11 +569,11 @@ export const coursesB = [
     image: null,
     duration: '4–5 месяцев',
     schedule: null,
-    price: null, // цена подгружается со стороннего сервера и не была доступна при сборе данных — уточнить
+    price: 116688, // сумма беспроцентной рассрочки 4 862 ₽ × 24 мес., одной суммой школа цену не показывает
     priceFrom: true,
-    priceMonthly: null, // беспроцентная рассрочка, сумма не подтверждена
+    priceMonthly: 4862, // беспроцентная рассрочка на 24 мес. (данные владельца сайта)
     priceMonthlyFrom: true,
-    tags: ['design'],
+    tags: ['design', 'career'],
     level: 'С нуля',
     format: 'В своем темпе, доступ навсегда, куратор целый год',
     audience: 'Тем, кто хочет быстро освоить профессию и сразу работать с нейросетями',
