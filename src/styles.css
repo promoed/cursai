@@ -615,6 +615,13 @@ ol {
   transform: rotate(-1.5deg);
   box-shadow: 0 2px 0 var(--paper-line);
 }
+/* .tape.tape-trial — сильнее, чем .is-lead .tape, чтобы бейдж оставался зеленым и у первого места */
+.tape.tape-trial {
+  margin-left: 8px;
+  background: #3dd6a0;
+  color: #121212;
+  transform: rotate(1.5deg);
+}
 .is-lead .tape {
   background: var(--solid);
   color: var(--solid-ink);
@@ -1912,6 +1919,20 @@ td:nth-child(4) {
 }
 .mcard.is-best .mcard-best {
   display: block;
+}
+/* Бейдж «Бесплатный период»: внизу обложки, зеленый — читается как «можно попробовать без оплаты» */
+.mcard-trial {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 7px 12px;
+  border-radius: 99px;
+  background: #3dd6a0;
+  color: #121212;
+  font-size: 0.78rem;
+  font-weight: 700;
+  transform: rotate(-2deg);
+  box-shadow: 0 8px 18px -10px rgba(18, 18, 18, 0.6);
 }
 /* Нижняя плашка на странице Б — только на телефонах */
 @media (min-width: 641px) {

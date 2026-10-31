@@ -222,7 +222,8 @@ const course = (c, i) => {
         <div class="course-body">
           <p class="course-meta">
             <span class="course-school">${esc(s.name)}</span>
-            <span class="tape">${esc(c.award)}</span>
+            <span class="tape">${esc(c.award)}</span>${c.trial ? `
+            <span class="tape tape-trial" title="${esc(c.trial)}">Бесплатный период</span>` : ''}
           </p>
           <h3 class="course-title" id="t-${c.rank}"><span class="sr-only">${c.rank} место. </span>${esc(c.title)}</h3>
           <p class="course-hook">${esc(c.hook)}</p>${c.imageShape === 'landscape' ? cover(c, i) : ''}
@@ -529,7 +530,7 @@ ${methodSection}
 <footer class="foot">
   <div class="wrap foot-in">
     <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
-    <p>Страница содержит партнерские ссылки: если вы купите курс по ссылке, мы можем получить вознаграждение. На оценки это не влияет. Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться.</p>
+    <p>Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться. Страница содержит партнерские ссылки, на оценки это не влияет.</p>
     <p class="foot-links">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.about}">О нас</a>
@@ -620,6 +621,7 @@ const more = (c) => {
     c.learn ? `<p class="learn">${esc(c.learn)}</p>` : '',
     c.pros ? `<ul class="pros" aria-label="Преимущества курса">${c.pros.slice(0, 3).map((p) => `<li>${check}<span>${esc(p)}</span></li>`).join('')}</ul>` : '',
     c.audience ? `<p class="mcard-who"><b>Кому:</b> ${esc(c.audience)}</p>` : '',
+    c.trial ? `<p class="mcard-who"><b>Бесплатный период:</b> ${esc(c.trial.charAt(0).toLowerCase() + c.trial.slice(1))}</p>` : '',
   ].join('');
   // Без описания и плюсов факты встают в ряд на всю ширину карточки
   return main
@@ -647,7 +649,8 @@ const courseCard = (c) => {
           <div class="mcard-cover">
             ${miniCover(c)}
             <span class="mcard-rank" aria-hidden="true">${c.placeAll}</span>
-            <span class="mcard-best">Лучший выбор</span>
+            <span class="mcard-best">Лучший выбор</span>${c.trial ? `
+            <span class="mcard-trial" title="${esc(c.trial)}">Бесплатный период</span>` : ''}
           </div>
           <div class="mcard-body">
             <p class="mcard-row">
@@ -767,7 +770,7 @@ ${methodSection}
 <footer class="foot">
   <div class="wrap foot-in">
     <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
-    <p>Страница содержит партнерские ссылки: если вы купите курс по ссылке, мы можем получить вознаграждение. На оценки это не влияет. Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться.</p>
+    <p>Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться. Страница содержит партнерские ссылки, на оценки это не влияет.</p>
     <p class="foot-links">
       <a href="${U.top}">Лучшие курсы по нейросетям</a>
       <a href="${U.about}">О нас</a>

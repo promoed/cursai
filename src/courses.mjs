@@ -145,6 +145,8 @@ export const courses = [
     title: 'Нейросети для маркетинга',
     short: 'Нейросети для маркетинга',
     url: 'https://practicum.yandex.ru/ai-for-marketing/',
+    // бесплатный период подтвержден на странице курса (октябрь 2026)
+    trial: 'Первые уроки бесплатно',
     affiliateA: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=A&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-marketing%2F', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=B&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-marketing%2F', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
@@ -297,6 +299,8 @@ export const courses = [
     title: 'Нейросети для бизнеса',
     short: 'Нейросети для бизнеса',
     url: 'https://practicum.yandex.ru/ai-for-business/',
+    // бесплатный период подтвержден на странице курса (октябрь 2026)
+    trial: 'Первые уроки бесплатно',
     affiliateA: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=A&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-business%2F', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=B&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-business%2F', // партнерская ссылка для варианта Б (b.html)
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
@@ -531,6 +535,8 @@ export const coursesB = [
     title: 'Графический дизайнер',
     short: 'Графический дизайнер',
     url: 'https://practicum.yandex.ru/graphic-designer/',
+    // бесплатный период подтвержден на странице курса (октябрь 2026)
+    trial: '22 первых урока бесплатно',
     affiliateB: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=graph&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fgraphic-designer%2F%3FsearchText%3D%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9%26from%3Dcatalog',
     image: null,
     duration: '9–12 месяцев', // базовый тариф 9 мес., расширенный 12 мес.
@@ -612,6 +618,8 @@ export const coursesB = [
     title: 'Графический дизайнер: вводный курс',
     short: 'Вводный курс по дизайну',
     url: 'https://netology.ru/programs/graphic-design-bp-demo',
+    // бесплатный период подтвержден на странице курса (октябрь 2026)
+    trial: 'Бесплатный доступ на 5 дней',
     affiliateB: 'https://go.avred.online/70d577e405f07a60?erid=2VfnxxQsJbC&m=1',
     image: null,
     duration: 'Доступ 5 дней',
