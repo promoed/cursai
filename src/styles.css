@@ -2641,3 +2641,337 @@ td:nth-child(4) {
     scroll-behavior: auto !important;
   }
 }
+
+/* ============ Эксперимент «нового поколения» (body.nx, сборка --nextgen) ============ */
+/* Темный первый экран с живым градиентом */
+.nx .nx-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #09090e;
+  color: #f3f2ee;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.nx-canvas {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.6s var(--ease);
+  /* запасной вариант, если WebGL недоступен: статичный мягкий градиент */
+  background:
+    radial-gradient(60% 70% at 78% 30%, rgba(156, 140, 255, 0.28), transparent 70%),
+    radial-gradient(50% 60% at 20% 90%, rgba(255, 122, 89, 0.16), transparent 70%),
+    #09090e;
+}
+.nx-canvas.is-on {
+  opacity: 1;
+}
+.nx .nx-hero::after {
+  /* тонкая сетка поверх градиента — ощущение «инструмента», а не плаката */
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent);
+  pointer-events: none;
+}
+.nx-hero-in {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  /* сверху, а не по центру: когда подборщик показывает ответ, текст слева не прыгает */
+  align-items: start;
+  gap: clamp(32px, 5vw, 72px);
+}
+.nx .nx-hero .hero-kicker {
+  color: rgba(243, 242, 238, 0.6);
+}
+.nx .nx-hero .mega-word {
+  font-size: clamp(3.4rem, 8.4vw, 8rem);
+  background: linear-gradient(100deg, #fff 30%, #c9c0ff 60%, #9c8cff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.nx .nx-hero .hero-sub {
+  color: #f3f2ee;
+  font-size: clamp(1.25rem, 2.2vw, 1.9rem);
+}
+.nx .nx-hero .hero-lead {
+  margin: 22px 0 28px;
+  color: rgba(243, 242, 238, 0.72);
+}
+.nx-btn {
+  background: #f3f2ee;
+  color: #09090e;
+}
+.nx-btn:hover {
+  background: #fff;
+}
+
+/* Подбор курса: стеклянная панель */
+.nx-picker {
+  display: grid;
+  gap: 14px;
+  padding: clamp(18px, 2.4vw, 26px);
+  border-radius: 24px;
+  background: rgba(20, 20, 30, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  backdrop-filter: blur(18px) saturate(1.3);
+  animation: rise 1s var(--ease) both 0.25s;
+}
+.nx-picker-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(243, 242, 238, 0.7);
+}
+.nx-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3dd6a0;
+  box-shadow: 0 0 0 0 rgba(61, 214, 160, 0.6);
+  animation: nx-pulse 2s ease-out infinite;
+}
+@keyframes nx-pulse {
+  to {
+    box-shadow: 0 0 0 10px rgba(61, 214, 160, 0);
+  }
+}
+.nx-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px 6px 18px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.nx-form:focus-within {
+  border-color: rgba(156, 140, 255, 0.8);
+  box-shadow: 0 0 0 4px rgba(156, 140, 255, 0.18);
+}
+.nx-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  color: #f3f2ee;
+  font: 500 1rem/1.3 var(--f-body);
+  outline: none;
+}
+.nx-input::placeholder {
+  color: rgba(243, 242, 238, 0.45);
+}
+.nx-send {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: #9c8cff;
+  color: #09090e;
+  cursor: pointer;
+  transition: transform 0.25s var(--spring), background-color 0.25s var(--ease);
+}
+.nx-send:hover {
+  transform: translateX(2px);
+  background: #b3a6ff;
+}
+.nx-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.nx-chip {
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(243, 242, 238, 0.85);
+  font: 600 0.84rem/1 var(--f-body);
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.nx-chip:hover {
+  border-color: rgba(156, 140, 255, 0.7);
+  background: rgba(156, 140, 255, 0.14);
+  color: #fff;
+}
+.nx-answer {
+  display: none;
+  gap: 12px;
+}
+.nx-answer.is-open {
+  display: grid;
+}
+.nx-say {
+  min-height: 1.4em;
+  color: rgba(243, 242, 238, 0.85);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.nx-dots {
+  display: inline-flex;
+  gap: 5px;
+}
+.nx-dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(243, 242, 238, 0.7);
+  animation: nx-dot 1s ease-in-out infinite;
+}
+.nx-dots i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.nx-dots i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes nx-dot {
+  50% {
+    opacity: 0.2;
+    transform: translateY(-3px);
+  }
+}
+.nx-res {
+  display: grid;
+  gap: 8px;
+}
+.nx-res li {
+  animation: rise 0.6s var(--ease) both;
+  animation-delay: var(--d);
+}
+.nx-res-a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f3f2ee;
+  text-decoration: none;
+  transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.3s var(--spring);
+}
+.nx-res-a:hover {
+  background: rgba(156, 140, 255, 0.16);
+  border-color: rgba(156, 140, 255, 0.6);
+  transform: translateX(3px);
+}
+.nx-res-n {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #9c8cff;
+  color: #09090e;
+  font: 400 0.9rem/1 var(--f-display);
+}
+.nx-res-t {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.nx-res-t b {
+  font-size: 0.98rem;
+}
+.nx-res-t small {
+  color: rgba(243, 242, 238, 0.62);
+  font-size: 0.8rem;
+}
+.nx-res-go {
+  margin-left: auto;
+  color: #9c8cff;
+  font-weight: 700;
+}
+.nx-more {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #c9c0ff;
+  font: 600 0.9rem/1.3 var(--f-body);
+  cursor: pointer;
+}
+.nx-more:hover {
+  color: #fff;
+}
+
+/* Приглушенная палитра: плитки направлений — графит с цветной точкой, яркий цвет только у выбранной */
+.nx .directions .direction,
+.nx .directions .direction:nth-child(even) {
+  position: relative;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: none;
+  transform: none;
+}
+.nx .direction::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c, var(--ink));
+  box-shadow: 0 0 14px var(--c, transparent);
+}
+.nx .directions .direction:hover {
+  transform: translateY(-3px);
+  border-color: var(--c, var(--ink));
+  box-shadow: 0 14px 30px -20px var(--c, rgba(0, 0, 0, 0.6));
+}
+.nx .directions .direction[aria-current='true'] {
+  background: var(--c, var(--ink));
+  color: #121212;
+  border-color: transparent;
+  box-shadow: 0 18px 40px -22px var(--c, rgba(0, 0, 0, 0.7));
+  transform: translateY(-3px);
+}
+.nx .directions .direction-all[aria-current='true'] {
+  background: var(--ink);
+  color: var(--bg);
+}
+.nx .directions .direction-all::before {
+  background: linear-gradient(135deg, #9c8cff, #ff7a59);
+}
+.nx .mcards {
+  border-top: 0;
+}
+
+@media (max-width: 900px) {
+  .nx-hero-in {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Темная шапка в эксперименте: переопределяем цвета темы только внутри нее */
+.nx .mtop {
+  --ink: #f3f2ee;
+  --bg: #09090e;
+  --line: rgba(255, 255, 255, 0.1);
+  background: rgba(9, 9, 14, 0.96);
+  color: #f3f2ee;
+}

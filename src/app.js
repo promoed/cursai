@@ -476,4 +476,209 @@
     );
     fill();
   }
+  /* ===== Эксперимент «нового поколения» (класс nx на body) ===== */
+
+  /* Живой градиент первого экрана: WebGL-шейдер, медленно течет и отталкивается от курсора.
+     Рисуется в половинном разрешении, останавливается вне экрана и в фоновой вкладке. */
+  var nxCanvas = document.querySelector('.nx-canvas');
+  if (nxCanvas) {
+    var gl = nxCanvas.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'low-power' });
+    if (gl) {
+      var vsrc = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+      var fsrc =
+        'precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;' +
+        'void main(){vec2 uv=gl_FragCoord.xy/r;vec2 p=uv*2.-1.;p.x*=r.x/r.y;' +
+        'vec2 mm=m*2.-1.;mm.x*=r.x/r.y;float d=length(p-mm);' +
+        'p+=.35*exp(-d*2.2)*(p-mm);' +
+        'for(int i=1;i<6;i++){float f=float(i);' +
+        'p.x+=.32/f*sin(f*p.y*1.5+t*.22+.3*f)+.12;' +
+        'p.y+=.32/f*cos(f*p.x*1.3+t*.18+.4*f)-.12;}' +
+        'float a=.5+.5*sin(p.x+p.y);float b=.5+.5*cos(p.x*1.3-p.y*.7);' +
+        'vec3 base=vec3(.035,.035,.055);' +
+        'vec3 c=mix(vec3(.61,.55,1.),vec3(1.,.48,.35),a);c=mix(c,vec3(.24,.84,.63),b*.45);' +
+        'float g=smoothstep(.15,1.,a*b+.1);vec3 col=mix(base,c,.52*g);' +
+        'col+=.10*exp(-d*3.)*vec3(.61,.55,1.);' +
+        'col*=1.-.35*length(uv-.5);' +
+        'gl_FragColor=vec4(col,1.);}';
+      var sh = function (type, src) {
+        var o = gl.createShader(type);
+        gl.shaderSource(o, src);
+        gl.compileShader(o);
+        return o;
+      };
+      var prog = gl.createProgram();
+      gl.attachShader(prog, sh(gl.VERTEX_SHADER, vsrc));
+      gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fsrc));
+      gl.linkProgram(prog);
+      if (gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+        gl.useProgram(prog);
+        gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+        var loc = gl.getAttribLocation(prog, 'p');
+        gl.enableVertexAttribArray(loc);
+        gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+        var uR = gl.getUniformLocation(prog, 'r');
+        var uT = gl.getUniformLocation(prog, 't');
+        var uM = gl.getUniformLocation(prog, 'm');
+        var mouse = [0.7, 0.6];
+        var target = [0.7, 0.6];
+        var visible = true;
+        var running = false;
+        var t0 = performance.now();
+        var size = function () {
+          var k = 0.5;
+          nxCanvas.width = Math.max(1, Math.round(nxCanvas.clientWidth * k));
+          nxCanvas.height = Math.max(1, Math.round(nxCanvas.clientHeight * k));
+          gl.viewport(0, 0, nxCanvas.width, nxCanvas.height);
+        };
+        var frame = function (now) {
+          mouse[0] += (target[0] - mouse[0]) * 0.04;
+          mouse[1] += (target[1] - mouse[1]) * 0.04;
+          gl.uniform2f(uR, nxCanvas.width, nxCanvas.height);
+          gl.uniform1f(uT, (now - t0) / 1000);
+          gl.uniform2f(uM, mouse[0], mouse[1]);
+          gl.drawArrays(gl.TRIANGLES, 0, 3);
+          if (running) requestAnimationFrame(frame);
+        };
+        var start = function () {
+          if (running || reduce || !visible || document.hidden) return;
+          running = true;
+          requestAnimationFrame(frame);
+        };
+        size();
+        frame(performance.now() + 20000);
+        window.addEventListener('resize', function () {
+          size();
+          if (!running) frame(performance.now());
+        });
+        nxCanvas.parentNode.addEventListener('pointermove', function (e) {
+          var r = nxCanvas.getBoundingClientRect();
+          target[0] = (e.clientX - r.left) / r.width;
+          target[1] = 1 - (e.clientY - r.top) / r.height;
+        });
+        new IntersectionObserver(function (list) {
+          visible = list[0].isIntersecting;
+          if (visible) start();
+          else running = false;
+        }).observe(nxCanvas);
+        document.addEventListener('visibilitychange', function () {
+          if (document.hidden) running = false;
+          else start();
+        });
+        start();
+        nxCanvas.classList.add('is-on');
+      }
+    }
+  }
+
+  /* Подбор курса: по словам из запроса находим подходящее направление и показываем три лучших курса.
+     Без сервера — поиск по ключевым словам; ответ «печатается», как в чате. */
+  var nxForm = document.getElementById('nx-form');
+  if (nxForm) {
+    var nxInput = document.getElementById('nx-q');
+    var nxAnswer = document.getElementById('nx-answer');
+    var nxWords = {
+      design: ['дизайн', 'график', 'рисова', 'midjourney', 'картин', 'изображен', 'логотип', 'figma', 'фигм', 'баннер', 'визуал', 'иллюстр', 'фото'],
+      datascience: ['data', 'дата', 'данны', 'аналит', 'python', 'питон', 'машинн', 'ml', 'статист', 'sql', 'scientist', 'сайентист'],
+      agents: ['агент', 'бот', 'n8n', 'make', 'zapier', 'ассистент'],
+      marketing: ['маркет', 'smm', 'смм', 'реклам', 'контент', 'продаж', 'seo', 'сео', 'таргет', 'копирайт', 'креатив'],
+      work: ['работ', 'офис', 'бизнес', 'автоматиз', 'рутин', 'excel', 'таблиц', 'отчет', 'презентац', 'предприним', 'компани', 'команд'],
+      career: ['професси', 'карьер', 'сменить', 'новую', 'зарабат', 'трудоустр', 'войти в'],
+      self: ['себя', 'личн', 'хобби', 'творч', 'жизн', 'для души', 'учеб'],
+      ai: ['нейросет', 'chatgpt', 'gpt', 'чат', 'промпт', 'ии', 'ai'],
+    };
+    var nxLabel = function (key) {
+      var d = document.querySelector('.direction[data-filter="' + key + '"]');
+      return d ? d.firstChild.textContent.trim() : '';
+    };
+    var nxPick = function (q) {
+      var text = ' ' + q.toLowerCase().replace(/\u0451/g, '\u0435') + ' ';
+      var best = null;
+      var bestScore = 0;
+      Object.keys(nxWords).forEach(function (key, order) {
+        var score = 0;
+        nxWords[key].forEach(function (w) {
+          if (text.indexOf(w) !== -1) score += w.length > 3 ? 2 : 1;
+        });
+        /* при равенстве выигрывает более узкое направление (они идут раньше в списке) */
+        if (score > bestScore) {
+          bestScore = score;
+          best = key;
+        }
+      });
+      var wantsFree = /бесплат|попроб|без оплат|недорог|дешев/.test(text);
+      var list = data.filter(function (c) {
+        return best ? (c.dirs || []).indexOf(best) !== -1 : true;
+      });
+      if (wantsFree && !best) list = data.filter(function (c) { return c.trial; });
+      list = list.slice().sort(function (a, b) {
+        if (wantsFree && a.trial !== b.trial) return a.trial ? -1 : 1;
+        return (b.total || 0) - (a.total || 0);
+      });
+      return { key: best, free: wantsFree, list: list.slice(0, 3) };
+    };
+    var nxTimer = null;
+    var nxType = function (el, str, done) {
+      var i = 0;
+      clearInterval(nxTimer);
+      nxTimer = setInterval(function () {
+        i += 2;
+        el.textContent = str.slice(0, i);
+        if (i >= str.length) {
+          clearInterval(nxTimer);
+          if (done) done();
+        }
+      }, reduce ? 0 : 14);
+    };
+    var nxRun = function (q) {
+      q = (q || '').trim();
+      if (!q) {
+        nxInput.focus();
+        return;
+      }
+      var res = nxPick(q);
+      nxAnswer.innerHTML = '<p class="nx-say"><span class="nx-dots"><i></i><i></i><i></i></span></p>';
+      nxAnswer.classList.add('is-open');
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'picker_query', picker_direction: res.key || 'all' });
+      if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', 'picker_query', { direction: res.key || 'all', query: q.slice(0, 100) });
+      setTimeout(function () {
+        var say = res.key
+          ? 'Похоже, вам подойдет направление «' + nxLabel(res.key) + '». ' + (res.free ? 'Сначала — курсы с бесплатным периодом:' : 'Вот три лучших курса в нем по нашему рейтингу:')
+          : res.free
+            ? 'Вот курсы, которые можно начать бесплатно:'
+            : 'Не нашел точного направления, поэтому вот три лучших курса в рейтинге. Попробуйте описать задачу подробнее.';
+        var p = nxAnswer.querySelector('.nx-say');
+        nxType(p, say, function () {
+          var html = '<ol class="nx-res">';
+          res.list.forEach(function (c, i) {
+            html +=
+              '<li style="--d:' + i * 0.08 + 's"><a class="nx-res-a" href="' + c.url + '" target="_blank" rel="nofollow sponsored noopener" data-course="' + c.rank + '" data-place="picker" data-school="' + c.school + '">' +
+              '<span class="nx-res-n">' + (i + 1) + '</span><span class="nx-res-t"><b>' + c.short + '</b><small>' + c.school + ' · ' + c.score + (c.pm ? ' · ' + c.pm : '') + (c.trial ? ' · есть бесплатный период' : '') + '</small></span>' +
+              '<span class="nx-res-go" aria-hidden="true">→</span></a></li>';
+          });
+          html += '</ol>';
+          if (res.key) html += '<button type="button" class="nx-more" data-dir="' + res.key + '">Все курсы направления «' + nxLabel(res.key) + '» →</button>';
+          nxAnswer.insertAdjacentHTML('beforeend', html);
+        });
+      }, reduce ? 0 : 650);
+    };
+    nxForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      nxRun(nxInput.value);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.nx-chip'), function (b) {
+      b.addEventListener('click', function () {
+        nxInput.value = b.getAttribute('data-q');
+        nxRun(nxInput.value);
+      });
+    });
+    nxAnswer.addEventListener('click', function (e) {
+      var more = e.target.closest && e.target.closest('.nx-more');
+      if (!more) return;
+      var tile = document.querySelector('.direction[data-filter="' + more.getAttribute('data-dir') + '"]');
+      if (tile) tile.click();
+      document.getElementById('rating').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+    });
+  }
 })();
