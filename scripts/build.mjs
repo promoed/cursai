@@ -66,14 +66,24 @@ const plural = (n) => {
 const verdict = (n) => (n >= 9.5 ? 'превосходно' : n >= 9.2 ? 'отлично' : 'очень хорошо');
 const rel = 'nofollow sponsored noopener';
 
+// Метка subid в партнерских ссылках — по ней в кабинете партнерки видно, с какой рекламной кампании пришла продажа.
+// Практикум (zallj.com): параметр subid. Остальные школы (go.avnxt.site, go.avred.online): параметр sub1 —
+// он заменяет значение, зашитое в ссылку при ее создании.
+const withSub = (url, sub) => {
+  if (!sub || !/^https?:\/\/(zallj\.com|go\.avnxt\.site|go\.avred\.online)\//.test(url)) return url;
+  const u = new URL(url);
+  u.searchParams.set(u.hostname === 'zallj.com' ? 'subid' : 'sub1', sub);
+  return u.toString();
+};
+
 courses.forEach((c, i) => {
   c.rank = i + 1;
   c.total = total(c);
   c.color = palette[i % palette.length];
   // Партнерские ссылки: у варианта Б своя ссылка (другой параметр отслеживания у партнера).
   // Если для курса ссылку не прислали, обе кнопки ведут на обычный url курса.
-  c.urlA = c.affiliateA || c.url;
-  c.urlB = c.affiliateB || c.url;
+  c.urlA = withSub(c.affiliateA || c.url, c.sub);
+  c.urlB = withSub(c.affiliateB || c.url, c.sub);
   if (i > 0 && c.total > courses[i - 1].total) {
     throw new Error(`Оценка курса #${i + 1} выше, чем у #${i}: поправьте критерии`);
   }
@@ -84,8 +94,8 @@ coursesB.forEach((c, i) => {
   c.rank = courses.length + i + 1;
   c.total = total(c);
   c.color = palette[(courses.length + i) % palette.length];
-  c.urlA = c.affiliateA || c.url;
-  c.urlB = c.affiliateB || c.url;
+  c.urlA = withSub(c.affiliateA || c.url, c.sub);
+  c.urlB = withSub(c.affiliateB || c.url, c.sub);
   // На главной курсы сортируются по оценке сами, поэтому порядок проверяем только внутри своего направления (первая метка)
   const prev = coursesB.slice(0, i).filter((p) => p.tags[0] === c.tags[0]).pop();
   if (prev && c.total > prev.total) {
@@ -276,12 +286,15 @@ const chips = filters
 // ее можно ставить в рекламу. Места курсов внутри направления пересчитываются с 1 (см. applyFilter в app.js).
 // Направления страницы Б, в которые попадает курс (по меткам из directionsB.tags)
 const dirsOf = (c) => directionsB.filter((d) => d.tags && c.tags.some((t) => d.tags.includes(t)));
+// Цвет направления: свой (поле color) или по порядку из палитры среди направлений без своего цвета —
+// так новая плитка со своим цветом не сдвигает цвета остальных
+const dirColor = (d) => d.color || palette[directionsB.filter((x) => x.tags && !x.color).indexOf(d) % palette.length];
 const dirAliases = Object.fromEntries(directionsB.flatMap((d) => (d.aliases || []).map((a) => [a, d.key])));
 const directions = directionsB
   .map((f, i) => {
     const n = f.key === 'all' ? allB.length : allB.filter((c) => dirsOf(c).includes(f)).length;
     const all = f.key === 'all';
-    const style = all ? `--i:${i}` : `--c:${palette[(i - 1) % palette.length]}; --i:${i}`;
+    const style = all ? `--i:${i}` : `--c:${dirColor(f)}; --i:${i}`;
     return `<a class="direction${all ? ' direction-all' : ''}" href="${all ? U.home : `?dir=${f.key}`}" data-filter="${f.key}" data-heading="${esc(f.heading)}"${all ? ' aria-current="true"' : ''} style="${style}">${esc(f.label)}<span class="direction-n">${n} ${plural(n)}</span></a>`;
   })
   .join('\n        ');
@@ -576,7 +589,7 @@ const deckDirs = directionsB.filter((d) => d.tags);
 const reelCard = (d, i, copy) => {
   const n = allB.filter((c) => dirsOf(c).includes(d)).length;
   const a11y = copy ? ' tabindex="-1" aria-hidden="true"' : '';
-  return `<a class="reel-card" href="?dir=${d.key}" data-dir="${d.key}" style="--c:${palette[i % palette.length]}"${a11y}><span class="reel-n">${n} ${plural(n)}</span><span class="reel-label">${esc(d.label)}</span></a>`;
+  return `<a class="reel-card" href="?dir=${d.key}" data-dir="${d.key}" style="--c:${dirColor(d)}"${a11y}><span class="reel-n">${n} ${plural(n)}</span><span class="reel-label">${esc(d.label)}</span></a>`;
 };
 // Колонка повторена дважды подряд: сдвиг ровно на половину высоты дает бесшовную петлю
 const reelCol = (items, cls) => `<div class="reel-col ${cls}"><div class="reel-track">${[0, 1]
@@ -619,7 +632,7 @@ const more = (c) => {
 
 const courseCard = (c) => {
   const s = schools[c.school];
-  const tags = dirsOf(c).map((d) => d.label).slice(0, 2);
+  const tags = dirsOf(c).filter((d) => !d.noLabel).map((d) => d.label).slice(0, 2);
   const facts = [c.duration ? `<span>${calIco}${esc(c.duration)}</span>` : '']
     .filter(Boolean)
     .join('');

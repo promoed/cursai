@@ -29,6 +29,8 @@ export const filters = [
 // heading — окончание заголовка «Рейтинг ...», aliases — старые адреса ?dir=..., которые ведут сюда же.
 export const directionsB = [
   { key: 'all', label: 'Все курсы', heading: 'курсов по нейросетям для работы и творчества' },
+  // Те же 10 курсов, что на странице «Топ-10» (cursai.ru/top-10/), в том же порядке. noLabel: не выводить метку на карточках
+  { key: 'ai', label: 'Курсы по ИИ', tags: ['ai'], heading: 'курсов по нейросетям', noLabel: true, color: '#FFAA4C' },
   { key: 'self', label: 'ИИ для себя', tags: ['self'], heading: 'курсов по нейросетям для себя' },
   { key: 'work', label: 'ИИ для работы и бизнеса', tags: ['work', 'business'], heading: 'курсов по нейросетям для работы и бизнеса', aliases: ['business'] },
   { key: 'marketing', label: 'ИИ для маркетинга', tags: ['marketing'], heading: 'курсов по нейросетям для маркетинга' },
@@ -61,7 +63,8 @@ export const courses = [
     price: 53000, // руб., полная стоимость на дату обновления
     priceMonthly: 2699, // руб./мес, рассрочка
     award: 'Выбор редакции',
-    tags: ['self', 'work', 'marketing'],
+    tags: ['ai', 'self', 'work', 'marketing'],
+    sub: 'ai',
     audience: 'Всем, кто хочет начать',
     level: 'С нуля',
     format: 'Онлайн, уроки + практика',
@@ -90,7 +93,8 @@ export const courses = [
     price: 74900, // руб., полная стоимость на дату обновления
     priceMonthly: 6242, // руб./мес, рассрочка
     award: 'Больше всего практики',
-    tags: ['self', 'work', 'marketing', 'agents'],
+    tags: ['ai', 'self', 'work', 'marketing', 'agents'],
+    sub: 'ai',
     audience: 'Тем, кто хочет глубоко погрузиться и разобраться во всех инструментах',
     level: 'С нуля до уверенного',
     format: 'Онлайн, 130+ уроков',
@@ -119,7 +123,8 @@ export const courses = [
     price: 52418, // руб., полная стоимость на дату обновления
     priceMonthly: 4633, // руб./мес, рассрочка
     award: 'Самый большой набор инструментов',
-    tags: ['self', 'work', 'business'],
+    tags: ['ai', 'self', 'work', 'business'],
+    sub: 'ai',
     audience: 'Специалистам и предпринимателям',
     level: 'С нуля',
     format: 'Онлайн, задания с куратором',
@@ -150,7 +155,8 @@ export const courses = [
     priceMonthly: 2408, // руб./мес, рассрочка, самый дешевый тариф
     priceMonthlyFrom: true,
     award: 'Лучший для маркетологов',
-    tags: ['marketing', 'work'],
+    tags: ['ai', 'marketing', 'work'],
+    sub: 'ai',
     audience: 'Маркетологам, SMM, SEO и др.',
     level: 'С нуля, но для специалистов сферы',
     format: 'Онлайн, 6 модулей',
@@ -179,7 +185,8 @@ export const courses = [
     price: 59000, // руб., полная стоимость на дату обновления
     priceMonthly: 3004, // руб./мес, рассрочка
     award: 'Лучший по ИИ-агентам',
-    tags: ['agents', 'business', 'work'],
+    tags: ['ai', 'agents', 'business', 'work'],
+    sub: 'ai',
     audience: 'Маркетологам, менеджерам, владельцам бизнеса',
     level: 'С нуля',
     format: 'Онлайн, практика в n8n',
@@ -208,7 +215,8 @@ export const courses = [
     price: 31290, // руб., полная стоимость на дату обновления
     priceMonthly: 5215, // руб./мес, рассрочка
     award: 'Для руководителей и менеджеров',
-    tags: ['work', 'business', 'agents'],
+    tags: ['ai', 'work', 'business', 'agents'],
+    sub: 'ai',
     audience: 'Тем, у кого много задач и мало времени',
     level: 'С нуля',
     format: 'Онлайн, шаблоны с первого модуля',
@@ -237,7 +245,8 @@ export const courses = [
     price: 125700, // руб., полная стоимость на дату обновления
     priceMonthly: 3598, // руб./мес, рассрочка
     award: 'Новая профессия',
-    tags: ['career'],
+    tags: ['ai', 'career'],
+    sub: 'ai',
     audience: 'Тем, кто хочет создавать ИИ',
     level: 'С нуля или с опытом Python',
     format: 'Онлайн, 5 проектов, консультации',
@@ -266,7 +275,8 @@ export const courses = [
     price: 48540, // руб., сумма по рассрочке 4045 x 12 мес, других цифр школа не показывает
     priceMonthly: 4045, // руб./мес, рассрочка
     award: 'Лучший старт с ChatGPT',
-    tags: ['self', 'work'],
+    tags: ['ai', 'self', 'work'],
+    sub: 'ai',
     audience: 'Специалистам, создателям контента',
     level: 'С нуля',
     format: 'Онлайн, уроки со спикерами',
@@ -296,7 +306,8 @@ export const courses = [
     priceMonthly: 3449, // руб./мес, рассрочка
     priceMonthlyFrom: true,
     award: 'Для собственников и руководителей',
-    tags: ['business'],
+    tags: ['ai', 'business'],
+    sub: 'ai',
     audience: 'Руководителям и предпринимателям',
     level: 'Без технического бэкграунда',
     format: 'Онлайн, встречи 1:1 с наставником',
@@ -326,7 +337,8 @@ export const courses = [
     priceMonthly: 2771, // руб./мес, рассрочка
     priceMonthlyFrom: true,
     award: 'Карьера во внедрении ИИ',
-    tags: ['career', 'business', 'agents'],
+    tags: ['ai', 'career', 'business', 'agents'],
+    sub: 'ai',
     audience: 'Тем, кто хочет внедрять ИИ в компаниях',
     level: 'Без глубокого программирования',
     format: 'Живые онлайн-занятия',
@@ -363,6 +375,7 @@ export const coursesB = [
     priceMonthly: 5104, // 5 104 ₽ × 36 мес.
     priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
+    sub: 'datascience',
     level: 'С нуля',
     format: 'Вебинары до 2 раз в неделю после 19:00 по Москве, гибкие дедлайны',
     audience: 'Тем, кто хочет пройти путь от нуля до уверенного специалиста',
@@ -390,6 +403,7 @@ export const coursesB = [
     priceMonthly: 5424, // рассрочка на 36 мес., первый платеж через 3 месяца после старта
     priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
+    sub: 'datascience',
     level: 'С нуля',
     format: 'Видеоуроки и практика на реальных данных',
     audience: 'Тем, кто хочет выбрать между машинным обучением и анализом данных',
@@ -417,6 +431,7 @@ export const coursesB = [
     priceMonthly: 4579, // беспроцентная рассрочка на 24 мес.
     priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
+    sub: 'datascience',
     level: 'С нуля',
     format: 'В своем темпе, без жестких дедлайнов, доступ навсегда',
     audience: 'Тем, кто хочет быстро войти в профессию и учиться в своем темпе',
@@ -443,6 +458,7 @@ export const coursesB = [
     priceMonthly: 3216,
     priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
+    sub: 'datascience',
     level: 'С нуля',
     format: 'Видеоуроки и онлайн-занятия с экспертами, 3–5 часов в неделю',
     audience: 'Тем, кто хочет попробовать разные роли в работе с данными и выбрать свою',
@@ -469,6 +485,7 @@ export const coursesB = [
     priceMonthly: 4089, // 4 089 ₽ × 24 мес.
     priceMonthlyFrom: true,
     tags: ['datascience', 'career'],
+    sub: 'datascience',
     level: 'С нуля, без опыта в IT',
     format: 'Видеолекции и вебинары по расписанию',
     audience: 'Новичкам без опыта в IT и гуманитариям',
@@ -496,6 +513,7 @@ export const coursesB = [
     priceMonthly: 4221, // 36 мес. без переплат; «+ Нейросети» — 4 753 ₽/мес
     priceMonthlyFrom: true,
     tags: ['design', 'career'],
+    sub: 'graph',
     level: 'С нуля',
     format: 'Вебинары и практика, можно взять паузу до 6 месяцев',
     audience: 'Тем, кто хочет стать графическим дизайнером и работать в найме или на фрилансе',
@@ -522,6 +540,7 @@ export const coursesB = [
     priceMonthly: 5919, // на 36 мес.; расширенный — 8 369 ₽/мес
     priceMonthlyFrom: true,
     tags: ['design', 'career'],
+    sub: 'graph',
     level: 'С нуля',
     format: 'Интерактивный учебник, практика и встречи с ментором',
     audience: 'Новичкам, которые хотят освоить профессию и выйти в найм или на фриланс',
@@ -548,6 +567,7 @@ export const coursesB = [
     priceMonthly: 4269, // базовый тариф, 36 мес. под 0%, без первого взноса
     priceMonthlyFrom: true,
     tags: ['design', 'career'],
+    sub: 'graph',
     level: 'С нуля',
     format: 'Видеоуроки и живые занятия с экспертами',
     audience: 'Тем, кто хочет войти в дизайн с упором на практику и гарантией трудоустройства',
@@ -574,6 +594,7 @@ export const coursesB = [
     priceMonthly: 4862, // беспроцентная рассрочка на 24 мес. (данные владельца сайта)
     priceMonthlyFrom: true,
     tags: ['design', 'career'],
+    sub: 'graph',
     level: 'С нуля',
     format: 'В своем темпе, доступ навсегда, куратор целый год',
     audience: 'Тем, кто хочет быстро освоить профессию и сразу работать с нейросетями',
@@ -600,6 +621,7 @@ export const coursesB = [
     priceMonthly: null,
     priceMonthlyFrom: false,
     tags: ['design'],
+    sub: 'graph',
     level: 'С нуля, без умения рисовать',
     format: '3 занятия из платного курса и практика',
     audience: 'Тем, кто хочет бесплатно попробовать профессию графического дизайнера',
