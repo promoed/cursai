@@ -37,7 +37,7 @@ export const directionsB = [
   { key: 'agents', label: 'ИИ-агенты', tags: ['agents'], heading: 'курсов по созданию ИИ-агентов' },
   { key: 'career', label: 'Новая профессия', tags: ['career'], heading: 'курсов для новой профессии в ИИ' },
   { key: 'datascience', label: 'Data Science', tags: ['datascience'], heading: 'курсов по Data Science' },
-  { key: 'design', label: 'Графический дизайн с ИИ', tags: ['design'], heading: 'курсов по графическому дизайну с ИИ' },
+  { key: 'design', label: 'Графический дизайн с\u00a0ИИ', tags: ['design'], heading: 'курсов по графическому дизайну с ИИ' },
 ];
 
 // logo: картинка курса по умолчанию (файл обрезан по краям надписи), logoBg: фон карточки под логотипом

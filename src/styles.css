@@ -1762,7 +1762,8 @@ td:nth-child(4) {
 /* Цветные плитки направлений, по мотивам наклеек первого экрана */
 .directions {
   display: grid;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
+  /* 9 плиток: «Все курсы» высокой плиткой на два ряда, остальные восемь — 4×2 */
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
 }
 .direction {
@@ -1783,6 +1784,7 @@ td:nth-child(4) {
   transform: rotate(calc((3 - var(--i)) * 0.45deg));
 }
 .direction-all {
+  grid-row: span 2;
   background: var(--ink);
   color: var(--bg);
 }
@@ -1802,6 +1804,9 @@ td:nth-child(4) {
 @media (max-width: 1100px) {
   .directions {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .direction-all {
+    grid-row: auto;
   }
 }
 @media (max-width: 640px) {
