@@ -834,7 +834,7 @@ ${themeBoot}
     <div class="wrap">
       <p class="hero-kicker">О проекте ${esc(SITE.name)}</p>
       <h1 class="hero-title">
-        <span class="mega mega-word">Будущее</span> <span class="hero-sub">за теми, кто умеет работать с ИИ</span>
+        <span class="mega mega-word">Выбор</span> <span class="hero-sub">курса по ИИ без долгих поисков</span>
       </h1>
       <div class="ab-hero-row">
         <div class="ab-hero-text">
