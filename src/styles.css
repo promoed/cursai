@@ -760,6 +760,16 @@ ol {
   transform: rotate(-2.5deg);
   transition: transform 0.6s var(--spring);
 }
+/* Обложка курса на топ-10 — ссылка на курс; занимает ту же ячейку сетки, что раньше обложка */
+.cover-link {
+  display: block;
+  grid-column: 1 / -1;
+  justify-self: stretch;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
 .course:hover .cover {
   transform: rotate(0.5deg);
 }
@@ -1866,6 +1876,23 @@ td:nth-child(4) {
   position: relative;
   aspect-ratio: 16 / 10;
   background: var(--tint);
+}
+/* Логотип в карточке — ссылка на курс; бейджи поверх не перехватывают клик */
+.mcard-cover-link {
+  display: block;
+  height: 100%;
+  cursor: pointer;
+}
+.mcard-cover-link img {
+  transition: transform 0.4s var(--spring);
+}
+.mcard-cover-link:hover img {
+  transform: scale(1.05);
+}
+.mcard-rank,
+.mcard-best,
+.mcard-trial {
+  pointer-events: none;
 }
 .mcard-img {
   display: block;

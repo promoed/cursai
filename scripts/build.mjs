@@ -177,6 +177,11 @@ const cover = (c, i) => {
           </figure>`;
 };
 
+// Обложка курса — тоже ссылка на курс (та же, что у кнопки). Для чтения с экрана дублирующая ссылка скрыта,
+// цель Метрики уходит с place: logo
+const coverLink = (c, i) =>
+  `<a class="cover-link" href="${esc(c.urlA)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="logo" data-school="${esc(schools[c.school].name)}" tabindex="-1" aria-hidden="true">${cover(c, i)}</a>`;
+
 const stickers = courses
   .map(
     (c) => `
@@ -217,7 +222,7 @@ const course = (c, i) => {
             <b>${fmt(c.total)}</b>
             <span>из 10</span>
             <em>${verdict(c.total)}</em>
-          </div>${c.imageShape === 'landscape' ? '' : cover(c, i)}
+          </div>${c.imageShape === 'landscape' ? '' : coverLink(c, i)}
         </div>
         <div class="course-body">
           <p class="course-meta">
@@ -226,7 +231,7 @@ const course = (c, i) => {
             <span class="tape tape-trial" title="${esc(c.trial)}">Бесплатный период</span>` : ''}
           </p>
           <h3 class="course-title" id="t-${c.rank}"><span class="sr-only">${c.rank} место. </span>${esc(c.title)}</h3>
-          <p class="course-hook">${esc(c.hook)}</p>${c.imageShape === 'landscape' ? cover(c, i) : ''}
+          <p class="course-hook">${esc(c.hook)}</p>${c.imageShape === 'landscape' ? coverLink(c, i) : ''}
           <div class="paper">
             <h4 class="kicker">Что вы узнаете</h4>
             <p class="learn">${esc(c.learn)}</p>
@@ -647,7 +652,7 @@ const courseCard = (c) => {
   return `
         <article class="mcard${c.placeAll === 1 ? ' is-best' : ''}" id="kurs-${c.rank}" data-tags="${dirsOf(c).map((d) => d.key).join(' ')}" data-rank="${c.rank}" data-all="${c.placeAll}" style="--c:${ACCENT}" aria-labelledby="mt-${c.rank}">
           <div class="mcard-cover">
-            ${miniCover(c)}
+            <a class="mcard-cover-link" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="logo" data-school="${esc(s.name)}" tabindex="-1" aria-hidden="true">${miniCover(c)}</a>
             <span class="mcard-rank" aria-hidden="true">${c.placeAll}</span>
             <span class="mcard-best">Лучший выбор</span>${c.trial ? `
             <span class="mcard-trial" title="${esc(c.trial)}">Бесплатный период</span>` : ''}
@@ -760,7 +765,7 @@ ${methodSection}
 
   <section class="final" data-tint="base">
     <div class="wrap">
-      <h2 class="final-title">Лучшее время начать было вчера. Следующее лучшее — сегодня.</h2>
+      <h2 class="final-title">Лучшее время начать — сегодня</h2>
       <div class="picks">${finalPicksB}
       </div>
     </div>
