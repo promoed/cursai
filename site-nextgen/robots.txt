@@ -1,8 +1,0 @@
-User-agent: *
-Disallow: /privacy.html
-Disallow: /consent.html
-Disallow: /b.html
-Disallow: /about.html
-Disallow: /top-10.html
-
-Sitemap: https://cursai.ru/sitemap.xml

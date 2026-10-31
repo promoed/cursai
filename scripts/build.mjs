@@ -8,10 +8,6 @@ import { timelineTitle, timeline, bigStat } from '../src/about.mjs';
 
 const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
-// Эксперимент «сайт нового поколения» (темный первый экран с живым градиентом, приглушенная палитра, подбор курса).
-// Собирается отдельно: node scripts/build.mjs --nextgen [--artifact] -> site-nextgen/ (dist-nextgen/).
-// Обычная сборка без флага его не включает — так к прежнему виду можно вернуться в любой момент.
-const nextgen = process.argv.includes('--nextgen');
 
 const SITE = {
   name: 'Cursai',
@@ -410,14 +406,8 @@ const minifyHtml = (t) =>
     .join('')
     .trim();
 
-// Код эксперимента «нового поколения» лежит в конце styles.css и app.js после маркера;
-// без --nextgen он вырезается, и обычная сборка остается прежней
-const NX_CSS = '/* ============ Эксперимент «нового поколения»';
-const NX_JS = '  /* ===== Эксперимент «нового поколения»';
-const cssSrc = await readFile(new URL('src/styles.css', root), 'utf8');
-const jsSrc = await readFile(new URL('src/app.js', root), 'utf8');
-const css = minifyCss(fontFaces + (nextgen ? cssSrc : cssSrc.split(NX_CSS)[0]));
-const js = nextgen ? jsSrc : jsSrc.split(NX_JS)[0].trimEnd() + '\n})();\n';
+const css = minifyCss(fontFaces + (await readFile(new URL('src/styles.css', root), 'utf8')));
+const js = await readFile(new URL('src/app.js', root), 'utf8');
 
 const title = `Топ-10 курсов по нейросетям ${SITE.year}: рейтинг лучших онлайн-курсов по ИИ`;
 const description =
@@ -683,43 +673,6 @@ const courseCard = (c) => {
         </article>`;
 };
 
-// ===== Эксперимент «нового поколения»: первый экран =====
-// Темный экран с живым градиентом (WebGL, см. app.js) и подбором курса по описанию задачи.
-const nxChips = [
-  ['Автоматизировать рутину на работе', 'Автоматизировать рутину'],
-  ['Хочу делать дизайн с нейросетями', 'Дизайн с нейросетями'],
-  ['Хочу стать Data Scientist с нуля', 'Стать Data Scientist'],
-  ['Нейросети для маркетинга и рекламы', 'ИИ для маркетинга'],
-  ['Собрать своего ИИ-агента', 'Собрать ИИ-агента'],
-  ['Попробовать бесплатно', 'Начать бесплатно'],
-];
-const nxHero = `
-  <section class="hero hero-b nx-hero">
-    <canvas class="nx-canvas" aria-hidden="true"></canvas>
-    <div class="wrap nx-hero-in">
-      <div class="nx-hero-text">
-        <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
-        <h1 class="hero-title">
-          <span class="mega mega-word">Рейтинг</span> <span class="hero-sub" id="hero-sub">${heroSub}</span>
-        </h1>
-        <p class="hero-lead">${bLead}</p>
-        <div class="hero-cta">
-          <a class="btn nx-btn" href="#rating">Смотреть рейтинг ${arrow}</a>
-        </div>
-      </div>
-      <div class="nx-picker">
-        <p class="nx-picker-kicker"><span class="nx-pulse" aria-hidden="true"></span>Подбор курса</p>
-        <form class="nx-form" id="nx-form" role="search">
-          <label class="sr-only" for="nx-q">Чему хотите научиться</label>
-          <input class="nx-input" id="nx-q" name="q" type="text" autocomplete="off" placeholder="Расскажите, чему хотите научиться…">
-          <button class="nx-send" type="submit" aria-label="Подобрать курс">${arrow}</button>
-        </form>
-        <div class="nx-chips">${nxChips.map(([q, label]) => `<button type="button" class="nx-chip" data-q="${esc(q)}">${esc(label)}</button>`).join('')}</div>
-        <div class="nx-answer" id="nx-answer" aria-live="polite"></div>
-      </div>
-    </div>
-  </section>`;
-
 const bTitle = `Рейтинг ${heroSub} ${SITE.year}`;
 const bDescription =
   'Рейтинг онлайн-курсов по нейросетям по направлениям: ИИ для себя, для работы и бизнеса, для маркетинга, ИИ-агенты, новая профессия и Data Science. Оценки программ, цены и сроки обучения.';
@@ -745,7 +698,7 @@ ${fonts}
 ${themeBoot}
 <script type="application/ld+json">${JSON.stringify(bJsonLd)}</script>
 </head>
-<body${nextgen ? ' class="nx"' : ''}>
+<body>
 <header class="mtop">
   <div class="wrap mtop-in">
     <span class="logo"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</span>
@@ -761,7 +714,7 @@ ${themeBoot}
 </header>
 
 <main>
-${nextgen ? nxHero : `  <section class="hero hero-b" data-tint="base">
+  <section class="hero hero-b" data-tint="base">
     <div class="wrap">${heroArt}
       <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
       <h1 class="hero-title">
@@ -774,7 +727,7 @@ ${nextgen ? nxHero : `  <section class="hero hero-b" data-tint="base">
         </div>
       </div>
     </div>
-  </section>`}
+  </section>
 
   <section class="mcards" id="rating" aria-labelledby="rating-title">
     <div class="wrap">
@@ -849,7 +802,7 @@ ${methodSection}
 window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
 window.NR_GOAL = 'rating_course_click';
 window.NR_DIR_ALIAS = ${JSON.stringify(dirAliases)};
-window.NR_COURSES = ${JSON.stringify(allB.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlB, color: ACCENT, ...(nextgen ? { total: c.total, dirs: dirsOf(c).map((d) => d.key), pm: priceText(c.priceMonthly, { from: c.priceMonthlyFrom, perMonth: true }) || priceText(c.price, { from: c.priceFrom }), trial: !!c.trial } : {}) })))};
+window.NR_COURSES = ${JSON.stringify(allB.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlB, color: ACCENT })))};
 ${js}
 </script>
 </body>
@@ -1041,7 +994,7 @@ const legal = {
 if (/[ёЁ]/.test(Object.values(legal).join(''))) throw new Error('В юридических текстах есть буква «ё»');
 if (/[ёЁ]/.test(bHtml)) throw new Error('В варианте Б есть буква «ё»');
 
-const out = new URL((artifact ? 'dist' : 'site') + (nextgen ? '-nextgen/' : '/'), root);
+const out = new URL(artifact ? 'dist/' : 'site/', root);
 await rm(out, { recursive: true, force: true });
 await mkdir(new URL('images/', out), { recursive: true });
 await mkdir(new URL('fonts/', out), { recursive: true });
