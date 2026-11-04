@@ -67,10 +67,10 @@ const verdict = (n) => (n >= 9.5 ? 'превосходно' : n >= 9.2 ? 'отл
 const rel = 'nofollow sponsored noopener';
 
 // Метка subid в партнерских ссылках — по ней в кабинете партнерки видно, с какой рекламной кампании пришла продажа.
-// Практикум (zallj.com): параметр subid. Остальные школы (go.avnxt.site, go.avred.online): параметр sub1 —
+// Практикум (zallj.com): параметр subid. Остальные школы (go.avnxt.site, go.avred.online, go.redav.online): параметр sub1 —
 // он заменяет значение, зашитое в ссылку при ее создании.
 const withSub = (url, sub) => {
-  if (!sub || !/^https?:\/\/(zallj\.com|go\.avnxt\.site|go\.avred\.online)\//.test(url)) return url;
+  if (!sub || !/^https?:\/\/(zallj\.com|go\.avnxt\.site|go\.avred\.online|go\.redav\.online)\//.test(url)) return url;
   const u = new URL(url);
   u.searchParams.set(u.hostname === 'zallj.com' ? 'subid' : 'sub1', sub);
   return u.toString();
