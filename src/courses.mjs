@@ -710,9 +710,9 @@ export const coursesB = [
     image: null,
     duration: '3–4 месяца', // тариф «Продвинутый» 3 мес., «Мини-МБА» 4 мес.
     schedule: null,
-    price: null, // цена на странице подгружается скриптом и из сборки не видна — нужно уточнить
+    price: null, // полную стоимость школа не показывает
     priceFrom: true,
-    priceMonthly: null,
+    priceMonthly: 6186, // рассрочка, тариф «Продвинутый» (данные владельца сайта, ноябрь 2026)
     priceMonthlyFrom: true,
     tags: ['ai', 'work', 'business', 'agents'],
     sub: 'ai',
