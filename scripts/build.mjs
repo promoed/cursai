@@ -11,6 +11,8 @@ const artifact = process.argv.includes('--artifact');
 
 const SITE = {
   name: 'Курсометр',
+  // Подпись рядом с логотипом в шапке (на телефоне скрыта)
+  descriptor: 'рейтинг курсов',
   domain: 'cursai.ru',
   updated: 'октябрь 2026',
   year: 2026,
@@ -290,9 +292,9 @@ const weightBar = `
             .map((k, i) => `<li style="--wc:${wColors[i % wColors.length]}" title="${esc(k.hint)}">${esc(k.label)} <b>${Math.round(k.weight * 100)}%</b></li>`)
             .join('')}</ul>`;
 const methodSteps = [
-  ['Изучаем программу', 'Открываем страницу каждого курса и разбираем модули, инструменты, формат занятий и то, что останется на руках после обучения.'],
+  ['Изучаем программу', 'Разбираем модули, инструменты, формат занятий и то, что останется на руках после обучения.'],
   ['Ставим оценки', 'Четыре критерия от 0 до 10. Итоговый балл — взвешенная сумма, больше всего весит практика.'],
-  ['Сверяем цены и сроки', 'Стоимость, рассрочку и срок берем со страниц школ. Если школа их не публикует, поле остается пустым — цифры наугад не подставляем.'],
+  ['Сверяем цены и сроки', 'Стоимость, рассрочку и срок берем со страниц школ. Если школа их не публикует, поле остается пустым.'],
   ['Сравниваем внутри направления', 'Курсы по Data Science соревнуются с Data Science, по дизайну — с дизайном. Место в разделе показывает лучший выбор под конкретную задачу.'],
 ];
 
@@ -417,7 +419,7 @@ const jsonLd = {
 const favicon =
   'data:image/svg+xml,' +
   encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="16" fill="#FFD23F"/><text x="16" y="22" font-family="Arial Black,sans-serif" font-size="15" text-anchor="middle" fill="#121212">10</text></svg>'
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#212121"/><path d="M7 21a9 9 0 0 1 2.6-6.4" fill="none" stroke="#FFD23F" stroke-width="3.4" stroke-linecap="round"/><path d="M11.5 13.2A9 9 0 0 1 16 12" fill="none" stroke="#FF7A59" stroke-width="3.4" stroke-linecap="round"/><path d="M18.6 12.4a9 9 0 0 1 4 2.4" fill="none" stroke="#9C8CFF" stroke-width="3.4" stroke-linecap="round"/><path d="M24.3 17a9 9 0 0 1 .7 4" fill="none" stroke="#3DD6A0" stroke-width="3.4" stroke-linecap="round"/><path d="M16 21l5.5-5.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="21" r="2.6" fill="#fff"/></svg>'
   );
 
 // Шрифты лежат на своем хостинге (src/fonts): только символы, которые есть на сайте (кириллица, латиница, цифры, знаки).
@@ -466,7 +468,7 @@ const head = `<!doctype html>
 ${SITE.url ? `<link rel="canonical" href="${SITE.url}top-10/">\n<meta property="og:url" content="${SITE.url}top-10/">\n` : ''}${SITE.verification.map((t) => t + '\n').join('')}<meta property="og:type" content="article">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
-<meta property="og:locale" content="ru_RU">
+<meta property="og:locale" content="ru_RU">${SITE.url ? `\n<meta property="og:image" content="${SITE.url}images/og.png">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<meta name="twitter:card" content="summary_large_image">` : ''}
 <meta name="theme-color" content="#212121" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#212121" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="${favicon}">
@@ -484,7 +486,7 @@ const html = `${head}
 <header class="top">
   <div class="wrap top-in">
     <a class="logo" href="${U.home}" aria-label="${esc(SITE.name)}, на главную">
-      <span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}
+      <span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span>
     </a>
     <nav class="nav" aria-label="Разделы">
       <a href="#rating">Рейтинг</a>
@@ -684,7 +686,7 @@ const courseCard = (c) => {
           <div class="mcard-cover">
             <a class="mcard-cover-link" href="${esc(c.urlB)}" target="_blank" rel="${rel}" data-course="${c.rank}" data-place="logo" data-school="${esc(s.name)}" tabindex="-1" aria-hidden="true">${miniCover(c)}</a>
             <span class="mcard-rank" aria-hidden="true">${c.placeAll}</span>
-            <span class="mcard-best">Лучший выбор</span>${c.trial ? `
+            <span class="mcard-best">Выбор редакции</span>${c.trial ? `
             <span class="mcard-trial" title="${esc(c.trial)}">Бесплатный период</span>` : ''}
           </div>
           <div class="mcard-body">
@@ -723,7 +725,7 @@ const bHtml = `<!doctype html>
 ${SITE.url ? `<link rel="canonical" href="${SITE.url}">\n<meta property="og:url" content="${SITE.url}">\n` : ''}${artifact ? '' : SITE.verification.map((t) => t + '\n').join('')}<meta property="og:type" content="website">
 <meta property="og:title" content="${esc(bTitle)}">
 <meta property="og:description" content="${esc(bDescription)}">
-<meta property="og:locale" content="ru_RU">
+<meta property="og:locale" content="ru_RU">${SITE.url ? `\n<meta property="og:image" content="${SITE.url}images/og.png">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<meta name="twitter:card" content="summary_large_image">` : ''}
 <meta name="theme-color" content="#212121" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#212121" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="${favicon}">
@@ -736,7 +738,7 @@ ${themeBoot}
 <body>
 <header class="mtop">
   <div class="wrap mtop-in">
-    <span class="logo"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</span>
+    <span class="logo"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></span>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}" aria-current="page">Рейтинг курсов</a>
       <a href="${U.top}">Курсы по ИИ</a>
@@ -868,7 +870,7 @@ ${themeBoot}
 <body class="about">
 <header class="mtop">
   <div class="wrap mtop-in">
-    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</a>
+    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.top}">Курсы по ИИ</a>
@@ -1003,7 +1005,7 @@ ${themeBoot}
 <body class="legal-page">
 <header class="top">
   <div class="wrap top-in">
-    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</a>
+    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
     <a class="btn btn-line btn-sm legal-back" href="${U.home}">К рейтингу</a>
   </div>
 </header>
@@ -1050,7 +1052,7 @@ ${themeBoot}
 <body>
 <header class="mtop">
   <div class="wrap mtop-in">
-    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}</a>
+    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.top}">Курсы по ИИ</a>
@@ -1118,7 +1120,7 @@ for (const [name, page] of Object.entries(pages)) {
   await writeFile(new URL(name, out), minifyHtml(page));
 }
 
-const used = new Set(Object.values(schools).map((sc) => sc.logo).concat(courses.map((c) => c.image), courses.map((c) => c.art)).filter(Boolean));
+const used = new Set(Object.values(schools).map((sc) => sc.logo).concat(courses.map((c) => c.image), courses.concat(coursesB).map((c) => c.art), ['images/og.png']).filter(Boolean));
 for (const file of used) await copyFile(new URL(file, root), new URL(file, out));
 for (const f of await readdir(new URL('src/fonts/', root))) await copyFile(new URL(`src/fonts/${f}`, root), new URL(`fonts/${f}`, out));
 

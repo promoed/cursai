@@ -152,6 +152,7 @@ export const courses = [
     trial: 'Первые уроки бесплатно',
     affiliateA: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=A&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-marketing%2F', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=B&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-marketing%2F', // партнерская ссылка для варианта Б (b.html)
+    art: 'images/art-4.svg',
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: '5–10 часов в неделю',
@@ -184,6 +185,7 @@ export const courses = [
     url: 'https://netology.ru/programs/agin',
     affiliateA: 'https://go.avnxt.site/a9cc35519403d4b0?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://go.avnxt.site/875a2f77a95a0710?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для варианта Б (b.html)
+    art: 'images/art-5.svg',
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '4 месяца',
     schedule: 'Вебинары, воркшопы и разборы с наставниками',
@@ -214,6 +216,7 @@ export const courses = [
     url: 'https://skillbox.ru/course/neuronetforbusiness/',
     affiliateA: 'https://go.avnxt.site/0e34e58fb40873d0?erid=2VfnxwisD9b&m=1', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://go.avnxt.site/21929556e3ee4f30?erid=2VfnxwisD9b&m=1', // партнерская ссылка для варианта Б (b.html)
+    art: 'images/art-6.svg',
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '1 месяц',
     schedule: 'В своем темпе, ускоренно можно пройти за 2 недели',
@@ -244,6 +247,7 @@ export const courses = [
     url: 'https://netology.ru/programs/specialist-po-iskusstvennomu-intellektu',
     affiliateA: 'https://go.avnxt.site/b01766be8c59c870?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://go.avnxt.site/16751ff98aeff8e0?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для варианта Б (b.html)
+    art: 'images/art-7.svg',
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '5 или 11 месяцев',
     schedule: null,
@@ -274,6 +278,7 @@ export const courses = [
     url: 'https://skillbox.ru/course/practical-course-text/',
     affiliateA: 'https://go.avnxt.site/662fe1a201802250?erid=2VfnxwisD9b&m=1', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://go.avnxt.site/77292dd2906b0cc0?erid=2VfnxwisD9b&m=1', // партнерская ссылка для варианта Б (b.html)
+    art: 'images/art-8.svg',
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: null,
@@ -306,6 +311,7 @@ export const courses = [
     trial: 'Первые уроки бесплатно',
     affiliateA: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=A&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-business%2F', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=B&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-for-business%2F', // партнерская ссылка для варианта Б (b.html)
+    art: 'images/art-9.svg',
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2,5 месяца',
     schedule: null,
@@ -337,6 +343,7 @@ export const courses = [
     url: 'https://gb.ru/s/ai-integration-specialist',
     affiliateA: 'https://go.avnxt.site/39f468d51530c240?erid=2VfnxxQa3a9&m=1', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://go.avnxt.site/cedd54e0a3347e50?erid=2VfnxxQa3a9&m=1', // партнерская ссылка для варианта Б (b.html)
+    art: 'images/art-10.svg',
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '6 месяцев',
     schedule: 'Живые онлайн-занятия по расписанию',
@@ -374,6 +381,7 @@ export const coursesB = [
     short: 'Data Scientist: расширенный',
     url: 'https://netology.ru/programs/prodatascience',
     affiliateB: 'https://go.avred.online/6894aace46a4d850?erid=2VfnxxQsJbC&m=1', // партнерская ссылка (курс есть только на странице Б)
+    art: 'images/art-11.svg',
     image: null,
     duration: '15–17 месяцев', // расширенный тариф 15 мес., продвинутый 17 мес.
     schedule: null,
@@ -402,6 +410,7 @@ export const coursesB = [
     short: 'Data Scientist + ИИ',
     url: 'https://skillbox.ru/course/profession-data-scientist/',
     affiliateB: 'https://go.avred.online/3b5b8b65b27a898a?erid=2VfnxwisD9b&m=1', // партнерская ссылка (курс есть только на странице Б)
+    art: 'images/art-12.svg',
     image: null,
     duration: '12 месяцев',
     schedule: null,
@@ -430,6 +439,7 @@ export const coursesB = [
     short: 'Data Scientist + ИИ',
     url: 'https://eduson.academy/data-scientist',
     affiliateB: 'https://go.avred.online/6cf8f6ea1147d600?erid=LdtCKXSTq&m=1', // партнерская ссылка (курс есть только на странице Б)
+    art: 'images/art-13.svg',
     image: null,
     duration: '8–9 месяцев', // стартовый формат 8 мес., с трудоустройством 9 мес.
     schedule: null,
@@ -457,6 +467,7 @@ export const coursesB = [
     short: 'Data Scientist с AI',
     url: 'https://gb.ru/geek_university/developer/analyst/data-science-gb',
     affiliateB: 'https://go.avred.online/80d4ed35f96aaf60?erid=2VfnxxQa3a9&m=1', // партнерская ссылка (курс есть только на странице Б)
+    art: 'images/art-14.svg',
     image: null,
     duration: 'около 12 месяцев', // 3–5 часов в неделю (по фактуре от владельца сайта)
     schedule: null,
@@ -484,6 +495,7 @@ export const coursesB = [
     short: 'Data Scientist с нуля',
     url: 'https://netology.ru/programs/data-scientist',
     affiliateB: 'https://go.avred.online/cd72907104f1f9c0?erid=2VfnxxQsJbC&m=1', // партнерская ссылка (курс есть только на странице Б)
+    art: 'images/art-15.svg',
     image: null,
     duration: '7 месяцев', // короткая программа; можно расширить до полной 15-месячной
     schedule: null,
@@ -512,6 +524,7 @@ export const coursesB = [
     short: 'Графический дизайнер + ИИ',
     url: 'https://netology.ru/programs/graphic-design-ultimate',
     affiliateB: 'https://go.avred.online/5889bd0d60b781d0?erid=2VfnxxQsJbC&m=1',
+    art: 'images/art-16.svg',
     image: null,
     duration: '17–19 месяцев', // «Расширенный» 17 мес., «Расширенный + Нейросети» 19 мес.
     schedule: null,
@@ -541,6 +554,7 @@ export const coursesB = [
     // бесплатный период подтвержден на странице курса (октябрь 2026)
     trial: '22 первых урока бесплатно',
     affiliateB: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=graph&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fgraphic-designer%2F%3FsearchText%3D%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9%26from%3Dcatalog',
+    art: 'images/art-17.svg',
     image: null,
     duration: '9–12 месяцев', // базовый тариф 9 мес., расширенный 12 мес.
     schedule: null,
@@ -568,6 +582,7 @@ export const coursesB = [
     short: 'Графический дизайнер с AI',
     url: 'https://gb.ru/geek_university/design/graphic-gb',
     affiliateB: 'https://go.avred.online/d7702c11aa79c300?erid=2VfnxxQa3a9&m=1',
+    art: 'images/art-18.svg',
     image: null,
     duration: null, // срок на странице не указан
     schedule: null,
@@ -595,6 +610,7 @@ export const coursesB = [
     short: 'Графический ИИ-дизайнер',
     url: 'https://eduson.academy/graph-design-ai',
     affiliateB: 'https://go.avred.online/4a318a7bbdb7daa0?erid=LdtCKXSTq&m=1',
+    art: 'images/art-19.svg',
     image: null,
     duration: '4–5 месяцев',
     schedule: null,
@@ -624,6 +640,7 @@ export const coursesB = [
     // бесплатный период подтвержден на странице курса (октябрь 2026)
     trial: 'Бесплатный доступ на 5 дней',
     affiliateB: 'https://go.avred.online/70d577e405f07a60?erid=2VfnxxQsJbC&m=1',
+    art: 'images/art-20.svg',
     image: null,
     duration: 'Доступ 5 дней',
     schedule: null,
@@ -654,6 +671,7 @@ export const coursesB = [
     // бесплатный период подтвержден на странице курса (ноябрь 2026)
     trial: 'Первые уроки бесплатно',
     affiliateB: 'https://zallj.com/g/qqb62fps0r657ee4c4af61cec322b9/?erid=5jtCeReNwxHpfQTDve31wmc&subid=ai&ulp=https%3A%2F%2Fpracticum.yandex.ru%2Fai-agents%2F',
+    art: 'images/art-21.svg',
     image: null,
     duration: '6–8 недель', // базовый тариф 6 недель, оптимальный и максимальный 8 недель
     schedule: null,
@@ -682,6 +700,7 @@ export const coursesB = [
     short: 'ИИ-агенты для бизнеса',
     url: 'https://skillbox.ru/course/ai-agents/',
     affiliateB: 'https://go.redav.online/74582ada8ac7e360?erid=2VfnxwisD9b&m=1',
+    art: 'images/art-22.svg',
     image: null,
     duration: null, // срок в месяцах на странице курса не нашли (skillbox.ru недоступен из сборки, данные из выдачи поиска)
     schedule: null,
@@ -710,6 +729,7 @@ export const coursesB = [
     short: 'Нейросети и нейросотрудники',
     url: 'https://eduson.academy/ai-workers',
     affiliateB: 'https://go.redav.online/c16c681be059cd80?erid=LdtCKXSTq&m=1',
+    art: 'images/art-23.svg',
     image: null,
     duration: '3–4 месяца', // тариф «Продвинутый» 3 мес., «Мини-МБА» 4 мес.
     schedule: null,
@@ -738,6 +758,7 @@ export const coursesB = [
     short: 'Codex: ИИ-агент',
     url: 'https://skillbox.ru/course/codex/',
     affiliateB: 'https://go.redav.online/55f75b35c1da2ea0?erid=2VfnxwisD9b&m=1',
+    art: 'images/art-24.svg',
     image: null,
     duration: '2 недели', // интенсив
     schedule: null,
@@ -787,6 +808,6 @@ export const faq = [
   },
   {
     q: 'Как составляется рейтинг?',
-    a: 'Мы сравниваем курсы по содержанию программы, практическим заданиям, применению AI, формату обучения и стоимости. Место в рейтинге помогает сориентироваться, но лучший выбор зависит от ваших задач и подготовки.',
+    a: 'Каждый курс оцениваем по четырем критериям: практика, программа, поддержка и результат. Итоговый балл — взвешенная сумма, цены и сроки сверяем со страницами школ. Место помогает сориентироваться, но лучший выбор зависит от ваших задач и подготовки.',
   },
 ];

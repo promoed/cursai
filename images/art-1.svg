@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
-<rect width="1600" height="1000" fill="#FFD23F"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="250 70 1100 980" preserveAspectRatio="xMidYMid meet">
+<rect x="-4000" y="-4000" width="9600" height="9000" fill="#FFD23F"/>
 <g fill="none" stroke="#121212" stroke-opacity=".12" stroke-width="2"><circle cx="800" cy="500" r="300"/><circle cx="800" cy="500" r="420"/><circle cx="800" cy="500" r="560"/></g>
 <g stroke="#121212" stroke-width="6" stroke-linecap="round" fill="none"><path d="M800 640 C800 560 610 560 610 450"/><path d="M800 640 V430"/><path d="M800 640 C800 560 990 560 990 450"/></g>
 <rect x="520" y="620" width="560" height="110" rx="55" fill="#121212"/>
