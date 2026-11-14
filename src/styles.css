@@ -29,8 +29,8 @@
     --ink-2: #cfcdc6;
     --ink-3: #9d9b94;
     --line: rgba(255, 255, 255, 0.16);
-    --paper: #2b2b2b;
-    --paper-line: rgba(255, 255, 255, 0.08);
+    --paper: #2e2e2e;
+    --paper-line: rgba(255, 255, 255, 0.11);
     --mix: 13%;
     --k: 1;
     --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 18px 40px -22px rgba(0, 0, 0, 0.9);
@@ -44,8 +44,8 @@
   --ink-2: #cfcdc6;
   --ink-3: #9d9b94;
   --line: rgba(255, 255, 255, 0.16);
-  --paper: #2b2b2b;
-  --paper-line: rgba(255, 255, 255, 0.08);
+  --paper: #2e2e2e;
+  --paper-line: rgba(255, 255, 255, 0.11);
   --mix: 13%;
   --k: 1;
   --shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 18px 40px -22px rgba(0, 0, 0, 0.9);
@@ -418,70 +418,100 @@ ol {
   padding-block: clamp(40px, 6vw, 72px);
   border-top: 2px solid var(--ink);
 }
-.method-in {
-  display: grid;
-  grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
-  gap: 24px 64px;
-  align-items: start;
+.method-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px 48px;
+  margin-bottom: clamp(28px, 4vw, 48px);
+}
+.method-head .h2 {
+  max-width: 12ch;
 }
 .method-lead {
-  margin-top: 14px;
-  max-width: 34ch;
+  max-width: 38ch;
   color: var(--ink-2);
   line-height: 1.55;
 }
+.method-lead b {
+  color: var(--ink);
+  white-space: nowrap;
+}
 .steps {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  counter-reset: none;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
 }
 .step {
   position: relative;
-  display: grid;
-  align-content: start;
-  gap: 8px;
-  padding: 22px 22px 24px;
-  border: 1px solid var(--line);
-  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px 22px 26px;
+  border: 1px solid var(--paper-line);
+  border-radius: 24px;
   background: var(--paper);
+  overflow: hidden;
+}
+.step::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  background: var(--sc);
 }
 .step-n {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--ink);
-  color: var(--bg);
-  font: 400 1rem/1 var(--f-display);
+  font: 400 clamp(2.4rem, 3.6vw, 3.2rem) / 1 var(--f-display);
+  letter-spacing: -0.03em;
+  color: var(--sc);
 }
 .step-title {
-  margin-top: 6px;
-  font-size: 1.1rem;
+  margin-top: 8px;
+  font-size: 1.12rem;
   font-weight: 700;
   line-height: 1.3;
 }
 .step-text {
-  font-size: 0.95rem;
-  line-height: 1.5;
+  font-size: 0.94rem;
+  line-height: 1.55;
   color: var(--ink-2);
 }
-.w-chips {
+.wbar {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 4px;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 12px;
 }
-.w-chip {
-  padding: 5px 10px;
-  border: 1px solid var(--line);
+.wbar span {
+  flex: var(--w) 1 0;
+  height: 10px;
   border-radius: 999px;
-  font-size: 0.85rem;
+  background: var(--wc);
+}
+.wlegend {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 10px;
+  font-size: 0.82rem;
+  color: var(--ink-2);
+}
+.wlegend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   white-space: nowrap;
 }
-.w-chip b {
-  font-weight: 700;
+.wlegend li::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--wc);
+}
+.wlegend b {
+  color: var(--ink);
 }
 
 /* ============ Фильтр ============ */
@@ -890,6 +920,63 @@ ol {
   font-size: 0.95rem;
 }
 
+/* Обложка-иллюстрация курса с плашкой логотипа школы */
+.art {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.art-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--spring);
+}
+.art-logo {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: grid;
+  place-items: center;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 14px;
+  background: var(--logo-bg);
+  box-shadow: 0 0 0 3px #121212;
+}
+.art-logo img {
+  display: block;
+  width: auto;
+  max-width: 150px;
+  height: auto;
+  max-height: 22px;
+}
+.cover-pic .art-logo {
+  left: 20px;
+  bottom: 20px;
+  height: 52px;
+}
+.cover-pic .art-logo img {
+  max-width: 170px;
+  max-height: 26px;
+}
+.art-logo.is-tall img {
+  max-height: 34px;
+}
+.cover-pic .art-logo.is-tall img {
+  max-height: 40px;
+}
+.mcard-cover-link:hover .art-img,
+.course:hover .cover-pic .art-img {
+  transform: scale(1.05);
+}
+.mcard-cover-link:hover .art-logo img {
+  transform: none;
+}
+
 /* Появление секции курса */
 .course.await .course-num span {
   transform: translateY(40px);
@@ -1146,6 +1233,24 @@ td:nth-child(4) {
 .pick .ico {
   width: 22px;
   height: 22px;
+}
+
+@media (max-width: 640px) {
+  .method .steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* В темной теме финал и подвал — того же графита, что и страница, отделены линией */
+:root[data-theme='dark'] .final,
+:root[data-theme='dark'] .foot {
+  background: var(--bg);
+}
+:root[data-theme='dark'] .final {
+  border-top: 1px solid var(--line);
+}
+:root[data-theme='dark'] .mcard:hover {
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 /* ============ Подвал ============ */
@@ -1430,12 +1535,11 @@ td:nth-child(4) {
   .theme {
     margin-left: auto;
   }
-  .method-in,
   .faq-in {
     grid-template-columns: minmax(0, 1fr);
   }
   .steps {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .course-in {
     grid-template-columns: minmax(0, 1fr);
@@ -1894,6 +1998,7 @@ td:nth-child(4) {
 .mcard {
   display: flex;
   flex-direction: column;
+  border: 1px solid var(--paper-line);
   border-radius: 24px;
   overflow: hidden;
   background: var(--paper);

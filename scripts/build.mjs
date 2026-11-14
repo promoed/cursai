@@ -151,7 +151,16 @@ const poster = (i) => {
 };
 
 // Картинка курса. Пока файла нет, показываем постерную заглушку в цвете курса.
+// Обложка-иллюстрация курса (c.art) с плашкой логотипа школы поверх
+const artCover = (c, cls) => {
+  const school = schools[c.school];
+  return `<span class="${cls} art"><img class="art-img" src="${esc(c.art)}" alt="" width="1600" height="1000" loading="lazy" decoding="async"><span class="art-logo${school.logoSize[0] / school.logoSize[1] < 3 ? ' is-tall' : ''}" style="--logo-bg:${school.logoBg}"><img src="${esc(school.logo)}" alt="Логотип ${esc(school.name)}" width="${school.logoSize[0]}" height="${school.logoSize[1]}" loading="lazy" decoding="async"></span></span>`;
+};
 const cover = (c, i) => {
+  if (c.art) {
+    return `
+          <figure class="cover cover-pic">${artCover(c, 'cover-pic-in')}</figure>`;
+  }
   if (c.image) {
     const wide = c.imageShape === 'landscape';
     return `
@@ -273,15 +282,18 @@ const tableRows = (urlKey) =>
     .join('');
 const tableRowsA = tableRows('urlA');
 
-const weights = criteria
-  .map((k) => `<span class="w-chip" title="${esc(k.hint)}">${esc(k.label)} <b>${Math.round(k.weight * 100)}%</b></span>`)
-  .join('');
-// Блок «Как формируется рейтинг»: короткая методика по шагам вместо голых весов
+// Блок «Как формируется рейтинг»: методика в 4 шага, у второго шага — шкала весов критериев
+const wColors = ['#FFD23F', '#FF7A59', '#9C8CFF', '#3DD6A0'];
+const weightBar = `
+          <div class="wbar" aria-hidden="true">${criteria.map((k, i) => `<span style="--w:${k.weight};--wc:${wColors[i % wColors.length]}"></span>`).join('')}</div>
+          <ul class="wlegend">${criteria
+            .map((k, i) => `<li style="--wc:${wColors[i % wColors.length]}" title="${esc(k.hint)}">${esc(k.label)} <b>${Math.round(k.weight * 100)}%</b></li>`)
+            .join('')}</ul>`;
 const methodSteps = [
-  ['Изучаем программу', 'Открываем страницу каждого курса и разбираем модули, инструменты, формат занятий и что останется на руках после обучения.'],
-  ['Ставим оценки по 4 критериям', `Каждый критерий — от 0 до 10, итог считается с весами:`],
-  ['Сверяем цены и сроки', 'Стоимость, рассрочку и срок берем со страниц школ на дату обновления. Если школа их не публикует, поле остается пустым — мы не подставляем цифры наугад.'],
-  ['Партнерство не влияет на место', 'Часть ссылок партнерские, школа может заплатить нам за ваш переход. Но место в рейтинге определяет только оценка курса.'],
+  ['Изучаем программу', 'Открываем страницу каждого курса и разбираем модули, инструменты, формат занятий и то, что останется на руках после обучения.'],
+  ['Ставим оценки', 'Четыре критерия от 0 до 10. Итоговый балл — взвешенная сумма, больше всего весит практика.'],
+  ['Сверяем цены и сроки', 'Стоимость, рассрочку и срок берем со страниц школ. Если школа их не публикует, поле остается пустым — цифры наугад не подставляем.'],
+  ['Сравниваем внутри направления', 'Курсы по Data Science соревнуются с Data Science, по дизайну — с дизайном. Место в разделе показывает лучший выбор под конкретную задачу.'],
 ];
 
 
@@ -315,19 +327,18 @@ const bLead = 'Еще недавно нейросети были темой дл
 const heroLead = `Освойте ИИ для работы, творчества и собственных проектов. Сравните ${courses.length} ${plural(courses.length)} по программе, практике и поддержке — и выберите тот, который подходит под ваши задачи и уровень.`;
 const methodSection = `
   <section class="method" data-tint="base" aria-labelledby="method-title">
-    <div class="wrap method-in">
+    <div class="wrap">
       <div class="method-head">
         <h2 class="h2" id="method-title">Как формируется рейтинг</h2>
-        <p class="method-lead">Мы сравниваем курсы по одной методике, чтобы их можно было сопоставить честно. Последняя проверка данных — ${esc(SITE.updated)}.</p>
+        <p class="method-lead">Одна методика для всех курсов — чтобы их можно было честно сопоставить. Последняя проверка данных: <b>${esc(SITE.updated)}</b>.</p>
       </div>
       <ol class="steps">${methodSteps
         .map(
           ([title, text], i) => `
-        <li class="step">
-          <span class="step-n" aria-hidden="true">${i + 1}</span>
+        <li class="step" style="--sc:${wColors[i]}">
+          <span class="step-n" aria-hidden="true">0${i + 1}</span>
           <h3 class="step-title">${esc(title)}</h3>
-          <p class="step-text">${esc(text)}</p>${i === 1 ? `
-          <p class="w-chips">${weights}</p>` : ''}
+          <p class="step-text">${esc(text)}</p>${i === 1 ? weightBar : ''}
         </li>`
         )
         .join('')}
@@ -597,6 +608,7 @@ ${js}
 const calIco = '<svg class="ico" viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M2.5 6.2h11M5.3 2v2.4M10.7 2v2.4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
 
 const miniCover = (c) => {
+  if (c.art) return artCover(c, 'mcard-art');
   if (c.image) {
     return `<img class="mcard-img" src="${esc(c.image)}" alt="${esc(c.title)}, ${esc(schools[c.school].name)}" width="640" height="400" loading="lazy" decoding="async">`;
   }
@@ -1106,7 +1118,7 @@ for (const [name, page] of Object.entries(pages)) {
   await writeFile(new URL(name, out), minifyHtml(page));
 }
 
-const used = new Set(Object.values(schools).map((sc) => sc.logo).concat(courses.map((c) => c.image)).filter(Boolean));
+const used = new Set(Object.values(schools).map((sc) => sc.logo).concat(courses.map((c) => c.image), courses.map((c) => c.art)).filter(Boolean));
 for (const file of used) await copyFile(new URL(file, root), new URL(file, out));
 for (const f of await readdir(new URL('src/fonts/', root))) await copyFile(new URL(`src/fonts/${f}`, root), new URL(`fonts/${f}`, out));
 
