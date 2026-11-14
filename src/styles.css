@@ -2142,15 +2142,18 @@ td:nth-child(4) {
 }
 .mcard-score {
   flex: none;
+  padding: 6px 10px 5px;
+  border-radius: 99px;
+  /* нейтральная контрастная плашка: не спорит с яркими обложками */
+  background: var(--ink);
+  color: var(--bg);
   font: 400 1.05rem/1 var(--f-display);
-  /* акцентный цвет; на светлом фоне чуть темнее, чтобы хватало контраста */
-  color: color-mix(in srgb, var(--c) calc(70% + var(--k) * 30%), #000);
   white-space: nowrap;
 }
 .mcard-score small {
   margin-left: 1px;
-  font: 500 0.68rem/1 var(--f-body);
-  color: var(--ink-3);
+  font: 600 0.68rem/1 var(--f-body);
+  opacity: 0.65;
 }
 .mcard-title {
   display: -webkit-box;
@@ -2225,7 +2228,12 @@ td:nth-child(4) {
   width: 100%;
   margin-top: 8px;
   --h: 48px;
-  background: var(--c);
+  background: var(--ink);
+  color: var(--bg);
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.3s var(--spring);
+}
+.mcard-cta:hover {
+  background: #ffd23f;
   color: #121212;
 }
 
