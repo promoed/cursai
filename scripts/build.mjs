@@ -10,7 +10,7 @@ const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
 
 const SITE = {
-  name: 'Cursai',
+  name: 'Курсометр',
   domain: 'cursai.ru',
   updated: 'октябрь 2026',
   year: 2026,
@@ -30,8 +30,9 @@ const SITE = {
     inn: '',
     email: 'gvrsoon@yandex.ru',
   },
-  // Почта для сотрудничества: выводится на странице «О нас»
-  contact: 'aconyone@gmail.com',
+  // Почта для сотрудничества: выводится на странице «О нас». Берется из переменной окружения SITE_CONTACT
+  // (задается в настройках окружения). Если переменной нет, карточка с почтой на странице не выводится.
+  contact: process.env.SITE_CONTACT || '',
 };
 
 // Адреса страниц. На хостинге — чистые адреса от корня сайта (главная — рейтинг, cursai.ru/top-10/, cursai.ru/about/),
@@ -40,6 +41,9 @@ const U = artifact
   ? { home: './', top: 'top-10.html', about: 'about.html', privacy: 'privacy.html', consent: 'consent.html' }
   : { home: '/', top: '/top-10/', about: '/about/', privacy: '/privacy.html', consent: '/consent.html' };
 
+if (!SITE.contact) {
+  console.warn('Переменная окружения SITE_CONTACT не задана: карточка с почтой на странице «О нас» не выводится.');
+}
 if (!SITE.operator.email) {
   console.warn('Укажите почту в SITE.operator.email (scripts/build.mjs): она выводится в политике и согласии.');
 }
@@ -270,15 +274,16 @@ const tableRows = (urlKey) =>
 const tableRowsA = tableRows('urlA');
 
 const weights = criteria
-  .map(
-    (k) => `
-          <li>
-            <b>${Math.round(k.weight * 100)}%</b>
-            <span class="w-name">${esc(k.label)}</span>
-            <span class="w-hint">${esc(k.hint)}</span>
-          </li>`
-  )
+  .map((k) => `<span class="w-chip" title="${esc(k.hint)}">${esc(k.label)} <b>${Math.round(k.weight * 100)}%</b></span>`)
   .join('');
+// Блок «Как формируется рейтинг»: короткая методика по шагам вместо голых весов
+const methodSteps = [
+  ['Изучаем программу', 'Открываем страницу каждого курса и разбираем модули, инструменты, формат занятий и что останется на руках после обучения.'],
+  ['Ставим оценки по 4 критериям', `Каждый критерий — от 0 до 10, итог считается с весами:`],
+  ['Сверяем цены и сроки', 'Стоимость, рассрочку и срок берем со страниц школ на дату обновления. Если школа их не публикует, поле остается пустым — мы не подставляем цифры наугад.'],
+  ['Партнерство не влияет на место', 'Часть ссылок партнерские, школа может заплатить нам за ваш переход. Но место в рейтинге определяет только оценка курса.'],
+];
+
 
 const chips = filters
   .filter((f) => !f.onlyB)
@@ -311,9 +316,22 @@ const heroLead = `Освойте ИИ для работы, творчества 
 const methodSection = `
   <section class="method" data-tint="base" aria-labelledby="method-title">
     <div class="wrap method-in">
-      <h2 class="h2" id="method-title">Как формируется рейтинг</h2>
-      <ul class="weights">${weights}
-      </ul>
+      <div class="method-head">
+        <h2 class="h2" id="method-title">Как формируется рейтинг</h2>
+        <p class="method-lead">Мы сравниваем курсы по одной методике, чтобы их можно было сопоставить честно. Последняя проверка данных — ${esc(SITE.updated)}.</p>
+      </div>
+      <ol class="steps">${methodSteps
+        .map(
+          ([title, text], i) => `
+        <li class="step">
+          <span class="step-n" aria-hidden="true">${i + 1}</span>
+          <h3 class="step-title">${esc(title)}</h3>
+          <p class="step-text">${esc(text)}</p>${i === 1 ? `
+          <p class="w-chips">${weights}</p>` : ''}
+        </li>`
+        )
+        .join('')}
+      </ol>
     </div>
   </section>`;
 
@@ -425,7 +443,7 @@ const fonts = `<link rel="preload" href="fonts/dela-gothic-one-subset.woff2" as=
 const analyticsHints = `<link rel="preconnect" href="https://mc.yandex.ru">
 <link rel="dns-prefetch" href="https://mc.yandex.ru">`;
 
-const themeBoot = `<script>try{var t=localStorage.getItem('nr-theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>`;
+const themeBoot = `<script>var t;try{t=localStorage.getItem('nr-theme')}catch(e){}document.documentElement.setAttribute('data-theme',t||'dark')</script>`;
 
 const head = `<!doctype html>
 <html lang="ru">
@@ -438,8 +456,8 @@ ${SITE.url ? `<link rel="canonical" href="${SITE.url}top-10/">\n<meta property="
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:locale" content="ru_RU">
-<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#212121" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#212121" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="${favicon}">
 ${analyticsHints}
 ${fonts}
@@ -694,8 +712,8 @@ ${SITE.url ? `<link rel="canonical" href="${SITE.url}">\n<meta property="og:url"
 <meta property="og:title" content="${esc(bTitle)}">
 <meta property="og:description" content="${esc(bDescription)}">
 <meta property="og:locale" content="ru_RU">
-<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#212121" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#212121" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="${favicon}">
 ${analyticsHints}
 ${fonts}
@@ -820,7 +838,7 @@ const spark = '<svg class="ab-spark" viewBox="0 0 24 24" aria-hidden="true"><pat
 const mail = esc(SITE.contact);
 const copyIco = '<svg class="ico ico-copy" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 3.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
 const aboutTitle = `О нас · ${SITE.name}`;
-const aboutDescription = 'Cursai — независимая подборка онлайн-курсов по нейросетям. Как ИИ изменил мир за последние годы и почему учиться работать с ним стоит уже сейчас.';
+const aboutDescription = 'Курсометр — независимая подборка онлайн-курсов по нейросетям. Как ИИ изменил мир за последние годы и почему учиться работать с ним стоит уже сейчас.';
 const aboutHtml = `<!doctype html>
 <html lang="ru">
 <head>
@@ -860,7 +878,7 @@ ${themeBoot}
       <div class="ab-hero-row">
         <div class="ab-hero-text">
           <p class="hero-lead">${esc(SITE.name)} — рейтинг курсов для тех, кто хочет использовать ИИ в работе, творчестве и собственных проектах. Мы собираем программы по нейросетям и современным профессиям, где ИИ — часть практики. Сравниваем содержание, задания, поддержку и стоимость, чтобы вам было проще выбрать обучение под свои задачи.</p>
-        </div>
+        </div>${mail ? `
         <aside class="ab-contact" aria-labelledby="ab-contact-title">
           <span class="ab-paper ab-paper-1" aria-hidden="true"></span>
           <span class="ab-paper ab-paper-2" aria-hidden="true"></span>
@@ -872,7 +890,7 @@ ${themeBoot}
             </button>
             <p class="ab-copy-hint" id="ab-copy-hint" aria-live="polite">Нажмите, чтобы скопировать</p>
           </div>
-        </aside>
+        </aside>` : ''}
       </div>
     </div>
   </section>
