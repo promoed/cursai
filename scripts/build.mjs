@@ -12,7 +12,7 @@ const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
 
 const SITE = {
-  name: 'Skill Compass',
+  name: 'Still Learning',
   // Подпись рядом с логотипом в шапке (на телефоне скрыта)
   descriptor: 'рейтинг курсов по ИИ',
   domain: 'cursai.ru',
