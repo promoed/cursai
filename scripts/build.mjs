@@ -12,7 +12,7 @@ const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
 
 const SITE = {
-  name: 'Курсометр',
+  name: 'Skill Compass',
   // Подпись рядом с логотипом в шапке (на телефоне скрыта)
   descriptor: 'рейтинг курсов по ИИ',
   domain: 'cursai.ru',
@@ -888,7 +888,7 @@ const spark = '<svg class="ab-spark" viewBox="0 0 24 24" aria-hidden="true"><pat
 const mail = esc(SITE.contact);
 const copyIco = '<svg class="ico ico-copy" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 3.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
 const aboutTitle = `О проекте ${SITE.name} — рейтинг курсов по ИИ`;
-const aboutDescription = 'Курсометр — независимая подборка онлайн-курсов по нейросетям. Как ИИ изменил мир за последние годы и почему учиться работать с ним стоит уже сейчас.';
+const aboutDescription = `${SITE.name} — независимая подборка онлайн-курсов по нейросетям. Как ИИ изменил мир за последние годы и почему учиться работать с ним стоит уже сейчас.`;
 const aboutHtml = `<!doctype html>
 <html lang="ru">
 <head>
@@ -1234,7 +1234,7 @@ const postHtml = (p) => {
     <header class="wrap post-head">
       <nav class="crumbs" aria-label="Навигация"><a href="${U.home}">Рейтинг курсов</a><span aria-hidden="true">/</span><a href="${U.blog}">Блог</a><span aria-hidden="true">/</span><a href="${U.rubric(p.rubric)}">${esc(rubricOf(p).name)}</a></nav>
       <h1 class="post-title">${esc(p.h1)}</h1>
-      <p class="post-meta"><a class="post-rubric" href="${U.rubric(p.rubric)}">${esc(rubricOf(p).name)}</a> <time datetime="${p.date}">${ruDate(p.date)}</time> · ${readMin(p.body)} мин чтения · Редакция ${esc(SITE.name)}а</p>
+      <p class="post-meta"><a class="post-rubric" href="${U.rubric(p.rubric)}">${esc(rubricOf(p).name)}</a> <time datetime="${p.date}">${ruDate(p.date)}</time> · ${readMin(p.body)} мин чтения · Редакция ${esc(SITE.name)}</p>
       <p class="post-lead">${esc(p.lead)}</p>${p.cover ? `
       <img class="post-cover" src="${esc(p.cover)}" alt="${esc(coverAlt(p))}" width="1200" height="630" decoding="async" fetchpriority="high">` : ''}
     </header>
