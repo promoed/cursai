@@ -3252,3 +3252,10 @@ td:nth-child(4) {
 .post-meta .post-rubric {
   margin-right: 6px;
 }
+/* Кнопка внутри текста статьи не должна наследовать стиль ссылок */
+.post-body .btn-ink,
+.post-body .btn-ink:hover {
+  background: var(--ink);
+  color: var(--bg);
+  text-decoration: none;
+}

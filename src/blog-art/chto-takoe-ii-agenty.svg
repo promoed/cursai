@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <!-- рваный край бумаги -->
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="9" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <!-- зерно печати поверх формы -->
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"/>
+      <feColorMatrix in="n" type="saturate" values="0" result="g"/>
+      <feComponentTransfer in="g" result="g2"><feFuncA type="linear" slope="0.55"/></feComponentTransfer>
+      <feComposite in="g2" in2="SourceGraphic" operator="in" result="gi"/>
+      <feBlend in="SourceGraphic" in2="gi" mode="multiply"/>
+    </filter>
+    <!-- «фото»: серый объект с крупным зерном и пятнами -->
+    <filter id="photo" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" seed="2" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0.9 0 0 0 -0.25" result="spots"/>
+      <feComposite in="spots" in2="SourceGraphic" operator="in" result="sp"/>
+      <feBlend in="SourceGraphic" in2="sp" mode="multiply"/>
+    </filter>
+    <linearGradient id="metal" x1="0" x2="1">
+      <stop offset="0" stop-color="#d9d9d6"/><stop offset=".55" stop-color="#bdbdb9"/><stop offset="1" stop-color="#8d8d8a"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9a9a98"/><stop offset="1" stop-color="#3c3c3b"/>
+    </linearGradient>
+    <pattern id="waves" width="46" height="10" patternUnits="userSpaceOnUse">
+      <path d="M0 6q11.5-6 23 0t23 0" fill="none" stroke="#1f1f1f" stroke-opacity=".35" stroke-width="2"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="#5b79ff"/>
+
+  <!-- солнце -->
+  <circle cx="330" cy="230" r="112" fill="#ffe03a" filter="url(#rough)"/>
+
+  <!-- луч от «головы» агента -->
+  <path d="M640 160L1200 70V330Z" fill="#ffe03a"/>
+
+  <!-- облака из бумаги -->
+  <g fill="#fff" filter="url(#rough)">
+    <path d="M760 210c0-22 20-36 40-30 8-20 38-26 54-8 16-10 40 0 42 20 18 2 26 18 18 30H760z"/>
+    <path d="M200 120c0-16 14-26 28-22 6-14 28-18 38-6 12-6 28 0 30 14 12 2 18 12 12 22H200z"/>
+  </g>
+  <!-- птицы -->
+  <g fill="#141414">
+    <path d="M880 250q14-10 26 2q8-12 24-8q-14 2-22 16q-12-12-28-10z"/>
+    <path d="M820 300q10-8 20 2q6-9 18-6q-10 2-16 12q-9-9-22-8z"/>
+  </g>
+
+  <!-- море: серое «фото» с волнами -->
+  <rect y="500" width="1200" height="130" fill="url(#sea)" filter="url(#photo)"/>
+  <rect y="500" width="1200" height="130" fill="url(#waves)"/>
+
+  <!-- розовый бумажный холм -->
+  <path d="M330 630L470 470L560 455L600 418L700 420L760 470L840 500L960 630Z" fill="#f4a9b8" filter="url(#rough)"/>
+  <path d="M330 630L470 470L560 455L600 418L700 420L760 470L840 500L960 630Z" fill="#f4a9b8" filter="url(#grain)"/>
+  <!-- тропинка -->
+  <path d="M640 425L700 425L770 630H600Z" fill="#fbe9ec" opacity=".9" filter="url(#rough)"/>
+
+  <!-- «фото»-робот-маяк: антенна, голова, корпус -->
+  <g filter="url(#photo)">
+    <rect x="590" y="90" width="8" height="40" fill="#555"/>
+    <circle cx="594" cy="84" r="12" fill="#333"/>
+    <rect x="530" y="128" width="130" height="104" rx="22" fill="url(#metal)"/>
+    <rect x="550" y="150" width="90" height="56" rx="14" fill="#1d1d1d"/>
+    <path d="M556 238h78l26 190h-130z" fill="url(#metal)"/>
+    <rect x="575" y="280" width="40" height="22" rx="5" fill="#6d6d6a"/>
+    <rect x="575" y="330" width="40" height="22" rx="5" fill="#6d6d6a"/>
+  </g>
+  <!-- глаза светятся желтым — от них луч -->
+  <circle cx="575" cy="178" r="11" fill="#ffe03a"/>
+  <circle cx="615" cy="178" r="11" fill="#ffe03a"/>
+
+  <!-- домик -->
+  <g filter="url(#rough)">
+    <path d="M668 395h86v-34l-12-14h-62l-12 14z" fill="#fff"/>
+    <path d="M664 364l14-22h66l14 22z" fill="#e33a2c"/>
+    <rect x="684" y="372" width="16" height="16" fill="#1d1d1d"/>
+  </g>
+
+  <!-- табличка -->
+  <rect x="452" y="430" width="6" height="90" fill="#1d1d1d"/>
+  <g transform="rotate(-4 470 430)">
+    <rect x="368" y="402" width="196" height="56" rx="4" fill="#e33a2c"/>
+    <text x="466" y="441" text-anchor="middle" font-family="Onest, Arial, sans-serif" font-weight="800" font-size="30" fill="#fff">ИИ-агенты</text>
+  </g>
+</svg>
