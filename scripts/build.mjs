@@ -12,7 +12,7 @@ const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
 
 const SITE = {
-  name: 'nomoreai',
+  name: 'nomoreai.',
   // Название внутри предложения: русское — в кавычках-елочках, латинское — как есть
   get nameInText() {
     return /[а-яА-Я]/.test(this.name) ? `«${this.name}»` : this.name;
@@ -432,7 +432,9 @@ const jsonLd = {
 };
 
 const faviconSvg =
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#212121"/><path d="M7 21a9 9 0 0 1 2.6-6.4" fill="none" stroke="#FFD23F" stroke-width="3.4" stroke-linecap="round"/><path d="M11.5 13.2A9 9 0 0 1 16 12" fill="none" stroke="#FF7A59" stroke-width="3.4" stroke-linecap="round"/><path d="M18.6 12.4a9 9 0 0 1 4 2.4" fill="none" stroke="#9C8CFF" stroke-width="3.4" stroke-linecap="round"/><path d="M24.3 17a9 9 0 0 1 .7 4" fill="none" stroke="#3DD6A0" stroke-width="3.4" stroke-linecap="round"/><path d="M16 21l5.5-5.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><circle cx="16" cy="21" r="2.6" fill="#fff"/></svg>';
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="9" fill="#212121"/><path d="M5.5 15.1L4.6 10.2L10.1 10.2L10.6 13Q10.6 12.9 10.6 12.8Q11.6 11.4 13 10.6Q14.3 9.8 15.9 9.8Q17.9 9.8 19.3 10.6Q20.7 11.4 21.5 12.9Q22.2 14.3 22.2 16.3L22.2 24L16.7 24L16.7 17.1Q16.7 15.7 16 15Q15.3 14.3 14 14.3Q13.1 14.3 12.4 14.7Q11.8 15 11.4 15.7Q11 16.4 11 17.4L11 24L5.5 24" fill="#f3f2ee"/><circle cx="26.5" cy="21" r="3.4" fill="#FFD23F"/></svg>';
+// Логотип-надпись (src/logo.svg, шрифт Unbounded в кривых): цвет букв — currentColor, точка — желтая
+const logoMark = `<span class="logo-mark" role="img" aria-label="${esc(SITE.name)}">${(await readFile(new URL('src/logo.svg', root), 'utf8')).trim()}</span>`;
 const favicon = 'data:image/svg+xml,' + encodeURIComponent(faviconSvg);
 // На хостинге иконки лежат файлами в корне (их видят Яндекс и Google), в превью — встроенная SVG
 const iconLinks = artifact
@@ -514,7 +516,7 @@ const html = `${head}
 <header class="top">
   <div class="wrap top-in">
     <a class="logo" href="${U.home}" aria-label="${esc(SITE.name)}, на главную">
-      <span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span>
+      ${logoMark}<span class="logo-desc">${esc(SITE.descriptor)}</span>
     </a>
     <nav class="nav" aria-label="Разделы">
       <a href="#rating">Рейтинг</a>
@@ -777,7 +779,7 @@ ${themeBoot}
 <body>
 <header class="mtop">
   <div class="wrap mtop-in">
-    <span class="logo"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></span>
+    <span class="logo">${logoMark}<span class="logo-desc">${esc(SITE.descriptor)}</span></span>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}" aria-current="page">Рейтинг курсов</a>
       <a href="${U.blog}">Блог</a>
@@ -915,7 +917,7 @@ ${themeBoot}
 <body class="about">
 <header class="mtop">
   <div class="wrap mtop-in">
-    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
+    <a class="logo" href="${U.home}">${logoMark}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.blog}">Блог</a>
@@ -1070,7 +1072,7 @@ ${ld ? `<script type="application/ld+json">${JSON.stringify(ld)}</script>` : ''}
 <body class="blog-page">
 <header class="mtop">
   <div class="wrap mtop-in">
-    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
+    <a class="logo" href="${U.home}">${logoMark}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.blog}"${current === 'blog' ? ' aria-current="page"' : ''}>Блог</a>
@@ -1300,7 +1302,7 @@ ${themeBoot}
 <body class="legal-page">
 <header class="top">
   <div class="wrap top-in">
-    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
+    <a class="logo" href="${U.home}">${logoMark}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
     <a class="btn btn-line btn-sm legal-back" href="${U.home}">К рейтингу</a>
   </div>
 </header>
@@ -1350,7 +1352,7 @@ ${themeBoot}
 <body>
 <header class="mtop">
   <div class="wrap mtop-in">
-    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
+    <a class="logo" href="${U.home}">${logoMark}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.blog}">Блог</a>
