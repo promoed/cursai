@@ -58,7 +58,6 @@ export const courses = [
     affiliateA: 'https://go.avnxt.site/597ee3404129eb00?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://go.avnxt.site/8d565408fd1947c0?erid=2VfnxxQsJbC&m=1', // партнерская ссылка для варианта Б (b.html)
     art: 'images/art-1.svg', // своя обложка-иллюстрация, логотип школы ставится поверх
-    artTitle: true, // эксперимент: название курса на обложке
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '1 месяц', // 5 недель, на странице оплаты школа сама округляет до месяца
     schedule: null,
@@ -90,7 +89,6 @@ export const courses = [
     affiliateA: 'https://go.avnxt.site/1170230385b75cb0?erid=2VfnxwisD9b&m=1', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://go.avnxt.site/8243b6273f4b8240?erid=2VfnxwisD9b&m=1', // партнерская ссылка для варианта Б (b.html)
     art: 'images/art-2.svg', // своя обложка-иллюстрация, логотип школы ставится поверх
-    artTitle: true, // эксперимент: название курса на обложке
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '3 месяца',
     schedule: '130+ уроков в записи',
@@ -122,7 +120,6 @@ export const courses = [
     affiliateA: 'https://go.avnxt.site/83e946bb93f3bf80?erid=LdtCKXSTq&m=1', // партнерская ссылка для главной страницы (index.html)
     affiliateB: 'https://go.avnxt.site/9c587d23d0716e40?erid=LdtCKXSTq&m=1', // партнерская ссылка для варианта Б (b.html)
     art: 'images/art-3.svg', // своя обложка-иллюстрация, логотип школы ставится поверх
-    artTitle: true, // эксперимент: название курса на обложке
     image: null, // своя картинка курса вместо логотипа школы: 'images/kurs-N.webp', 4:5
     duration: '2 месяца',
     schedule: '32 видеоурока и 40 часов практики',
