@@ -37,11 +37,11 @@ const SITE = {
   contact: process.env.SITE_CONTACT || '',
 };
 
-// Адреса страниц. На хостинге — чистые адреса от корня сайта (главная — рейтинг, cursai.ru/top-10/, cursai.ru/about/),
+// Адреса страниц. На хостинге — чистые адреса от корня сайта (главная — рейтинг, cursai.ru/about/; старый адрес /top-10/ ведет на главную),
 // в превью (--artifact) — плоские файлы рядом друг с другом.
 const U = artifact
-  ? { home: './', top: 'top-10.html', about: 'about.html', privacy: 'privacy.html', consent: 'consent.html' }
-  : { home: '/', top: '/top-10/', about: '/about/', privacy: '/privacy.html', consent: '/consent.html' };
+  ? { home: './', faq: './#faq', about: 'about.html', privacy: 'privacy.html', consent: 'consent.html' }
+  : { home: '/', faq: '/#faq', about: '/about/', privacy: '/privacy.html', consent: '/consent.html' };
 
 if (!SITE.contact) {
   console.warn('Переменная окружения SITE_CONTACT не задана: карточка с почтой на странице «О нас» не выводится.');
@@ -156,7 +156,13 @@ const poster = (i) => {
 // Обложка-иллюстрация курса (c.art) с плашкой логотипа школы поверх
 const artCover = (c, cls) => {
   const school = schools[c.school];
-  return `<span class="${cls} art"><img class="art-img" src="${esc(c.art)}" alt="" width="1600" height="1000" loading="lazy" decoding="async"><span class="art-logo${school.logoSize[0] / school.logoSize[1] < 3 ? ' is-tall' : ''}" style="--logo-bg:${school.logoBg}"><img src="${esc(school.logo)}" alt="Логотип ${esc(school.name)}" width="${school.logoSize[0]}" height="${school.logoSize[1]}" loading="lazy" decoding="async"></span></span>`;
+  const logo = `<span class="art-logo${school.logoSize[0] / school.logoSize[1] < 3 ? ' is-tall' : ''}" style="--logo-bg:${school.logoBg}"><img src="${esc(school.logo)}" alt="Логотип ${esc(school.name)}" width="${school.logoSize[0]}" height="${school.logoSize[1]}" loading="lazy" decoding="async"></span>`;
+  const img = `<img class="art-img" src="${esc(c.art)}" alt="" width="1600" height="1000" loading="lazy" decoding="async">`;
+  // Эксперимент: название курса прямо на обложке (artTitle: true в данных курса)
+  if (c.artTitle) {
+    return `<span class="${cls} art has-title" style="--art-bg:${c.color}"><span class="art-pic">${img}</span><span class="art-band"><span class="art-title">${esc(c.short)}</span>${logo}</span></span>`;
+  }
+  return `<span class="${cls} art">${img}${logo}</span>`;
 };
 const cover = (c, i) => {
   if (c.art) {
@@ -741,7 +747,7 @@ ${themeBoot}
     <span class="logo"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></span>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}" aria-current="page">Рейтинг курсов</a>
-      <a href="${U.top}">Курсы по ИИ</a>
+      <a href="${U.faq}">FAQ</a>
       <a href="${U.about}">О нас</a>
     </nav>
     <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
@@ -809,7 +815,6 @@ ${methodSection}
     <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
     <p>Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться. Страница содержит партнерские ссылки, на оценки это не влияет.</p>
     <p class="foot-links">
-      <a href="${U.top}">Лучшие курсы по нейросетям</a>
       <a href="${U.about}">О нас</a>
       <a href="${U.privacy}">Политика конфиденциальности</a>
       <a href="${U.consent}">Согласие на cookie</a>
@@ -873,7 +878,7 @@ ${themeBoot}
     <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
-      <a href="${U.top}">Курсы по ИИ</a>
+      <a href="${U.faq}">FAQ</a>
       <a href="${U.about}" aria-current="page">О нас</a>
     </nav>
     <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
@@ -941,7 +946,7 @@ ${themeBoot}
         <h2 class="ab-final-title">Лучший момент начать — сейчас</h2>
         <div class="hero-cta">
           <a class="btn ab-btn-dark" href="${U.home}">Рейтинг по направлениям ${arrow}</a>
-          <a class="btn ab-btn-outline" href="${U.top}">Топ-10 курсов по нейросетям</a>
+          <a class="btn ab-btn-outline" href="${U.faq}">Частые вопросы</a>
         </div>
       </div>
     </div>
@@ -950,10 +955,9 @@ ${themeBoot}
 
 <footer class="foot">
   <div class="wrap foot-in">
-    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}. Сотрудничество: <a href="mailto:${mail}">${mail}</a></p>
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.${mail ? ` Сотрудничество: <a href="mailto:${mail}">${mail}</a>` : ''}</p>
     <p class="foot-links">
       <a href="${U.home}">Рейтинг курсов</a>
-      <a href="${U.top}">Лучшие курсы по нейросетям</a>
       <a href="${U.privacy}">Политика конфиденциальности</a>
       <a href="${U.consent}">Согласие на cookie</a>
       <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
@@ -1055,7 +1059,7 @@ ${themeBoot}
     <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
-      <a href="${U.top}">Курсы по ИИ</a>
+      <a href="${U.faq}">FAQ</a>
       <a href="${U.about}">О нас</a>
     </nav>
     <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
@@ -1070,7 +1074,6 @@ ${themeBoot}
       <p class="hero-lead">Возможно, адрес изменился. Рейтинг курсов по нейросетям — на главной.</p>
       <div class="hero-cta">
         <a class="btn btn-ink" href="${U.home}">На главную ${arrow}</a>
-        <a class="btn btn-line" href="${U.top}">Топ-10 курсов</a>
       </div>
     </div>
   </div>
@@ -1099,19 +1102,20 @@ ${SITE.url ? `<link rel="canonical" href="${SITE.url}${to.slice(1)}">` : ''}
 `;
 // В превью главная страница публикуется без обертки html/head — ее добавляет просмотрщик
 const bare = (t) => t.replace(/^<!doctype html>\s*<html[^>]*>\s*<head>\s*/, '').replace('</head>\n<body>', '').replace(/<\/body>\s*<\/html>\s*$/, '');
-// На хостинге картинки и шрифты берутся от корня сайта: так они работают и на вложенных страницах (/top-10/, /about/)
+// На хостинге картинки и шрифты берутся от корня сайта: так они работают и на вложенных страницах (/about/)
 const rootify = (t) => t.replace(/(["(])(images|fonts)\//g, '$1/$2/');
 const pages = artifact
-  ? { 'preview.html': bare(bHtml), 'top-10.html': html, 'about.html': aboutHtml, ...legal }
+  ? { 'preview.html': bare(bHtml), 'about.html': aboutHtml, ...legal }
   : {
       'index.html': rootify(bHtml),
-      'top-10/index.html': rootify(html),
+      // Страница «Курсы по ИИ» закрыта: заглушки ведут на главную, если хостинг не выполнит 301 из .htaccess
+      'top-10/index.html': redirect('/'),
       'about/index.html': rootify(aboutHtml),
       'b.html': redirect('/'),
-      // Те же страницы плоскими файлами в корне: .htaccess отдает их по адресам /about/ и /top-10/,
+      // Та же страница плоским файлом в корне: .htaccess отдает ее по адресу /about/,
       // так что адреса работают, даже если хостинг не загрузил папки или не отдает index.html из них
       'about.html': rootify(aboutHtml),
-      'top-10.html': rootify(html),
+      'top-10.html': redirect('/'),
       '404.html': rootify(notFoundHtml),
       ...Object.fromEntries(Object.entries(legal).map(([k, v]) => [k, rootify(v)])),
     };
@@ -1127,12 +1131,12 @@ for (const f of await readdir(new URL('src/fonts/', root))) await copyFile(new U
 if (!artifact) {
   await writeFile(
     new URL('robots.txt', out),
-    `User-agent: *\nDisallow: /privacy.html\nDisallow: /consent.html\nDisallow: /b.html\nDisallow: /about.html\nDisallow: /top-10.html\n${SITE.url ? `\nSitemap: ${SITE.url}sitemap.xml\n` : ''}`
+    `User-agent: *\nDisallow: /privacy.html\nDisallow: /consent.html\nDisallow: /b.html\nDisallow: /about.html\n${SITE.url ? `\nSitemap: ${SITE.url}sitemap.xml\n` : ''}`
   );
   if (SITE.url) {
     await writeFile(
       new URL('sitemap.xml', out),
-      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${SITE.url}</loc></url><url><loc>${SITE.url}top-10/</loc></url><url><loc>${SITE.url}about/</loc></url></urlset>\n`
+      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${SITE.url}</loc></url><url><loc>${SITE.url}about/</loc></url></urlset>\n`
     );
   }
   await copyFile(new URL('src/htaccess', root), new URL('.htaccess', out));

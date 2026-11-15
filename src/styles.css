@@ -977,6 +977,54 @@ ol {
   max-width: 170px;
   max-height: 26px;
 }
+.art.has-title {
+  display: flex;
+  flex-direction: column;
+  background: var(--art-bg);
+}
+.art-pic {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.art-band {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 14px 14px;
+}
+.art-title {
+  min-width: 0;
+  color: #121212;
+  font: 400 clamp(1rem, 1.5vw, 1.2rem) / 1.08 var(--f-display);
+  letter-spacing: -0.01em;
+}
+.has-title .art-logo {
+  position: static;
+  flex: none;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 0 2px #121212;
+}
+.has-title .art-logo img {
+  max-width: 96px;
+  max-height: 15px;
+}
+.has-title .art-logo.is-tall img {
+  max-height: 24px;
+}
+.is-list .has-title .art-band,
+.cover-pic .has-title .art-band {
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 20px 20px;
+}
+.cover-pic .art-title {
+  font-size: 1.7rem;
+}
 .art-logo.is-tall img {
   max-height: 34px;
 }
@@ -2037,6 +2085,12 @@ td:nth-child(4) {
   display: block;
   height: 100%;
   cursor: pointer;
+  text-decoration: none;
+}
+/* В плитках высота обложки задается карточкой: ссылка растягивается на всю обложку */
+.is-list .mcard-cover-link {
+  position: absolute;
+  inset: 0;
 }
 .mcard-cover-link img {
   transition: transform 0.4s var(--spring);
