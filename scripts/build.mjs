@@ -882,7 +882,7 @@ ${methodSection}
 
 <script>
 window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
-window.NR_GOAL = 'rating_course_click';
+window.NR_DIR_GOALS = ${JSON.stringify(Object.fromEntries(directionsB.map((d) => [d.key, d.goal])))};
 window.NR_DIR_ALIAS = ${JSON.stringify(dirAliases)};
 window.NR_COURSES = ${JSON.stringify(allB.map((c) => ({ rank: c.rank, short: c.short, school: schools[c.school].name, score: fmt(c.total), url: c.urlB, color: ACCENT })))};
 ${js}

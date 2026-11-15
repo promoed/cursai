@@ -425,10 +425,12 @@
       school: link.getAttribute('data-school') || '',
     };
     if (directions.length) detail.direction = currentFilter;
-    /* Общая цель course_click уходит со всех страниц — на нее оптимизируется реклама в Директе.
-       У страницы рейтинга дополнительно своя цель (NR_GOAL), чтобы конверсии страниц можно было сравнить. */
+    /* Две цели на каждый клик по курсу: общая course_click (на нее удобно оптимизировать всю рекламу)
+       и цель направления, которое сейчас открыто: click_datascience, click_design, click_ai и т. д.
+       (поле goal в directionsB, src/courses.mjs). Так у каждой страницы направления — своя цель для кампании. */
     var goals = ['course_click'];
-    if (window.NR_GOAL && window.NR_GOAL !== 'course_click') goals.push(window.NR_GOAL);
+    var dirGoal = window.NR_DIR_GOALS && window.NR_DIR_GOALS[currentFilter];
+    if (directions.length && dirGoal) goals.push(dirGoal);
     window.dataLayer = window.dataLayer || [];
     goals.forEach(function (goal) {
       window.dataLayer.push({
