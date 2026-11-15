@@ -3316,11 +3316,11 @@ td:nth-child(4) {
 }
 .logo-mark svg {
   display: block;
-  height: 19px;
+  height: 31px;
   width: auto;
 }
 @media (max-width: 640px) {
   .logo-mark svg {
-    height: 17px;
+    height: 27px;
   }
 }

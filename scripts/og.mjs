@@ -50,7 +50,7 @@ const html = (p) => `<!doctype html><html><head><meta charset="utf-8"><style>
 body{width:1200px;height:630px;background:#212121;color:#f3f2ee;font-family:O;position:relative;overflow:hidden}
 .brand{position:absolute;left:72px;top:60px;display:flex;align-items:center;gap:14px;font:700 32px O}
 .dot{width:34px;height:34px;border-radius:50%;background:conic-gradient(#ffd23f 0 25%,#ff7a59 0 50%,#9c8cff 0 75%,#3dd6a0 0)}
-.lg{height:34px;width:auto;color:#f3f2ee}.brand small{margin-left:6px;padding-left:16px;border-left:2px solid #444;font:500 24px O;color:#9d9b94}
+.lg{height:46px;width:auto;color:#f3f2ee}.brand small{margin-left:6px;padding-left:16px;border-left:2px solid #444;font:500 24px O;color:#9d9b94}
 .k{position:absolute;left:74px;top:178px;font:600 26px O;color:#ffd23f}
 .t{position:absolute;left:72px;top:222px;width:640px;font:400 ${p.title.length > 48 ? 46 : p.title.length > 32 ? 54 : 64}px/1.08 D;letter-spacing:-1px}
 .u{position:absolute;left:74px;bottom:58px;font:500 26px O;color:#9d9b94}
