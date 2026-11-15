@@ -1845,39 +1845,73 @@ td:nth-child(4) {
     scale: 0.8;
   }
 }
-/* Колода из трех лучших курсов: карточки по кругу уходят назад, открывая следующую */
+/* Колода из трех лучших курсов: карточки стоят веером, содержимое синхронно листается вверх */
 .deck {
   position: absolute;
   inset: 0;
 }
-.deck:hover .deck-card {
+.deck:hover .deck-track {
   animation-play-state: paused;
 }
 .deck-card {
   position: absolute;
   right: 54px;
   bottom: 0;
-  display: flex;
-  flex-direction: column;
   width: 236px;
   height: 300px;
   border: 1px solid var(--paper-line);
   border-radius: 26px;
   overflow: hidden;
   background: var(--paper);
-  color: var(--ink);
-  text-decoration: none;
   box-shadow: 0 26px 50px -28px rgba(0, 0, 0, 0.75);
   pointer-events: auto;
   transform-origin: 50% 100%;
-  animation: deck 15s linear infinite;
-  will-change: transform;
+}
+.deck-card-1 {
+  z-index: 3;
+  transform: rotate(-3deg);
 }
 .deck-card-2 {
-  animation-delay: -10s;
+  z-index: 2;
+  transform: translate(22px, -20px) rotate(3deg) scale(0.94);
 }
 .deck-card-3 {
-  animation-delay: -5s;
+  z-index: 1;
+  transform: translate(44px, -40px) rotate(8deg) scale(0.88);
+}
+/* Задние карточки чуть притушены, чтобы взгляд держался на передней */
+.deck-card-2::after,
+.deck-card-3::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  opacity: 0.18;
+  pointer-events: none;
+}
+.deck-card-3::after {
+  opacity: 0.32;
+}
+.deck-track {
+  display: flex;
+  flex-direction: column;
+  animation: deck-roll 15s infinite;
+  will-change: transform;
+}
+/* Легкая волна: задние карточки листаются с небольшой задержкой */
+.deck-card-2 .deck-track {
+  animation-delay: 0.12s;
+}
+.deck-card-3 .deck-track {
+  animation-delay: 0.24s;
+}
+.deck-slide {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  height: 300px;
+  color: var(--ink);
+  text-decoration: none;
 }
 .deck-pic {
   position: relative;
@@ -1938,51 +1972,31 @@ td:nth-child(4) {
   font-size: 0.66rem;
   opacity: 0.65;
 }
-/* Позиции: впереди → карточка мягко уезжает вправо и растворяется → невидимой встает в конец колоды
-   и проявляется там → середина → снова вперед. Карточки не проходят друг сквозь друга. */
-@keyframes deck {
+/* Три остановки по 4 секунды, перелистывание за 1 секунду с мягким разгоном и торможением.
+   Четвертый слайд повторяет первый: в конце лента незаметно возвращается в начало. */
+@keyframes deck-roll {
   0%,
-  26% {
-    z-index: 3;
-    opacity: 1;
-    transform: translate(0, 0) rotate(-3deg) scale(1);
-    animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
+  26.67% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
-  34% {
-    z-index: 3;
-    opacity: 0;
-    transform: translate(70px, 26px) rotate(6deg) scale(0.96);
-    animation-timing-function: step-end;
+  33.33%,
+  60% {
+    transform: translateY(-300px);
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
-  35% {
-    z-index: 1;
-    opacity: 0;
-    transform: translate(52px, -50px) rotate(9deg) scale(0.86);
-    animation-timing-function: cubic-bezier(0.25, 0.6, 0.35, 1);
-  }
-  44%,
-  59% {
-    z-index: 1;
-    opacity: 0.8;
-    transform: translate(44px, -40px) rotate(8deg) scale(0.88);
-    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
-  }
-  69%,
-  92% {
-    z-index: 2;
-    opacity: 0.95;
-    transform: translate(22px, -20px) rotate(3deg) scale(0.94);
-    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  66.67%,
+  93.33% {
+    transform: translateY(-600px);
+    animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
   }
   100% {
-    z-index: 3;
-    opacity: 1;
-    transform: translate(0, 0) rotate(-3deg) scale(1);
+    transform: translateY(-900px);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .deck-card {
-    animation-play-state: paused;
+  .deck-track {
+    animation: none;
   }
 }
 

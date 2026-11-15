@@ -630,23 +630,27 @@ const miniCover = (c) => {
 // На странице Б у всех карточек один акцентный цвет — фиолетовый из палитры сайта
 const ACCENT = '#9C8CFF';
 
-// Декор первого экрана главной: колода из трех лучших курсов рейтинга. Карточки по очереди уходят
-// назад, открывая следующую (чистый CSS), наведение останавливает смену, клик ведет к карточке курса.
+// Декор первого экрана главной: колода из трех лучших курсов рейтинга. Карточки стоят на месте,
+// а их содержимое синхронно прокручивается вверх — колода «листается» без перестановки слоев.
+// В каждой карточке лента из 4 слайдов (последний повторяет первый), поэтому петля бесшовная.
 const deckDirs = directionsB.filter((d) => d.tags);
 const heroTop = bOrder.slice(0, 3);
+const deckSlide = (c, link) => `<${link ? `a href="#kurs-${c.rank}"` : 'span'} class="deck-slide" style="--art-bg:${c.color}"${link ? '' : ' aria-hidden="true"'}>
+              <span class="deck-pic"><img src="${esc(c.art)}" alt="" width="1600" height="1000" decoding="async"><span class="deck-place">${c.placeAll}</span></span>
+              <span class="deck-info">
+                <span class="deck-school">${esc(schools[c.school].name)}</span>
+                <span class="deck-title">${esc(c.short)}</span>
+                <span class="deck-score">${fmt(c.total)}<small>/10</small></span>
+              </span>
+            </${link ? 'a' : 'span'}>`;
 const heroArt = `
       <div class="hero-art">
-        <div class="deck" aria-label="Три лучших курса рейтинга">${heroTop
+        <div class="deck" aria-label="Три лучших курса рейтинга">${[2, 1, 0]
           .map(
-            (c, i) => `
-          <a class="deck-card deck-card-${i + 1}" href="#kurs-${c.rank}" style="--art-bg:${c.color}">
-            <span class="deck-pic"><img src="${esc(c.art)}" alt="" width="1600" height="1000" decoding="async"><span class="deck-place">${c.placeAll}</span></span>
-            <span class="deck-info">
-              <span class="deck-school">${esc(schools[c.school].name)}</span>
-              <span class="deck-title">${esc(c.short)}</span>
-              <span class="deck-score">${fmt(c.total)}<small>/10</small></span>
-            </span>
-          </a>`
+            (k) => `
+          <div class="deck-card deck-card-${k + 1}">
+            <div class="deck-track">${[0, 1, 2, 3].map((j) => deckSlide(heroTop[(k + j) % 3], k === 0 && j < 3)).join('')}</div>
+          </div>`
           )
           .join('')}
         </div>
