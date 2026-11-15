@@ -1938,39 +1938,45 @@ td:nth-child(4) {
   font-size: 0.66rem;
   opacity: 0.65;
 }
-/* Позиции: впереди → плавно уходит вправо и за колоду → в середину → снова вперед.
-   Каждый переход с мягким ускорением и торможением; смена слоя (z-index) — когда карточка уже сбоку */
+/* Позиции: впереди → карточка мягко уезжает вправо и растворяется → невидимой встает в конец колоды
+   и проявляется там → середина → снова вперед. Карточки не проходят друг сквозь друга. */
 @keyframes deck {
   0%,
   26% {
     z-index: 3;
+    opacity: 1;
     transform: translate(0, 0) rotate(-3deg) scale(1);
-    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+    animation-timing-function: cubic-bezier(0.55, 0, 0.75, 0.4);
   }
   34% {
     z-index: 3;
-    transform: translate(120px, -14px) rotate(9deg) scale(0.94);
+    opacity: 0;
+    transform: translate(70px, 26px) rotate(6deg) scale(0.96);
     animation-timing-function: step-end;
   }
-  34.5% {
+  35% {
     z-index: 1;
-    transform: translate(120px, -14px) rotate(9deg) scale(0.94);
-    animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+    opacity: 0;
+    transform: translate(52px, -50px) rotate(9deg) scale(0.86);
+    animation-timing-function: cubic-bezier(0.25, 0.6, 0.35, 1);
   }
   44%,
   59% {
     z-index: 1;
+    opacity: 0.8;
     transform: translate(44px, -40px) rotate(8deg) scale(0.88);
     animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
   }
   69%,
   92% {
     z-index: 2;
+    opacity: 0.95;
     transform: translate(22px, -20px) rotate(3deg) scale(0.94);
     animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
   }
   100% {
     z-index: 3;
+    opacity: 1;
     transform: translate(0, 0) rotate(-3deg) scale(1);
   }
 }
