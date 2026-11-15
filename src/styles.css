@@ -2117,6 +2117,12 @@ td:nth-child(4) {
   transform: rotate(-2deg);
   box-shadow: 0 8px 18px -10px rgba(18, 18, 18, 0.6);
 }
+/* В плитках обложка узкая: бейдж бесплатного периода уходит наверх, чтобы не перекрывать логотип */
+.is-list .mcard-trial {
+  top: 14px;
+  bottom: auto;
+}
+
 /* Нижняя плашка на странице Б — только на телефонах */
 @media (min-width: 641px) {
   .dock-b {
@@ -2148,7 +2154,9 @@ td:nth-child(4) {
   /* нейтральная контрастная плашка: не спорит с яркими обложками */
   background: var(--ink);
   color: var(--bg);
-  font: 400 1.05rem/1 var(--f-display);
+  font: 800 1rem/1 var(--f-body);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 .mcard-score small {
