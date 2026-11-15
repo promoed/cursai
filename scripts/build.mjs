@@ -627,34 +627,25 @@ const miniCover = (c) => {
 // На странице Б у всех карточек один акцентный цвет — фиолетовый из палитры сайта
 const ACCENT = '#9C8CFF';
 
-// Декор первого экрана главной: «курсометр» — веер обложек трех лучших курсов и прибор со стрелкой,
-// которая при загрузке доходит до оценки лидера. Чистый CSS, клик по обложке ведет к карточке курса.
+// Декор первого экрана главной: колода из трех лучших курсов рейтинга. Карточки по очереди уходят
+// назад, открывая следующую (чистый CSS), наведение останавливает смену, клик ведет к карточке курса.
 const deckDirs = directionsB.filter((d) => d.tags);
-const gaugeArc = (() => {
-  const cx = 90, cy = 92, r = 70, colors = ['#FFD23F', '#FF7A59', '#9C8CFF', '#3DD6A0'];
-  const pt = (deg) => [cx + r * Math.cos((deg * Math.PI) / 180), cy + r * Math.sin((deg * Math.PI) / 180)].map((v) => v.toFixed(1)).join(' ');
-  return colors
-    .map((col, i) => `<path d="M${pt(180 + i * 45 + 4)} A${r} ${r} 0 0 1 ${pt(180 + (i + 1) * 45 - 4)}" stroke="${col}"/>`)
-    .join('');
-})();
 const heroTop = bOrder.slice(0, 3);
 const heroArt = `
       <div class="hero-art">
-        <div class="meter" aria-label="Три лучших курса рейтинга">${heroTop
+        <div class="deck" aria-label="Три лучших курса рейтинга">${heroTop
           .map(
             (c, i) => `
-          <a class="meter-card meter-card-${i + 1}" href="#kurs-${c.rank}" style="--art-bg:${c.color}" aria-label="${c.placeAll} место: ${esc(c.short)}">
-            <img src="${esc(c.art)}" alt="" width="1600" height="1000" decoding="async">
-            <span class="meter-place">${c.placeAll}</span>
-            <span class="meter-score">${fmt(c.total)}</span>
+          <a class="deck-card deck-card-${i + 1}" href="#kurs-${c.rank}" style="--art-bg:${c.color}">
+            <span class="deck-pic"><img src="${esc(c.art)}" alt="" width="1600" height="1000" decoding="async"><span class="deck-place">${c.placeAll}</span></span>
+            <span class="deck-info">
+              <span class="deck-school">${esc(schools[c.school].name)}</span>
+              <span class="deck-title">${esc(c.short)}</span>
+              <span class="deck-score">${fmt(c.total)}<small>/10</small></span>
+            </span>
           </a>`
           )
           .join('')}
-          <div class="meter-gauge" style="--deg:${(-90 + (heroTop[0].total / 10) * 180).toFixed(1)}deg" aria-hidden="true">
-            <svg viewBox="0 0 180 104"><g fill="none" stroke-width="12" stroke-linecap="round">${gaugeArc}</g><g class="meter-needle"><path d="M90 92V34" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></g><circle cx="90" cy="92" r="8" fill="currentColor"/></svg>
-            <span class="meter-val">${fmt(heroTop[0].total)}<small>/10</small></span>
-            <span class="meter-cap">Лучший курс · ${esc(schools[heroTop[0].school].name)}</span>
-          </div>
         </div>
       </div>`;
 

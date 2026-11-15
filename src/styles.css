@@ -1845,144 +1845,136 @@ td:nth-child(4) {
     scale: 0.8;
   }
 }
-/* «Курсометр»: веер обложек топ-3 и прибор со стрелкой */
-.meter {
+/* Колода из трех лучших курсов: карточки по кругу уходят назад, открывая следующую */
+.deck {
   position: absolute;
   inset: 0;
 }
-.meter-card {
-  position: absolute;
-  top: 34px;
-  width: 150px;
-  aspect-ratio: 4 / 5;
-  border-radius: 22px;
-  overflow: hidden;
-  background: var(--art-bg);
-  box-shadow: 0 0 0 3px var(--bg), 0 22px 40px -24px rgba(0, 0, 0, 0.7);
-  pointer-events: auto;
-  transition: transform 0.5s var(--spring);
-  animation: meter-in 0.9s var(--spring) both;
+.deck:hover .deck-card {
+  animation-play-state: paused;
 }
-.meter-card img {
+.deck-card {
+  position: absolute;
+  right: 54px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: 236px;
+  height: 300px;
+  border: 1px solid var(--paper-line);
+  border-radius: 26px;
+  overflow: hidden;
+  background: var(--paper);
+  color: var(--ink);
+  text-decoration: none;
+  box-shadow: 0 26px 50px -28px rgba(0, 0, 0, 0.75);
+  pointer-events: auto;
+  transform-origin: 50% 100%;
+  animation: deck 12s var(--ease) infinite;
+}
+.deck-card-2 {
+  animation-delay: -8s;
+}
+.deck-card-3 {
+  animation-delay: -4s;
+}
+.deck-pic {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+  background: var(--art-bg);
+}
+.deck-pic img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: fill;
 }
-.meter-card-3 {
-  left: 18px;
-  --r: -12deg;
-  transform: rotate(var(--r)) translateY(18px);
-  animation-delay: 0.5s;
-}
-.meter-card-2 {
-  left: 176px;
-  --r: 12deg;
-  transform: rotate(var(--r)) translateY(18px);
-  animation-delay: 0.42s;
-}
-.meter-card-1 {
-  left: 96px;
-  top: 4px;
-  z-index: 2;
-  --r: 0deg;
-  transform: rotate(0deg);
-  animation-delay: 0.34s;
-}
-.meter-card:hover {
-  transform: rotate(var(--r)) translateY(-8px) scale(1.04);
-}
-.meter-place,
-.meter-score {
+.deck-place {
   position: absolute;
-  top: 10px;
+  top: 12px;
+  left: 12px;
   display: grid;
   place-items: center;
-  height: 26px;
-  border-radius: 99px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
   background: #fff;
   color: #121212;
-  box-shadow: 0 0 0 2px #121212;
-  font: 800 0.8rem/1 var(--f-body);
+  box-shadow: 0 0 0 3px #121212;
+  font: 400 0.9rem/1 var(--f-display);
 }
-.meter-place {
-  left: 10px;
-  width: 26px;
-}
-.meter-score {
-  right: 10px;
-  padding: 0 8px;
-  background: #121212;
-  color: #fff;
-}
-.meter-gauge {
-  position: absolute;
-  left: 50%;
-  bottom: -18px;
-  z-index: 3;
+.deck-info {
+  position: relative;
   display: grid;
-  justify-items: center;
-  width: 204px;
-  padding: 12px 14px;
-  border: 1px solid var(--paper-line);
-  border-radius: 24px;
-  background: var(--paper);
-  color: var(--ink);
-  box-shadow: var(--shadow);
-  translate: -50% 0;
-  animation: rise 0.9s var(--ease) both 0.2s;
+  gap: 4px;
+  padding: 14px 16px 16px;
 }
-.meter-gauge svg {
-  display: block;
-  width: 124px;
-  height: auto;
-  overflow: visible;
+.deck-school {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink-3);
 }
-.meter-needle {
-  transform-origin: 90px 92px;
-  transform: rotate(var(--deg));
-  animation: needle 2.2s var(--spring) both 0.7s;
+.deck-title {
+  padding-right: 64px;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
 }
-.meter-val {
-  margin-top: 4px;
-  font: 800 1.5rem/1 var(--f-body);
-  letter-spacing: -0.02em;
+.deck-score {
+  position: absolute;
+  right: 14px;
+  bottom: 16px;
+  padding: 6px 9px 5px;
+  border-radius: 99px;
+  background: var(--ink);
+  color: var(--bg);
+  font: 800 0.95rem/1 var(--f-body);
   font-variant-numeric: tabular-nums;
 }
-.meter-val small {
-  margin-left: 2px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--ink-3);
+.deck-score small {
+  margin-left: 1px;
+  font-size: 0.66rem;
+  opacity: 0.65;
 }
-.meter-cap {
-  margin-top: 4px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--ink-3);
-}
-@keyframes needle {
-  0% {
-    transform: rotate(-90deg);
+/* Позиции: впереди → назад (уезжает вправо и прячется) → в середину → снова вперед */
+@keyframes deck {
+  0%,
+  27% {
+    z-index: 3;
+    transform: translate(0, 0) rotate(-3deg);
+    opacity: 1;
   }
-  70% {
-    transform: rotate(calc(var(--deg) + 6deg));
+  31% {
+    z-index: 3;
+    transform: translate(150px, -20px) rotate(14deg);
+    opacity: 0.9;
+  }
+  32% {
+    z-index: 1;
+    transform: translate(150px, -20px) rotate(14deg);
+  }
+  37%,
+  60% {
+    z-index: 1;
+    transform: translate(46px, -44px) rotate(9deg) scale(0.88);
+    opacity: 0.75;
+  }
+  67%,
+  94% {
+    z-index: 2;
+    transform: translate(22px, -22px) rotate(3deg) scale(0.94);
+    opacity: 0.92;
   }
   100% {
-    transform: rotate(var(--deg));
-  }
-}
-@keyframes meter-in {
-  from {
-    opacity: 0;
-    transform: rotate(0deg) translateY(60px) scale(0.9);
+    z-index: 3;
+    transform: translate(0, 0) rotate(-3deg);
+    opacity: 1;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .meter-card,
-  .meter-needle,
-  .meter-gauge {
-    animation: none;
+  .deck-card {
+    animation-play-state: paused;
   }
 }
 
