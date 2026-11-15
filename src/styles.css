@@ -3203,3 +3203,52 @@ td:nth-child(4) {
 .post-toc ol {
   list-style: decimal;
 }
+/* Рубрики блога */
+.rubrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 26px;
+}
+.rubrics a {
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  color: var(--ink-2);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.rubrics a:hover {
+  color: var(--ink);
+  border-color: var(--ink-3);
+}
+.rubrics a[aria-current='page'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+}
+.blog-rubric-title {
+  max-width: 18ch;
+  font: 400 clamp(2.2rem, 6vw, 4.4rem) / 1.02 var(--f-display);
+  letter-spacing: -0.02em;
+}
+.post-rubric {
+  position: relative;
+  z-index: 1;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink-2);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.post-rubric:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
+}
+.post-meta .post-rubric {
+  margin-right: 6px;
+}

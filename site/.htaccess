@@ -38,6 +38,8 @@ AddType image/webp .webp
   # Блог: /blog/ и /blog/slug/ отдаются плоскими файлами blog.html и blog-slug.html (работает и без папок)
   RewriteRule ^blog$ /blog/ [R=301,L]
   RewriteRule ^blog/([a-z0-9-]+)$ /blog/$1/ [R=301,L]
+  RewriteRule ^blog/rubrika/([a-z0-9-]+)$ /blog/rubrika/$1/ [R=301,L]
+  RewriteRule ^blog/rubrika/([a-z0-9-]+)/(index\.html)?$ /blog-rubrika-$1.html [L]
   RewriteRule ^blog/(index\.html)?$ /blog.html [L]
   RewriteRule ^blog/([a-z0-9-]+)/(index\.html)?$ /blog-$1.html [L]
   RewriteRule ^(kursy\-ii|ii\-dlya\-sebya|ii\-dlya\-raboty|ii\-dlya\-marketinga|ii\-agenty|novaya\-professiya|data\-science|graficheskij\-dizajn)$ /$1/ [R=301,L]
