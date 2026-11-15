@@ -320,18 +320,21 @@ const dirsOf = (c) => directionsB.filter((d) => d.tags && c.tags.some((t) => d.t
 // Цвет направления: свой (поле color) или по порядку из палитры среди направлений без своего цвета —
 // так новая плитка со своим цветом не сдвигает цвета остальных
 const dirColor = (d) => d.color || palette[directionsB.filter((x) => x.tags && !x.color).indexOf(d) % palette.length];
+// Адрес направления: на хостинге — своя страница cursai.ru/slug/ (свой title, description и заголовок для поиска),
+// в превью — ?dir=ключ на той же странице. Старые ссылки ?dir=... продолжают работать (см. app.js).
+const dirHref = (d) => (artifact ? (d.slug ? `?dir=${d.key}` : U.home) : d.slug ? `/${d.slug}/` : '/');
 const dirAliases = Object.fromEntries(directionsB.flatMap((d) => (d.aliases || []).map((a) => [a, d.key])));
 const directions = directionsB
   .map((f, i) => {
     const n = f.key === 'all' ? allB.length : allB.filter((c) => dirsOf(c).includes(f)).length;
     const all = f.key === 'all';
     const style = all ? `--i:${i}` : `--c:${dirColor(f)}; --i:${i}`;
-    return `<a class="direction${all ? ' direction-all' : ''}" href="${all ? U.home : `?dir=${f.key}`}" data-filter="${f.key}" data-heading="${esc(f.heading)}"${all ? ' aria-current="true"' : ''} style="${style}">${esc(f.label)}<span class="direction-n">${n} ${plural(n)}</span></a>`;
+    return `<a class="direction${all ? ' direction-all' : ''}" href="${dirHref(f)}" data-filter="${f.key}" data-heading="${esc(f.heading)}" data-lead="${esc(f.lead)}"${artifact ? '' : ` data-path="${dirHref(f)}"`}${all ? ' aria-current="true"' : ''} style="${style}">${esc(f.label)}<span class="direction-n">${n} ${plural(n)}</span></a>`;
   })
   .join('\n        ');
 
 const heroSub = filters.find((f) => f.key === 'all').heading;
-const bLead = 'Еще недавно нейросети были темой для исследователей. Сегодня с ними можно обсуждать идеи, писать код, создавать изображения и видео. Выберите курс, который сделает их вашим инструментом.';
+const bLead = esc(directionsB.find((d) => d.key === 'all').lead);
 const heroLead = `Освойте ИИ для работы, творчества и собственных проектов. Сравните ${courses.length} ${plural(courses.length)} по программе, практике и поддержке — и выберите тот, который подходит под ваши задачи и уровень.`;
 const methodSection = `
   <section class="method" data-tint="base" aria-labelledby="method-title">
@@ -765,7 +768,7 @@ ${themeBoot}
         <span class="mega mega-word">Рейтинг</span> <span class="hero-sub" id="hero-sub">${heroSub}</span>
       </h1>
       <div class="hero-row">
-        <p class="hero-lead">${bLead}</p>
+        <p class="hero-lead" id="hero-lead">${bLead}</p>
         <div class="hero-cta">
           <a class="btn btn-ink" href="#rating">Смотреть рейтинг ${arrow}</a>
         </div>
@@ -1101,10 +1104,37 @@ ${SITE.url ? `<link rel="canonical" href="${SITE.url}${to.slice(1)}">` : ''}
 <body><a href="${to}">Перейти на ${esc(SITE.name)}</a></body>
 </html>
 `;
+// Страница направления (cursai.ru/slug/): та же главная, но заголовок, абзац, title и description — свои,
+// а скрипт сразу показывает курсы этого направления (атрибут data-dir у <html>)
+const dirPage = (d) => {
+  const title = `Рейтинг ${d.heading} ${SITE.year}`;
+  const url = SITE.url ? `${SITE.url}${d.slug}/` : '';
+  let p = bHtml
+    .replace('<html lang="ru">', `<html lang="ru" data-dir="${d.key}">`)
+    .replace(`<title>${esc(bTitle)}</title>`, `<title>${esc(title)}</title>`)
+    .replace(`<meta name="description" content="${esc(bDescription)}">`, `<meta name="description" content="${esc(d.lead)}">`)
+    .replace(`<meta property="og:title" content="${esc(bTitle)}">`, `<meta property="og:title" content="${esc(title)}">`)
+    .replace(`<meta property="og:description" content="${esc(bDescription)}">`, `<meta property="og:description" content="${esc(d.lead)}">`)
+    .replace(`<span class="hero-sub" id="hero-sub">${heroSub}</span>`, `<span class="hero-sub" id="hero-sub">${esc(d.heading)}</span>`)
+    .replace(`<p class="hero-lead" id="hero-lead">${bLead}</p>`, `<p class="hero-lead" id="hero-lead">${esc(d.lead)}</p>`);
+  if (url) p = p.replace(`<link rel="canonical" href="${SITE.url}">\n<meta property="og:url" content="${SITE.url}">`, `<link rel="canonical" href="${url}">\n<meta property="og:url" content="${url}">`);
+  return p;
+};
 // В превью главная страница публикуется без обертки html/head — ее добавляет просмотрщик
 const bare = (t) => t.replace(/^<!doctype html>\s*<html[^>]*>\s*<head>\s*/, '').replace('</head>\n<body>', '').replace(/<\/body>\s*<\/html>\s*$/, '');
 // На хостинге картинки и шрифты берутся от корня сайта: так они работают и на вложенных страницах (/about/)
 const rootify = (t) => t.replace(/(["(])(images|fonts)\//g, '$1/$2/');
+const dirPages = artifact
+  ? {}
+  : Object.fromEntries(
+      directionsB
+        .filter((d) => d.slug)
+        .flatMap((d) => [
+          [`${d.slug}/index.html`, rootify(dirPage(d))],
+          // плоская копия: .htaccess отдает ее по адресу /slug/, даже если папка не загрузилась
+          [`${d.slug}.html`, rootify(dirPage(d))],
+        ])
+    );
 const pages = artifact
   ? { 'preview.html': bare(bHtml), 'about.html': aboutHtml, ...legal }
   : {
@@ -1118,6 +1148,7 @@ const pages = artifact
       'about.html': rootify(aboutHtml),
       'top-10.html': redirect('/'),
       '404.html': rootify(notFoundHtml),
+      ...dirPages,
       ...Object.fromEntries(Object.entries(legal).map(([k, v]) => [k, rootify(v)])),
     };
 for (const [name, page] of Object.entries(pages)) {
@@ -1137,9 +1168,11 @@ if (!artifact) {
   if (SITE.url) {
     await writeFile(
       new URL('sitemap.xml', out),
-      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${SITE.url}</loc></url><url><loc>${SITE.url}about/</loc></url></urlset>\n`
+      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${SITE.url}</loc></url>${directionsB.filter((d) => d.slug).map((d) => `<url><loc>${SITE.url}${d.slug}/</loc></url>`).join('')}<url><loc>${SITE.url}about/</loc></url></urlset>\n`
     );
   }
-  await copyFile(new URL('src/htaccess', root), new URL('.htaccess', out));
+  // .htaccess: адреса страниц направлений подставляются из данных (src/courses.mjs, поле slug)
+  const slugs = directionsB.filter((d) => d.slug).map((d) => d.slug.replace(/-/g, '\\-')).join('|');
+  await writeFile(new URL('.htaccess', out), (await readFile(new URL('src/htaccess', root), 'utf8')).replaceAll('__DIR_SLUGS__', slugs));
 }
 console.log(`${artifact ? 'dist' : 'site'}/: ${Object.keys(pages).join(', ')}, ${used.size} картинок, шрифты`);

@@ -123,6 +123,7 @@
   var status = document.getElementById('filter-status');
   var currentFilter = 'all';
   var heroSub = directions.length ? document.getElementById('hero-sub') : null;
+  var heroLead = directions.length ? document.getElementById('hero-lead') : null;
   var baseHeading = heroSub ? heroSub.textContent : '';
   var baseTitle = document.title;
   var picks = Array.prototype.slice.call(document.querySelectorAll('.pick[data-tags]'));
@@ -168,6 +169,8 @@
         if (on && heroSub) {
           heroSub.textContent = d.getAttribute('data-heading');
           document.title = baseTitle.replace(baseHeading, heroSub.textContent);
+          /* Абзац под заголовком — свой у каждого направления */
+          if (heroLead && d.getAttribute('data-lead')) heroLead.textContent = d.getAttribute('data-lead');
         }
       });
       /* Финальный блок: три лучших курса выбранного направления */
@@ -206,9 +209,30 @@
       store('nr-filter', key);
     });
   });
-  function setDirUrl(key) {
+  /* Адрес направления: на хостинге своя страница (/ii-agenty/), в превью — ?dir=ключ.
+     Остальные параметры (utm и т. п.) сохраняются. */
+  function dirTile(key) {
+    return document.querySelector('.direction[data-filter="' + key + '"]');
+  }
+  function otherParams() {
+    var q = location.search.replace(/^\?/, '').split('&').filter(function (p) {
+      return p && p.indexOf('dir=') !== 0;
+    });
+    return q.length ? '?' + q.join('&') : '';
+  }
+  function dirUrl(key) {
+    var tile = dirTile(key);
+    var path = tile && tile.getAttribute('data-path');
+    if (path) return path + otherParams();
+    var rest = otherParams();
+    return key === 'all' ? location.pathname + rest : location.pathname + (rest ? rest + '&' : '?') + 'dir=' + key;
+  }
+  function setDirUrl(key, replace) {
     try {
-      history.replaceState(null, '', key === 'all' ? location.pathname : location.pathname + '?dir=' + key);
+      var url = dirUrl(key);
+      if (url === location.pathname + location.search) return;
+      if (replace) history.replaceState({ dir: key }, '', url);
+      else history.pushState({ dir: key }, '', url);
     } catch (e) {}
   }
 
@@ -225,11 +249,26 @@
         if (typeof window.ym === 'function' && window.YM_ID) window.ym(window.YM_ID, 'reachGoal', 'direction_click', { direction: key });
       });
     });
+    /* Кнопки «назад/вперед» в браузере переключают направления так же, как клики по плиткам */
+    window.addEventListener('popstate', function () {
+      var key = 'all';
+      directions.forEach(function (d) {
+        if (d.getAttribute('data-path') === location.pathname && d.getAttribute('data-path') !== '/') key = d.getAttribute('data-filter');
+      });
+      var q = /[?&]dir=([\w-]+)/.exec(location.search);
+      if (q && dirTile(q[1])) key = q[1];
+      applyFilter(key, true);
+    });
+    /* Страница направления (cursai.ru/ii-agenty/): курсы направления показываются сразу, без прокрутки */
+    var pageDir = document.documentElement.getAttribute('data-dir');
+    if (pageDir && dirTile(pageDir)) applyFilter(pageDir, false);
     var dir = /[?&]dir=([\w-]+)/.exec(location.search);
     /* Старые адреса объединенных направлений (например, ?dir=business) открывают новое */
     var dirKey = dir && ((window.NR_DIR_ALIAS || {})[dir[1]] || dir[1]);
-    if (dirKey && document.querySelector('.direction[data-filter="' + dirKey + '"]')) {
+    if (dirKey && dirTile(dirKey)) {
       applyFilter(dirKey, false);
+      /* Старая ссылка ?dir=... (например, из рекламы) — адрес меняется на страницу направления, utm сохраняются */
+      setDirUrl(dirKey, true);
       var target = document.getElementById('rating');
       /* Прокрутка к списку после первой отрисовки, чтобы браузер успел зафиксировать скорость загрузки */
       if (target && !location.hash) {

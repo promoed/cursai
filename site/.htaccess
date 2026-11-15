@@ -33,6 +33,10 @@ AddType image/webp .webp
   RewriteRule ^about$ /about/ [R=301,L]
   RewriteRule ^top-10(/.*|\.html)?$ / [R=301,L]
   RewriteRule ^about/(index\.html)?$ /about.html [L]
+  # Страницы направлений рейтинга (cursai.ru/ii-agenty/ и т. п.): без слеша — на адрес со слешем,
+  # сам адрес отдается плоским файлом slug.html из корня — работает и без загруженных папок
+  RewriteRule ^(kursy\-ii|ii\-dlya\-sebya|ii\-dlya\-raboty|ii\-dlya\-marketinga|ii\-agenty|novaya\-professiya|data\-science|graficheskij\-dizajn)$ /$1/ [R=301,L]
+  RewriteRule ^(kursy\-ii|ii\-dlya\-sebya|ii\-dlya\-raboty|ii\-dlya\-marketinga|ii\-agenty|novaya\-professiya|data\-science|graficheskij\-dizajn)/(index\.html)?$ /$1.html [L]
 </IfModule>
 
 # Ненайденный адрес — честная страница 404 (не главная), чтобы пропавший файл сразу был заметен
