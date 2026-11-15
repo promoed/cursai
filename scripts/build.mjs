@@ -589,7 +589,7 @@ ${methodSection}
 
 <footer class="foot">
   <div class="wrap foot-in">
-    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${SITE.contact ? ` Сотрудничество: <a href="mailto:${esc(SITE.contact)}">${esc(SITE.contact)}</a>` : ''}</p>
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${SITE.contact ? ` <span class="foot-mail">Сотрудничество: <a href="mailto:${esc(SITE.contact)}">${esc(SITE.contact)}</a></span>` : ''}</p>
     <p>Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться. Страница содержит партнерские ссылки, на оценки это не влияет.</p>
     <p class="foot-links">
       <a href="${U.home}">Рейтинг курсов</a>
@@ -842,7 +842,7 @@ ${methodSection}
 
 <footer class="foot">
   <div class="wrap foot-in">
-    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${SITE.contact ? ` Сотрудничество: <a href="mailto:${esc(SITE.contact)}">${esc(SITE.contact)}</a>` : ''}</p>
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${SITE.contact ? ` <span class="foot-mail">Сотрудничество: <a href="mailto:${esc(SITE.contact)}">${esc(SITE.contact)}</a></span>` : ''}</p>
     <p>Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться. Страница содержит партнерские ссылки, на оценки это не влияет.</p>
     <p class="foot-links">
       <a href="${U.about}">О нас</a>
@@ -992,7 +992,7 @@ ${themeBoot}
 
 <footer class="foot">
   <div class="wrap foot-in">
-    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${mail ? ` Сотрудничество: <a href="mailto:${mail}">${mail}</a>` : ''}</p>
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${mail ? ` <span class="foot-mail">Сотрудничество: <a href="mailto:${mail}">${mail}</a></span>` : ''}</p>
     <p class="foot-links">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.blog}">Блог</a>
@@ -1081,7 +1081,7 @@ ${ld ? `<script type="application/ld+json">${JSON.stringify(ld)}</script>` : ''}
 ${body}
 <footer class="foot">
   <div class="wrap foot-in">
-    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${SITE.contact ? ` Сотрудничество: <a href="mailto:${esc(SITE.contact)}">${esc(SITE.contact)}</a>` : ''}</p>
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${SITE.contact ? ` <span class="foot-mail">Сотрудничество: <a href="mailto:${esc(SITE.contact)}">${esc(SITE.contact)}</a></span>` : ''}</p>
     <p class="foot-links">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.blog}">Блог</a>

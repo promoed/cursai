@@ -3280,3 +3280,32 @@ td:nth-child(4) {
   border-radius: 24px;
   object-fit: cover;
 }
+/* Подвал: «Сотрудничество» и почта всегда в одной строке */
+.foot-mail {
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .foot-in {
+    gap: 12px;
+  }
+  .foot-in p {
+    line-height: 1.55;
+  }
+  .foot-mail {
+    display: block;
+    margin-top: 6px;
+  }
+  /* ссылки подвала — ровная колонка вместо рваного переноса */
+  .foot-links {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    margin-top: 10px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .foot-links a,
+  .foot-links .linklike {
+    justify-self: start;
+  }
+}
