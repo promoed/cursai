@@ -435,7 +435,12 @@ const iconLinks = artifact
   ? `<link rel="icon" href="${favicon}">`
   : '<link rel="icon" href="/favicon.svg" type="image/svg+xml">\n<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">\n<link rel="apple-touch-icon" href="/apple-touch-icon.png">';
 // Картинка для соцсетей: своя для страницы (images/og/ключ.png, создает scripts/og.mjs) или общая images/og.png
-const ogImage = (key) => (existsSync(new URL(`images/og/${key}.png`, root)) ? `images/og/${key}.png` : 'images/og.png');
+const ogImage = (key) => {
+  const post = key.startsWith('post-') && posts.find((p) => `post-${p.slug}` === key);
+  if (post && post.cover) return post.cover;
+  return ogImageFile(key);
+};
+const ogImageFile = (key) => (existsSync(new URL(`images/og/${key}.png`, root)) ? `images/og/${key}.png` : 'images/og.png');
 const ogTags = (key) =>
   SITE.url
     ? `\n<meta property="og:image" content="${SITE.url}${ogImage(key)}">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n<meta name="twitter:card" content="summary_large_image">`
@@ -584,7 +589,7 @@ ${methodSection}
 
 <footer class="foot">
   <div class="wrap foot-in">
-    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${SITE.contact ? ` Сотрудничество: <a href="mailto:${esc(SITE.contact)}">${esc(SITE.contact)}</a>` : ''}</p>
     <p>Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться. Страница содержит партнерские ссылки, на оценки это не влияет.</p>
     <p class="foot-links">
       <a href="${U.home}">Рейтинг курсов</a>
@@ -837,7 +842,7 @@ ${methodSection}
 
 <footer class="foot">
   <div class="wrap foot-in">
-    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.</p>
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${SITE.contact ? ` Сотрудничество: <a href="mailto:${esc(SITE.contact)}">${esc(SITE.contact)}</a>` : ''}</p>
     <p>Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться. Страница содержит партнерские ссылки, на оценки это не влияет.</p>
     <p class="foot-links">
       <a href="${U.about}">О нас</a>
@@ -987,7 +992,7 @@ ${themeBoot}
 
 <footer class="foot">
   <div class="wrap foot-in">
-    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.${mail ? ` Сотрудничество: <a href="mailto:${mail}">${mail}</a>` : ''}</p>
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${mail ? ` Сотрудничество: <a href="mailto:${mail}">${mail}</a>` : ''}</p>
     <p class="foot-links">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.blog}">Блог</a>
@@ -1076,7 +1081,7 @@ ${ld ? `<script type="application/ld+json">${JSON.stringify(ld)}</script>` : ''}
 ${body}
 <footer class="foot">
   <div class="wrap foot-in">
-    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.${SITE.contact ? ` Сотрудничество: <a href="mailto:${esc(SITE.contact)}">${esc(SITE.contact)}</a>` : ''}</p>
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту ${SITE.year}.${SITE.contact ? ` Сотрудничество: <a href="mailto:${esc(SITE.contact)}">${esc(SITE.contact)}</a>` : ''}</p>
     <p class="foot-links">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.blog}">Блог</a>
@@ -1122,8 +1127,10 @@ const rubricNav = (active) => `
           .map((r) => `<a href="${U.rubric(r.slug)}"${active === r.slug ? ' aria-current="page"' : ''}>${esc(r.name)}</a>`)
           .join('')}
       </nav>`;
+const coverAlt = (p) => `Иллюстрация к статье «${p.h1}»`;
 const postCard = (p) => `
-        <article class="post-card">
+        <article class="post-card">${p.cover ? `
+          <img class="post-card-img" src="${esc(p.cover)}" alt="${esc(coverAlt(p))}" width="1200" height="630" loading="lazy" decoding="async">` : ''}
           <p class="post-meta"><time datetime="${p.date}">${ruDate(p.date)}</time> · ${readMin(p.body)} мин чтения</p>
           <h2 class="post-card-title"><a href="${U.post(p.slug)}">${esc(p.title)}</a></h2>
           <p class="post-card-text">${esc(p.description)}</p>
@@ -1228,7 +1235,8 @@ const postHtml = (p) => {
       <nav class="crumbs" aria-label="Навигация"><a href="${U.home}">Рейтинг курсов</a><span aria-hidden="true">/</span><a href="${U.blog}">Блог</a><span aria-hidden="true">/</span><a href="${U.rubric(p.rubric)}">${esc(rubricOf(p).name)}</a></nav>
       <h1 class="post-title">${esc(p.h1)}</h1>
       <p class="post-meta"><a class="post-rubric" href="${U.rubric(p.rubric)}">${esc(rubricOf(p).name)}</a> <time datetime="${p.date}">${ruDate(p.date)}</time> · ${readMin(p.body)} мин чтения · Редакция ${esc(SITE.name)}а</p>
-      <p class="post-lead">${esc(p.lead)}</p>
+      <p class="post-lead">${esc(p.lead)}</p>${p.cover ? `
+      <img class="post-cover" src="${esc(p.cover)}" alt="${esc(coverAlt(p))}" width="1200" height="630" decoding="async" fetchpriority="high">` : ''}
     </header>
     <div class="wrap post-grid">
       <aside class="post-toc" aria-label="Содержание">
@@ -1444,6 +1452,11 @@ for (const [name, page] of Object.entries(pages)) {
 const used = new Set(Object.values(schools).map((sc) => sc.logo).concat(courses.map((c) => c.image), courses.concat(coursesB).map((c) => c.art), ['images/og.png']).filter(Boolean));
 for (const file of used) await copyFile(new URL(file, root), new URL(file, out));
 // Картинки для соцсетей и иконки сайта (создает scripts/og.mjs)
+// Обложки статей блога
+if (existsSync(new URL('images/blog/', root))) {
+  await mkdir(new URL('images/blog/', out), { recursive: true });
+  for (const f of await readdir(new URL('images/blog/', root))) await copyFile(new URL(`images/blog/${f}`, root), new URL(`images/blog/${f}`, out));
+}
 if (existsSync(new URL('images/og/', root))) {
   await mkdir(new URL('images/og/', out), { recursive: true });
   for (const f of await readdir(new URL('images/og/', root))) await copyFile(new URL(`images/og/${f}`, root), new URL(`images/og/${f}`, out));

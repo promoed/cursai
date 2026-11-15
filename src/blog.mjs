@@ -24,6 +24,7 @@ export const rubrics = [
 export const posts = [
   {
     slug: 'kak-vybrat-kurs-po-nejrosetyam',
+    cover: 'images/blog/kak-vybrat-kurs-po-nejrosetyam.jpg', // коллаж 1200×630 (scripts/collage.cjs)
     rubric: 'vybor-kursa',
     title: 'Как выбрать курс по нейросетям в 2026 году: пошаговая инструкция',
     h1: 'Как выбрать курс по нейросетям',
@@ -92,6 +93,7 @@ export const posts = [
   },
   {
     slug: 'chto-takoe-ii-agenty',
+    cover: 'images/blog/chto-takoe-ii-agenty.jpg', // коллаж 1200×630 (scripts/collage.cjs)
     rubric: 'ii-agenty',
     title: 'Что такое ИИ-агенты и как научиться их создавать',
     h1: 'Что такое ИИ-агенты и как научиться их создавать',
@@ -156,6 +158,7 @@ export const posts = [
   },
   {
     slug: 'professii-v-ii',
+    cover: 'images/blog/professii-v-ii.jpg', // коллаж 1200×630 (scripts/collage.cjs)
     rubric: 'professii',
     title: 'Профессии в сфере ИИ: кем работать и с чего начать обучение',
     h1: 'Профессии в сфере ИИ: кем работать и с чего начать',
