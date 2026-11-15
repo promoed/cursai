@@ -27,7 +27,7 @@ const SITE = {
   // Номер счетчика Яндекс Метрики. Метрика запускается сразу при заходе на сайт (см. src/app.js);
   // уведомление о cookie только информирует и дает отказаться на этом устройстве.
   // Номер счетчика Яндекс Метрики. null — счетчика нет: Метрика не грузится, уведомление о cookie не показывается
-  ymId: null,
+  ymId: 114267824,
   policyDate: '27 сентября 2026',
   // Мета-теги подтверждения владения сайтом для партнерских программ/вебмастер-сервисов.
   // Каждый — строка вида '<meta name="..." content="...">', ставится только на реальной сборке (site/), не в превью.
@@ -1455,7 +1455,11 @@ const pages = artifact
     };
 for (const [name, page] of Object.entries(pages)) {
   if (name.includes('/')) await mkdir(new URL(name.replace(/[^/]+$/, ''), out), { recursive: true });
-  await writeFile(new URL(name, out), minifyHtml(page));
+  // Метрика для посетителей без JavaScript: пиксель сразу после <body> (только на хостинге)
+  const withPixel = !artifact && SITE.ymId && !/http-equiv="refresh"/.test(page)
+    ? page.replace(/<body([^>]*)>/, `<body$1><noscript><div><img src="https://mc.yandex.ru/watch/${SITE.ymId}" style="position:absolute;left:-9999px" alt=""></div></noscript>`)
+    : page;
+  await writeFile(new URL(name, out), minifyHtml(withPixel));
 }
 
 const used = new Set(Object.values(schools).map((sc) => sc.logo).concat(courses.map((c) => c.image), courses.concat(coursesB).map((c) => c.art), ['images/og.png']).filter(Boolean));
