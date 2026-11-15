@@ -379,7 +379,12 @@
     if (value === 'out' && analyticsOn) location.reload();
     else if (value === 'all') loadAnalytics();
   }
-  if (banner) {
+  /* Счетчика нет (NR_YM_ID пустой): уведомление о cookie и кнопка его настроек не нужны */
+  if (!window.NR_YM_ID) {
+    var noSettings = document.getElementById('cookie-settings');
+    if (noSettings) noSettings.hidden = true;
+  }
+  if (banner && window.NR_YM_ID) {
     document.getElementById('consent-all').addEventListener('click', function () {
       decide('all');
     });

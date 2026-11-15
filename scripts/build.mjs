@@ -26,7 +26,8 @@ const SITE = {
   url: 'https://cursai.ru/',
   // Номер счетчика Яндекс Метрики. Метрика запускается сразу при заходе на сайт (см. src/app.js);
   // уведомление о cookie только информирует и дает отказаться на этом устройстве.
-  ymId: 113107145,
+  // Номер счетчика Яндекс Метрики. null — счетчика нет: Метрика не грузится, уведомление о cookie не показывается
+  ymId: null,
   policyDate: '27 сентября 2026',
   // Мета-теги подтверждения владения сайтом для партнерских программ/вебмастер-сервисов.
   // Каждый — строка вида '<meta name="..." content="...">', ставится только на реальной сборке (site/), не в превью.
@@ -483,8 +484,10 @@ const fonts = `<link rel="preload" href="fonts/dela-gothic-one-subset.woff2" as=
 <link rel="preload" href="fonts/onest-subset.woff2" as="font" type="font/woff2" crossorigin>`;
 // Раннее соединение со счетчиком Метрики: сам тег грузится не сразу (см. app.js),
 // но браузер успевает установить соединение заранее, пока страница еще рендерится.
-const analyticsHints = `<link rel="preconnect" href="https://mc.yandex.ru">
-<link rel="dns-prefetch" href="https://mc.yandex.ru">`;
+const analyticsHints = SITE.ymId
+  ? `<link rel="preconnect" href="https://mc.yandex.ru">
+<link rel="dns-prefetch" href="https://mc.yandex.ru">`
+  : '';
 
 const themeBoot = `<script>var t;try{t=localStorage.getItem('nr-theme')}catch(e){}document.documentElement.setAttribute('data-theme',t||'dark')</script>`;
 
