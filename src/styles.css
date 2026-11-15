@@ -1845,81 +1845,145 @@ td:nth-child(4) {
     scale: 0.8;
   }
 }
-/* Белая скульптура: все фигуры белые в любой теме, форму рисуют только тени */
-/* Две колонки карточек направлений едут навстречу друг другу; сверху и снизу мягко растворяются */
-.reel {
+/* «Курсометр»: веер обложек топ-3 и прибор со стрелкой */
+.meter {
   position: absolute;
-  /* колонки начинаются ниже верхнего края, чтобы не подходить к слову «Рейтинг» */
-  inset: 70px 0 -24px;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  inset: 0;
+}
+.meter-card {
+  position: absolute;
+  top: 34px;
+  width: 150px;
+  aspect-ratio: 4 / 5;
+  border-radius: 22px;
   overflow: hidden;
+  background: var(--art-bg);
+  box-shadow: 0 0 0 3px var(--bg), 0 22px 40px -24px rgba(0, 0, 0, 0.7);
   pointer-events: auto;
-  -webkit-mask-image: linear-gradient(transparent, #000 26%, #000 78%, transparent);
-  mask-image: linear-gradient(transparent, #000 26%, #000 78%, transparent);
-  animation: rise 1.2s var(--ease) both 0.3s;
+  transition: transform 0.5s var(--spring);
+  animation: meter-in 0.9s var(--spring) both;
 }
-.reel-track {
+.meter-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+.meter-card-3 {
+  left: 18px;
+  --r: -12deg;
+  transform: rotate(var(--r)) translateY(18px);
+  animation-delay: 0.5s;
+}
+.meter-card-2 {
+  left: 176px;
+  --r: 12deg;
+  transform: rotate(var(--r)) translateY(18px);
+  animation-delay: 0.42s;
+}
+.meter-card-1 {
+  left: 96px;
+  top: 4px;
+  z-index: 2;
+  --r: 0deg;
+  transform: rotate(0deg);
+  animation-delay: 0.34s;
+}
+.meter-card:hover {
+  transform: rotate(var(--r)) translateY(-8px) scale(1.04);
+}
+.meter-place,
+.meter-score {
+  position: absolute;
+  top: 10px;
   display: grid;
-  gap: 14px;
-  padding-bottom: 14px;
-  animation: reel-up 26s linear infinite;
-  will-change: transform;
-}
-/* Вторая колонка едет вниз и стартует со сдвигом, чтобы колонки не шли «в ногу» */
-.reel-down .reel-track {
-  animation-name: reel-down;
-  animation-duration: 30s;
-}
-.reel-down {
-  margin-top: -60px;
-}
-.reel:hover .reel-track,
-.reel:focus-within .reel-track {
-  animation-play-state: paused;
-}
-@keyframes reel-up {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-50%);
-  }
-}
-@keyframes reel-down {
-  from {
-    transform: translateY(-50%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-.reel-card {
-  display: grid;
-  align-content: space-between;
-  gap: 14px;
-  min-height: 132px;
-  padding: 16px 18px 18px;
-  border-radius: 24px;
-  background: var(--c);
+  place-items: center;
+  height: 26px;
+  border-radius: 99px;
+  background: #fff;
   color: #121212;
-  text-decoration: none;
-  transition:
-    transform 0.4s var(--spring),
-    box-shadow 0.3s var(--ease);
+  box-shadow: 0 0 0 2px #121212;
+  font: 800 0.8rem/1 var(--f-body);
 }
-.reel-card:hover {
-  transform: scale(1.04) rotate(-1.5deg);
-  box-shadow: 0 20px 34px -22px rgba(18, 18, 18, 0.6);
+.meter-place {
+  left: 10px;
+  width: 26px;
 }
-.reel-n {
-  font-size: 0.82rem;
+.meter-score {
+  right: 10px;
+  padding: 0 8px;
+  background: #121212;
+  color: #fff;
+}
+.meter-gauge {
+  position: absolute;
+  left: 50%;
+  bottom: -18px;
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  width: 204px;
+  padding: 12px 14px;
+  border: 1px solid var(--paper-line);
+  border-radius: 24px;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  translate: -50% 0;
+  animation: rise 0.9s var(--ease) both 0.2s;
+}
+.meter-gauge svg {
+  display: block;
+  width: 124px;
+  height: auto;
+  overflow: visible;
+}
+.meter-needle {
+  transform-origin: 90px 92px;
+  transform: rotate(var(--deg));
+  animation: needle 2.2s var(--spring) both 0.7s;
+}
+.meter-val {
+  margin-top: 4px;
+  font: 800 1.5rem/1 var(--f-body);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.meter-val small {
+  margin-left: 2px;
+  font-size: 0.8rem;
   font-weight: 600;
+  color: var(--ink-3);
 }
-.reel-label {
-  font: 700 1.12rem/1.18 var(--f-body);
-  letter-spacing: -0.01em;
+.meter-cap {
+  margin-top: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+@keyframes needle {
+  0% {
+    transform: rotate(-90deg);
+  }
+  70% {
+    transform: rotate(calc(var(--deg) + 6deg));
+  }
+  100% {
+    transform: rotate(var(--deg));
+  }
+}
+@keyframes meter-in {
+  from {
+    opacity: 0;
+    transform: rotate(0deg) translateY(60px) scale(0.9);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .meter-card,
+  .meter-needle,
+  .meter-gauge {
+    animation: none;
+  }
 }
 
 /* Меню разделов сайта в шапке */

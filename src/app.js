@@ -247,17 +247,7 @@
     if (saved && document.querySelector('[data-filter="' + saved + '"]')) applyFilter(saved, false);
   }
 
-  /* Карточки направлений на первом экране главной: клик выбирает направление так же,
-     как плитка в рейтинге, и прокручивает к списку */
-  Array.prototype.forEach.call(document.querySelectorAll('.reel-card'), function (c) {
-    c.addEventListener('click', function (e) {
-      var tile = document.querySelector('.direction[data-filter="' + c.getAttribute('data-dir') + '"]');
-      if (!tile) return;
-      e.preventDefault();
-      tile.click();
-      document.getElementById('rating').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
-    });
-  });
+
 
   /* Вид списка на странице Б: «Сетка» (компактные карточки) или «Плитки» (карточка с подробностями).
      Выбор запоминается на этом устройстве. */

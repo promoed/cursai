@@ -627,25 +627,35 @@ const miniCover = (c) => {
 // На странице Б у всех карточек один акцентный цвет — фиолетовый из палитры сайта
 const ACCENT = '#9C8CFF';
 
-// Декор первого экрана главной: две колонки карточек направлений плавно и бесконечно едут навстречу
-// друг другу (чистый CSS, без скриптов). Наведение останавливает движение, клик открывает направление.
+// Декор первого экрана главной: «курсометр» — веер обложек трех лучших курсов и прибор со стрелкой,
+// которая при загрузке доходит до оценки лидера. Чистый CSS, клик по обложке ведет к карточке курса.
 const deckDirs = directionsB.filter((d) => d.tags);
-const reelCard = (d, i, copy) => {
-  const n = allB.filter((c) => dirsOf(c).includes(d)).length;
-  const a11y = copy ? ' tabindex="-1" aria-hidden="true"' : '';
-  return `<a class="reel-card" href="?dir=${d.key}" data-dir="${d.key}" style="--c:${dirColor(d)}"${a11y}><span class="reel-n">${n} ${plural(n)}</span><span class="reel-label">${esc(d.label)}</span></a>`;
-};
-// Колонка повторена дважды подряд: сдвиг ровно на половину высоты дает бесшовную петлю
-const reelCol = (items, cls) => `<div class="reel-col ${cls}"><div class="reel-track">${[0, 1]
-  .map((copy) => items.map(([d, i]) => reelCard(d, i, copy)).join(''))
-  .join('')}</div></div>`;
-const indexed = deckDirs.map((d, i) => [d, i]);
+const gaugeArc = (() => {
+  const cx = 90, cy = 92, r = 70, colors = ['#FFD23F', '#FF7A59', '#9C8CFF', '#3DD6A0'];
+  const pt = (deg) => [cx + r * Math.cos((deg * Math.PI) / 180), cy + r * Math.sin((deg * Math.PI) / 180)].map((v) => v.toFixed(1)).join(' ');
+  return colors
+    .map((col, i) => `<path d="M${pt(180 + i * 45 + 4)} A${r} ${r} 0 0 1 ${pt(180 + (i + 1) * 45 - 4)}" stroke="${col}"/>`)
+    .join('');
+})();
+const heroTop = bOrder.slice(0, 3);
 const heroArt = `
       <div class="hero-art">
-        <nav class="reel" aria-label="Направления рейтинга">
-          ${reelCol(indexed.filter((_, i) => i % 2 === 0), 'reel-up')}
-          ${reelCol(indexed.filter((_, i) => i % 2 === 1), 'reel-down')}
-        </nav>
+        <div class="meter" aria-label="Три лучших курса рейтинга">${heroTop
+          .map(
+            (c, i) => `
+          <a class="meter-card meter-card-${i + 1}" href="#kurs-${c.rank}" style="--art-bg:${c.color}" aria-label="${c.placeAll} место: ${esc(c.short)}">
+            <img src="${esc(c.art)}" alt="" width="1600" height="1000" decoding="async">
+            <span class="meter-place">${c.placeAll}</span>
+            <span class="meter-score">${fmt(c.total)}</span>
+          </a>`
+          )
+          .join('')}
+          <div class="meter-gauge" style="--deg:${(-90 + (heroTop[0].total / 10) * 180).toFixed(1)}deg" aria-hidden="true">
+            <svg viewBox="0 0 180 104"><g fill="none" stroke-width="12" stroke-linecap="round">${gaugeArc}</g><g class="meter-needle"><path d="M90 92V34" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></g><circle cx="90" cy="92" r="8" fill="currentColor"/></svg>
+            <span class="meter-val">${fmt(heroTop[0].total)}<small>/10</small></span>
+            <span class="meter-cap">Лучший курс · ${esc(schools[heroTop[0].school].name)}</span>
+          </div>
+        </div>
       </div>`;
 
 // Подробности для вида «Плитки»: в сетке скрыты. Показываем только то, что заполнено в данных курса.
