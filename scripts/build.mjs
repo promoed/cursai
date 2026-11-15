@@ -12,7 +12,7 @@ const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
 
 const SITE = {
-  name: 'Все еще учусь',
+  name: 'nomoreai',
   // Название внутри предложения: русское — в кавычках-елочках, латинское — как есть
   get nameInText() {
     return /[а-яА-Я]/.test(this.name) ? `«${this.name}»` : this.name;
