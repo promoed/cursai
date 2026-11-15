@@ -58,7 +58,7 @@ body{width:1200px;height:630px;background:#212121;color:#f3f2ee;font-family:O;po
 .c1{right:150px;top:150px;transform:rotate(-5deg);z-index:2}
 .c2{right:40px;top:96px;transform:rotate(8deg) scale(.92)}
 </style></head><body>
-<div class="brand"><span class="dot"></span>Still Learning<small>рейтинг курсов по ИИ</small></div>
+<div class="brand"><span class="dot"></span>Все еще учусь<small>рейтинг курсов по ИИ</small></div>
 <div class="k">${p.kicker}</div><div class="t">${p.title}</div><div class="u">cursai.ru</div>
 <div class="c c2"><img src="${base}/images/art-${p.art[1] || p.art[0]}.svg"></div>
 <div class="c c1"><img src="${base}/images/art-${p.art[0]}.svg"></div>

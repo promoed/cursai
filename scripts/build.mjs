@@ -12,7 +12,11 @@ const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
 
 const SITE = {
-  name: 'Still Learning',
+  name: 'Все еще учусь',
+  // Название внутри предложения: русское — в кавычках-елочках, латинское — как есть
+  get nameInText() {
+    return /[а-яА-Я]/.test(this.name) ? `«${this.name}»` : this.name;
+  },
   // Подпись рядом с логотипом в шапке (на телефоне скрыта)
   descriptor: 'рейтинг курсов по ИИ',
   domain: 'cursai.ru',
@@ -887,8 +891,8 @@ ${js}
 const spark = '<svg class="ab-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1c.9 5.8 4.2 9.1 10 10-5.8.9-9.1 4.2-10 10-.9-5.8-4.2-9.1-10-10 5.8-.9 9.1-4.2 10-10z"/></svg>';
 const mail = esc(SITE.contact);
 const copyIco = '<svg class="ico ico-copy" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 3.5v-.5a1.5 1.5 0 0 0-1.5-1.5H4A1.5 1.5 0 0 0 2.5 3v5A1.5 1.5 0 0 0 4 9.5h.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
-const aboutTitle = `О проекте ${SITE.name} — рейтинг курсов по ИИ`;
-const aboutDescription = `${SITE.name} — независимая подборка онлайн-курсов по нейросетям. Как ИИ изменил мир за последние годы и почему учиться работать с ним стоит уже сейчас.`;
+const aboutTitle = `О проекте ${SITE.nameInText} — рейтинг курсов по ИИ`;
+const aboutDescription = `${SITE.nameInText} — независимая подборка онлайн-курсов по нейросетям. Как ИИ изменил мир за последние годы и почему учиться работать с ним стоит уже сейчас.`;
 const aboutHtml = `<!doctype html>
 <html lang="ru">
 <head>
@@ -927,13 +931,13 @@ ${themeBoot}
 <main>
   <section class="hero ab-hero">
     <div class="wrap">
-      <p class="hero-kicker">О проекте ${esc(SITE.name)}</p>
+      <p class="hero-kicker">О проекте ${esc(SITE.nameInText)}</p>
       <h1 class="hero-title">
         <span class="mega mega-word">Выбор</span> <span class="hero-sub">курса по ИИ без долгих поисков</span>
       </h1>
       <div class="ab-hero-row">
         <div class="ab-hero-text">
-          <p class="hero-lead">${esc(SITE.name)} — рейтинг курсов для тех, кто хочет использовать ИИ в работе, творчестве и собственных проектах. Мы собираем программы по нейросетям и современным профессиям, где ИИ — часть практики. Сравниваем содержание, задания, поддержку и стоимость, чтобы вам было проще выбрать обучение под свои задачи.</p>
+          <p class="hero-lead">${esc(SITE.nameInText)} — рейтинг курсов для тех, кто хочет использовать ИИ в работе, творчестве и собственных проектах. Мы собираем программы по нейросетям и современным профессиям, где ИИ — часть практики. Сравниваем содержание, задания, поддержку и стоимость, чтобы вам было проще выбрать обучение под свои задачи.</p>
         </div>${mail ? `
         <aside class="ab-contact" aria-labelledby="ab-contact-title">
           <span class="ab-paper ab-paper-1" aria-hidden="true"></span>
@@ -1234,7 +1238,7 @@ const postHtml = (p) => {
     <header class="wrap post-head">
       <nav class="crumbs" aria-label="Навигация"><a href="${U.home}">Рейтинг курсов</a><span aria-hidden="true">/</span><a href="${U.blog}">Блог</a><span aria-hidden="true">/</span><a href="${U.rubric(p.rubric)}">${esc(rubricOf(p).name)}</a></nav>
       <h1 class="post-title">${esc(p.h1)}</h1>
-      <p class="post-meta"><a class="post-rubric" href="${U.rubric(p.rubric)}">${esc(rubricOf(p).name)}</a> <time datetime="${p.date}">${ruDate(p.date)}</time> · ${readMin(p.body)} мин чтения · Редакция ${esc(SITE.name)}</p>
+      <p class="post-meta"><a class="post-rubric" href="${U.rubric(p.rubric)}">${esc(rubricOf(p).name)}</a> <time datetime="${p.date}">${ruDate(p.date)}</time> · ${readMin(p.body)} мин чтения · Редакция ${esc(SITE.nameInText)}</p>
       <p class="post-lead">${esc(p.lead)}</p>${p.cover ? `
       <img class="post-cover" src="${esc(p.cover)}" alt="${esc(coverAlt(p))}" width="1200" height="630" decoding="async" fetchpriority="high">` : ''}
     </header>
@@ -1388,7 +1392,7 @@ ${SITE.url ? `<link rel="canonical" href="${SITE.url}${to.slice(1)}">` : ''}
 <script>location.replace('${to}' + location.search + location.hash)</script>
 <meta http-equiv="refresh" content="0; url=${to}">
 </head>
-<body><a href="${to}">Перейти на ${esc(SITE.name)}</a></body>
+<body><a href="${to}">Перейти на сайт ${esc(SITE.nameInText)}</a></body>
 </html>
 `;
 // Страница направления (cursai.ru/slug/): та же главная, но заголовок, абзац, title и description — свои,
