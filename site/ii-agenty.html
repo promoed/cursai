@@ -9,6 +9,19 @@ window.NR_COURSES = [{"rank":1,"short":"Нейросети с нуля","school"
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var data = window.NR_COURSES || [];
 
+  /* Страницы блога: новая статья всегда открывается с начала (без якоря в адресе).
+     Позицию сохраняем только при возврате кнопкой «Назад». */
+  if (body.classList.contains('blog-page') && !location.hash) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if (!nav || nav.type !== 'back_forward') {
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      window.scrollTo(0, 0);
+      window.addEventListener('load', function () {
+        window.scrollTo(0, 0);
+      });
+    }
+  }
+
   function store(key, value) {
     try {
       if (value === undefined) return localStorage.getItem(key);
