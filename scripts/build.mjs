@@ -5,6 +5,7 @@ import { readFile, writeFile, mkdir, copyFile, rm, readdir } from 'node:fs/promi
 import { criteria, filters, directionsB, schools, courses, coursesB, faq } from '../src/courses.mjs';
 import { policy, consent } from '../src/legal.mjs';
 import { timelineTitle, timeline, bigStat } from '../src/about.mjs';
+import { blog, posts } from '../src/blog.mjs';
 
 const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
@@ -12,7 +13,7 @@ const artifact = process.argv.includes('--artifact');
 const SITE = {
   name: 'Курсометр',
   // Подпись рядом с логотипом в шапке (на телефоне скрыта)
-  descriptor: 'рейтинг курсов',
+  descriptor: 'рейтинг курсов по ИИ',
   domain: 'cursai.ru',
   updated: 'октябрь 2026',
   year: 2026,
@@ -40,8 +41,8 @@ const SITE = {
 // Адреса страниц. На хостинге — чистые адреса от корня сайта (главная — рейтинг, cursai.ru/about/; старый адрес /top-10/ ведет на главную),
 // в превью (--artifact) — плоские файлы рядом друг с другом.
 const U = artifact
-  ? { home: './', faq: './#faq', about: 'about.html', privacy: 'privacy.html', consent: 'consent.html' }
-  : { home: '/', faq: '/#faq', about: '/about/', privacy: '/privacy.html', consent: '/consent.html' };
+  ? { home: './', faq: './#faq', about: 'about.html', blog: 'blog.html', post: (s) => `blog-${s}.html`, privacy: 'privacy.html', consent: 'consent.html' }
+  : { home: '/', faq: '/#faq', about: '/about/', blog: '/blog/', post: (s) => `/blog/${s}/`, privacy: '/privacy.html', consent: '/consent.html' };
 
 if (!SITE.contact) {
   console.warn('Переменная окружения SITE_CONTACT не задана: карточка с почтой на странице «О нас» не выводится.');
@@ -578,6 +579,7 @@ ${methodSection}
     <p>Стоимость и условия обучения указаны на дату обновления рейтинга и могут меняться. Страница содержит партнерские ссылки, на оценки это не влияет.</p>
     <p class="foot-links">
       <a href="${U.home}">Рейтинг курсов</a>
+      <a href="${U.blog}">Блог</a>
       <a href="${U.about}">О нас</a>
       <a href="${U.privacy}">Политика конфиденциальности</a>
       <a href="${U.consent}">Согласие на cookie</a>
@@ -752,6 +754,7 @@ ${themeBoot}
     <span class="logo"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></span>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}" aria-current="page">Рейтинг курсов</a>
+      <a href="${U.blog}">Блог</a>
       <a href="${U.faq}">FAQ</a>
       <a href="${U.about}">О нас</a>
     </nav>
@@ -883,6 +886,7 @@ ${themeBoot}
     <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
+      <a href="${U.blog}">Блог</a>
       <a href="${U.faq}">FAQ</a>
       <a href="${U.about}" aria-current="page">О нас</a>
     </nav>
@@ -963,6 +967,7 @@ ${themeBoot}
     <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.${mail ? ` Сотрудничество: <a href="mailto:${mail}">${mail}</a>` : ''}</p>
     <p class="foot-links">
       <a href="${U.home}">Рейтинг курсов</a>
+      <a href="${U.blog}">Блог</a>
       <a href="${U.privacy}">Политика конфиденциальности</a>
       <a href="${U.consent}">Согласие на cookie</a>
       <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
@@ -986,6 +991,203 @@ ${js}
 </body>
 </html>
 `;
+
+
+// ============ Блог ============
+// Статьи — в src/blog.mjs. Список: cursai.ru/blog/, статья: cursai.ru/blog/slug/.
+// Для поиска: свои title/description/canonical/og, разметка BlogPosting, BreadcrumbList и FAQPage, все адреса в sitemap.xml.
+const ruDate = (iso) => {
+  const [y, m, d] = iso.split('-').map(Number);
+  return `${d} ${['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'][m - 1]} ${y}`;
+};
+const readMin = (html) => Math.max(1, Math.round(html.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length / 180));
+const absUrl = (path) => (SITE.url ? SITE.url + path.replace(/^\//, '') : '');
+// Ссылки в тексте статьи: {dir:key} — страница направления рейтинга, {post:slug} — другая статья
+const postBody = (html) =>
+  html
+    .replace(/\{dir:(\w+)\}/g, (_, k) => {
+      const d = directionsB.find((x) => x.key === k);
+      if (!d) throw new Error(`Блог: нет направления ${k}`);
+      return dirHref(d);
+    })
+    .replace(/\{post:([\w-]+)\}/g, (_, s) => {
+      if (!posts.some((p) => p.slug === s)) throw new Error(`Блог: нет статьи ${s}`);
+      return U.post(s);
+    });
+const pageShell = ({ title, description, path, ogType = 'website', ld, current, body }) => `<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(description)}">
+${SITE.url ? `<link rel="canonical" href="${absUrl(path)}">\n<meta property="og:url" content="${absUrl(path)}">\n` : ''}<meta property="og:type" content="${ogType}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(description)}">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:site_name" content="${esc(SITE.name)}">${SITE.url ? `\n<meta property="og:image" content="${SITE.url}images/og.png">\n<meta name="twitter:card" content="summary_large_image">` : ''}
+<meta name="theme-color" content="#212121">
+<link rel="icon" href="${favicon}">
+${analyticsHints}
+${fonts}
+<style>${css}</style>
+${themeBoot}
+${ld ? `<script type="application/ld+json">${JSON.stringify(ld)}</script>` : ''}
+</head>
+<body class="blog-page">
+<header class="mtop">
+  <div class="wrap mtop-in">
+    <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
+    <nav class="site-nav" aria-label="Разделы сайта">
+      <a href="${U.home}">Рейтинг курсов</a>
+      <a href="${U.blog}"${current === 'blog' ? ' aria-current="page"' : ''}>Блог</a>
+      <a href="${U.faq}">FAQ</a>
+      <a href="${U.about}">О нас</a>
+    </nav>
+    <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
+      <span class="theme-knob" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+${body}
+<footer class="foot">
+  <div class="wrap foot-in">
+    <p><b>${esc(SITE.name)}</b> · независимая подборка онлайн-курсов по искусственному интеллекту, ${SITE.year}.${SITE.contact ? ` Сотрудничество: <a href="mailto:${esc(SITE.contact)}">${esc(SITE.contact)}</a>` : ''}</p>
+    <p class="foot-links">
+      <a href="${U.home}">Рейтинг курсов</a>
+      <a href="${U.blog}">Блог</a>
+      <a href="${U.about}">О нас</a>
+      <a href="${U.privacy}">Политика конфиденциальности</a>
+      <a href="${U.consent}">Согласие на cookie</a>
+      <button type="button" class="linklike" id="cookie-settings">Настройки cookie</button>
+    </p>
+  </div>
+</footer>
+
+<div class="consent" id="consent" role="dialog" aria-labelledby="consent-title" hidden>
+  <p class="consent-title" id="consent-title">Мы используем cookie</p>
+  <p class="consent-text">Сайт использует Яндекс Метрику для статистики посещений. Продолжая пользоваться сайтом, вы соглашаетесь с этим. Подробнее в <a href="${U.privacy}">политике</a> и <a href="${U.consent}">согласии</a>.</p>
+  <div class="consent-actions">
+    <button type="button" class="btn btn-ink btn-sm" id="consent-all">Хорошо</button>
+    <button type="button" class="btn btn-line btn-sm" id="consent-min">Отказаться</button>
+  </div>
+</div>
+
+<script>
+window.NR_YM_ID = ${JSON.stringify(SITE.ymId)};
+${js}
+</script>
+</body>
+</html>
+`;
+const crumbs = (items) => ({
+  '@type': 'BreadcrumbList',
+  itemListElement: items.map(([name, path], i) => ({ '@type': 'ListItem', position: i + 1, name, ...(SITE.url ? { item: absUrl(path) } : {}) })),
+});
+const org = { '@type': 'Organization', name: SITE.name, ...(SITE.url ? { url: SITE.url } : {}) };
+const postCard = (p) => `
+        <article class="post-card">
+          <p class="post-meta"><time datetime="${p.date}">${ruDate(p.date)}</time> · ${readMin(p.body)} мин чтения</p>
+          <h2 class="post-card-title"><a href="${U.post(p.slug)}">${esc(p.title)}</a></h2>
+          <p class="post-card-text">${esc(p.description)}</p>
+          <p class="post-tags">${p.tags.map((t) => `<span>${esc(t)}</span>`).join('')}</p>
+        </article>`;
+const blogIndexHtml = pageShell({
+  title: `${blog.title} · ${SITE.name}`,
+  description: blog.description,
+  path: '/blog/',
+  current: 'blog',
+  ld: {
+    '@context': 'https://schema.org',
+    '@graph': [
+      { '@type': 'Blog', name: blog.title, description: blog.description, publisher: org, ...(SITE.url ? { url: absUrl('/blog/') } : {}),
+        blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p.title, datePublished: p.date, ...(SITE.url ? { url: absUrl(`/blog/${p.slug}/`) } : {}) })) },
+      crumbs([['Рейтинг курсов', '/'], ['Блог', '/blog/']]),
+    ],
+  },
+  body: `
+<main>
+  <section class="hero blog-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Навигация"><a href="${U.home}">Рейтинг курсов</a><span aria-hidden="true">/</span><span>Блог</span></nav>
+      <h1 class="hero-title"><span class="mega mega-word">${esc(blog.h1)}</span> <span class="hero-sub">${esc(blog.sub)}</span></h1>
+      <p class="hero-lead">${esc(blog.lead)}</p>
+    </div>
+  </section>
+  <section class="blog-list">
+    <div class="wrap posts">${posts.map(postCard).join('')}
+    </div>
+  </section>
+</main>`,
+});
+const postHtml = (p) => {
+  const body = postBody(p.body);
+  const toc = [...body.matchAll(/<h2 id="([\w-]+)">([^<]+)<\/h2>/g)];
+  const others = posts.filter((x) => x.slug !== p.slug);
+  return pageShell({
+    title: `${p.title} · ${SITE.name}`,
+    description: p.description,
+    path: `/blog/${p.slug}/`,
+    ogType: 'article',
+    current: 'blog',
+    ld: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'BlogPosting',
+          headline: p.title,
+          description: p.description,
+          datePublished: p.date,
+          dateModified: p.dateModified || p.date,
+          inLanguage: 'ru',
+          author: org,
+          publisher: org,
+          ...(SITE.url ? { mainEntityOfPage: absUrl(`/blog/${p.slug}/`), image: `${SITE.url}images/og.png` } : {}),
+          keywords: p.tags.join(', '),
+        },
+        crumbs([['Рейтинг курсов', '/'], ['Блог', '/blog/'], [p.h1, `/blog/${p.slug}/`]]),
+        ...(p.faq ? [{ '@type': 'FAQPage', mainEntity: p.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }] : []),
+      ],
+    },
+    body: `
+<main>
+  <article class="post">
+    <header class="wrap post-head">
+      <nav class="crumbs" aria-label="Навигация"><a href="${U.home}">Рейтинг курсов</a><span aria-hidden="true">/</span><a href="${U.blog}">Блог</a></nav>
+      <h1 class="post-title">${esc(p.h1)}</h1>
+      <p class="post-meta"><time datetime="${p.date}">${ruDate(p.date)}</time> · ${readMin(p.body)} мин чтения · Редакция ${esc(SITE.name)}а</p>
+      <p class="post-lead">${esc(p.lead)}</p>
+    </header>
+    <div class="wrap post-grid">
+      <aside class="post-toc" aria-label="Содержание">
+        <p class="post-toc-title">Содержание</p>
+        <ol>${toc.map(([, id, h]) => `<li><a href="#${id}">${h}</a></li>`).join('')}${p.faq ? '<li><a href="#voprosy">Частые вопросы</a></li>' : ''}</ol>
+      </aside>
+      <div class="post-body">${body}${
+        p.faq
+          ? `
+<h2 id="voprosy">Частые вопросы</h2>${p.faq.map((f) => `
+<details class="qa"><summary><span>${esc(f.q)}</span><i aria-hidden="true"></i></summary><p>${esc(f.a)}</p></details>`).join('')}`
+          : ''
+      }
+        <div class="post-cta">
+          <p class="post-cta-title">Сравните курсы по одной методике</p>
+          <p>Программы, практика, поддержка и цены в одном рейтинге.</p>
+          <a class="btn btn-ink" href="${U.home}">Открыть рейтинг ${arrow}</a>
+        </div>
+      </div>
+    </div>
+  </article>
+  <section class="blog-list blog-more" aria-labelledby="more-title">
+    <div class="wrap">
+      <h2 class="h2" id="more-title">Читайте также</h2>
+      <div class="posts">${others.map(postCard).join('')}
+      </div>
+    </div>
+  </section>
+</main>`,
+  });
+};
 
 const legalPage = (doc, other) => {
   const body = doc.sections
@@ -1039,6 +1241,7 @@ const legal = {
 };
 if (/[ёЁ]/.test(Object.values(legal).join(''))) throw new Error('В юридических текстах есть буква «ё»');
 if (/[ёЁ]/.test(bHtml)) throw new Error('В варианте Б есть буква «ё»');
+if (/[ёЁ]/.test(blogIndexHtml + posts.map(postHtml).join(''))) throw new Error('В блоге есть буква «ё»');
 
 const out = new URL(artifact ? 'dist/' : 'site/', root);
 await rm(out, { recursive: true, force: true });
@@ -1064,6 +1267,7 @@ ${themeBoot}
     <a class="logo" href="${U.home}"><span class="logo-dot" aria-hidden="true"></span>${esc(SITE.name)}<span class="logo-desc">${esc(SITE.descriptor)}</span></a>
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
+      <a href="${U.blog}">Блог</a>
       <a href="${U.faq}">FAQ</a>
       <a href="${U.about}">О нас</a>
     </nav>
@@ -1137,7 +1341,7 @@ const dirPages = artifact
         ])
     );
 const pages = artifact
-  ? { 'preview.html': bare(bHtml), 'about.html': aboutHtml, ...legal }
+  ? { 'preview.html': bare(bHtml), 'about.html': aboutHtml, 'blog.html': blogIndexHtml, ...Object.fromEntries(posts.map((p) => [U.post(p.slug), postHtml(p)])), ...legal }
   : {
       'index.html': rootify(bHtml),
       // Страница «Курсы по ИИ» закрыта: заглушки ведут на главную, если хостинг не выполнит 301 из .htaccess
@@ -1150,6 +1354,10 @@ const pages = artifact
       'top-10.html': redirect('/'),
       '404.html': rootify(notFoundHtml),
       ...dirPages,
+      // Блог: папки + плоские копии (blog.html, blog-slug.html), которые .htaccess отдает по чистым адресам
+      'blog/index.html': rootify(blogIndexHtml),
+      'blog.html': rootify(blogIndexHtml),
+      ...Object.fromEntries(posts.flatMap((p) => [[`blog/${p.slug}/index.html`, rootify(postHtml(p))], [`blog-${p.slug}.html`, rootify(postHtml(p))]])),
       ...Object.fromEntries(Object.entries(legal).map(([k, v]) => [k, rootify(v)])),
     };
 for (const [name, page] of Object.entries(pages)) {
@@ -1164,12 +1372,12 @@ for (const f of await readdir(new URL('src/fonts/', root))) await copyFile(new U
 if (!artifact) {
   await writeFile(
     new URL('robots.txt', out),
-    `User-agent: *\nDisallow: /privacy.html\nDisallow: /consent.html\nDisallow: /b.html\nDisallow: /about.html\n${SITE.url ? `\nSitemap: ${SITE.url}sitemap.xml\n` : ''}`
+    `User-agent: *\nDisallow: /privacy.html\nDisallow: /consent.html\nDisallow: /b.html\nDisallow: /about.html\nDisallow: /blog.html\nDisallow: /blog-\n${SITE.url ? `\nSitemap: ${SITE.url}sitemap.xml\n` : ''}`
   );
   if (SITE.url) {
     await writeFile(
       new URL('sitemap.xml', out),
-      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${SITE.url}</loc></url>${directionsB.filter((d) => d.slug).map((d) => `<url><loc>${SITE.url}${d.slug}/</loc></url>`).join('')}<url><loc>${SITE.url}about/</loc></url></urlset>\n`
+      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${SITE.url}</loc></url>${directionsB.filter((d) => d.slug).map((d) => `<url><loc>${SITE.url}${d.slug}/</loc></url>`).join('')}<url><loc>${SITE.url}blog/</loc></url>${posts.map((p) => `<url><loc>${SITE.url}blog/${p.slug}/</loc><lastmod>${p.dateModified || p.date}</lastmod></url>`).join('')}<url><loc>${SITE.url}about/</loc></url></urlset>\n`
     );
   }
   // .htaccess: адреса страниц направлений подставляются из данных (src/courses.mjs, поле slug)

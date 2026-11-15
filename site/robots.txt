@@ -3,5 +3,7 @@ Disallow: /privacy.html
 Disallow: /consent.html
 Disallow: /b.html
 Disallow: /about.html
+Disallow: /blog.html
+Disallow: /blog-
 
 Sitemap: https://cursai.ru/sitemap.xml

@@ -35,6 +35,11 @@ AddType image/webp .webp
   RewriteRule ^about/(index\.html)?$ /about.html [L]
   # Страницы направлений рейтинга (cursai.ru/ii-agenty/ и т. п.): без слеша — на адрес со слешем,
   # сам адрес отдается плоским файлом slug.html из корня — работает и без загруженных папок
+  # Блог: /blog/ и /blog/slug/ отдаются плоскими файлами blog.html и blog-slug.html (работает и без папок)
+  RewriteRule ^blog$ /blog/ [R=301,L]
+  RewriteRule ^blog/([a-z0-9-]+)$ /blog/$1/ [R=301,L]
+  RewriteRule ^blog/(index\.html)?$ /blog.html [L]
+  RewriteRule ^blog/([a-z0-9-]+)/(index\.html)?$ /blog-$1.html [L]
   RewriteRule ^(kursy\-ii|ii\-dlya\-sebya|ii\-dlya\-raboty|ii\-dlya\-marketinga|ii\-agenty|novaya\-professiya|data\-science|graficheskij\-dizajn)$ /$1/ [R=301,L]
   RewriteRule ^(kursy\-ii|ii\-dlya\-sebya|ii\-dlya\-raboty|ii\-dlya\-marketinga|ii\-agenty|novaya\-professiya|data\-science|graficheskij\-dizajn)/(index\.html)?$ /$1.html [L]
 </IfModule>
