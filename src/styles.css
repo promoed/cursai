@@ -1895,31 +1895,37 @@ td:nth-child(4) {
   --r: 10deg;
   --s: 0.88;
 }
-/* Легкое парение: карточки плавно поднимаются и чуть покачиваются, каждая в своем ритме.
-   Отдельные свойства translate и rotate не спорят с раскрытием веера (transform) */
+/* Веер «дышит»: карточки плавно расходятся в стороны и снова собираются, как веер в руке.
+   Отдельные свойства translate и rotate не спорят с раскрытием веера при наведении (transform) */
 .deck-card {
-  animation: deck-float 6s ease-in-out infinite;
-  --sway: 1.6deg;
+  animation: deck-fan 7s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+.deck-card-1 {
+  --fx: -18px;
+  --fy: 6px;
+  --fr: -4deg;
 }
 .deck-card-2 {
-  animation-duration: 7s;
-  animation-delay: -2.3s;
-  --sway: -1.4deg;
+  --fx: 14px;
+  --fy: -10px;
+  --fr: 1deg;
 }
 .deck-card-3 {
-  animation-duration: 8s;
-  animation-delay: -4.6s;
-  --sway: 1.2deg;
+  --fx: 44px;
+  --fy: -18px;
+  --fr: 6deg;
 }
-@keyframes deck-float {
+@keyframes deck-fan {
   0%,
+  12%,
   100% {
     translate: 0 0;
     rotate: 0deg;
   }
-  50% {
-    translate: 0 -16px;
-    rotate: var(--sway);
+  50%,
+  62% {
+    translate: var(--fx) var(--fy);
+    rotate: var(--fr);
   }
 }
 .deck:hover .deck-card {
