@@ -494,41 +494,36 @@ ol {
   line-height: 1.55;
   color: var(--ink-2);
 }
-.wbar {
-  display: flex;
-  gap: 4px;
-  margin-top: auto;
-  padding-top: 12px;
-}
-.wbar span {
-  flex: var(--w) 1 0;
-  height: 10px;
-  border-radius: 999px;
-  background: var(--wc);
-}
-.wlegend {
+.wlist {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px 10px;
-  font-size: 0.82rem;
+  gap: 9px;
+  margin-top: auto;
+  padding-top: 14px;
+  font-size: 0.86rem;
   color: var(--ink-2);
 }
-.wlegend li {
-  display: flex;
+.wlist li {
+  display: grid;
+  grid-template-columns: 6.2em 1fr 2.6em;
   align-items: center;
-  gap: 6px;
-  white-space: nowrap;
+  gap: 10px;
 }
-.wlegend li::before {
-  content: '';
-  flex: none;
-  width: 8px;
+.wl-track {
   height: 8px;
-  border-radius: 50%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.wl-track i {
+  display: block;
+  height: 100%;
+  width: calc(var(--w) * 100%);
+  border-radius: inherit;
   background: var(--wc);
 }
-.wlegend b {
+.wlist b {
   color: var(--ink);
+  text-align: right;
 }
 
 /* ============ Фильтр ============ */

@@ -304,13 +304,12 @@ const tableRowsA = tableRows('urlA');
 // Блок «Как формируется рейтинг»: методика в 4 шага, у второго шага — шкала весов критериев
 const wColors = ['#FFD23F', '#FF7A59', '#9C8CFF', '#3DD6A0'];
 const weightBar = `
-          <div class="wbar" aria-hidden="true">${criteria.map((k, i) => `<span style="--w:${k.weight};--wc:${wColors[i % wColors.length]}"></span>`).join('')}</div>
-          <ul class="wlegend">${criteria
-            .map((k, i) => `<li style="--wc:${wColors[i % wColors.length]}" title="${esc(k.hint)}">${esc(k.label)} <b>${Math.round(k.weight * 100)}%</b></li>`)
+          <ul class="wlist">${criteria
+            .map((k, i) => `<li style="--w:${k.weight / Math.max(...criteria.map((c) => c.weight))};--wc:${wColors[i % wColors.length]}" title="${esc(k.hint)}"><span class="wl-name">${esc(k.label)}</span><span class="wl-track" aria-hidden="true"><i></i></span><b>${Math.round(k.weight * 100)}%</b></li>`)
             .join('')}</ul>`;
 const methodSteps = [
   ['Изучаем программу', 'Разбираем модули, инструменты, формат занятий и то, что останется на руках после обучения.'],
-  ['Ставим оценки', 'Четыре критерия от 0 до 10. Итоговый балл — взвешенная сумма, больше всего весит практика.'],
+  ['Ставим оценки', 'Каждый критерий оцениваем от 0 до 10. Вклад в итоговый балл:'],
   ['Сверяем цены и сроки', 'Стоимость, рассрочку и срок берем со страниц школ. Если школа их не публикует, поле остается пустым.'],
   ['Сравниваем внутри направления', 'Курсы по Data Science соревнуются с Data Science, по дизайну — с дизайном. Место в разделе показывает лучший выбор под конкретную задачу.'],
 ];
