@@ -1895,26 +1895,35 @@ td:nth-child(4) {
   --r: 10deg;
   --s: 0.88;
 }
-/* Дыхание: смещение отдельным свойством translate, чтобы не спорить с раскрытием веера */
+/* Легкое парение: карточки плавно поднимаются и чуть покачиваются, каждая в своем ритме.
+   Отдельные свойства translate и rotate не спорят с раскрытием веера (transform) */
 .deck-card {
-  animation: deck-breathe 7s ease-in-out infinite;
+  animation: deck-float 6s ease-in-out infinite;
+  --sway: 1.6deg;
 }
 .deck-card-2 {
-  animation-duration: 8s;
-  animation-delay: -2.5s;
+  animation-duration: 7s;
+  animation-delay: -2.3s;
+  --sway: -1.4deg;
 }
 .deck-card-3 {
-  animation-duration: 9s;
-  animation-delay: -5s;
+  animation-duration: 8s;
+  animation-delay: -4.6s;
+  --sway: 1.2deg;
 }
-@keyframes deck-breathe {
+@keyframes deck-float {
   0%,
   100% {
     translate: 0 0;
+    rotate: 0deg;
   }
   50% {
-    translate: 0 -8px;
+    translate: 0 -16px;
+    rotate: var(--sway);
   }
+}
+.deck:hover .deck-card {
+  animation-play-state: paused;
 }
 /* Наведение: веер раскрывается, карточка под курсором приподнимается */
 .deck:hover .deck-card-1 {
