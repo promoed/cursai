@@ -3,6 +3,7 @@
 //   node scripts/build.mjs --artifact  -> dist/ (превью: главная страница без обертки html/head)
 import { readFile, writeFile, mkdir, copyFile, rm, readdir } from 'node:fs/promises';
 import { existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { criteria, filters, directionsB, schools, courses, coursesB, faq } from '../src/courses.mjs';
 import { policy, consent, terms } from '../src/legal.mjs';
 import { timelineTitle, timeline, bigStat } from '../src/about.mjs';
@@ -1139,10 +1140,12 @@ const rubricNav = (active) => `
           .map((r) => `<a href="${U.rubric(r.slug)}"${active === r.slug ? ' aria-current="page"' : ''}>${esc(r.name)}</a>`)
           .join('')}
       </nav>`;
+// Обложка в WebP (в 2–3 раза легче jpg); jpg остается запасным вариантом и картинкой для соцсетей
+const webp = (f) => f.replace(/\.jpg$/, '.webp');
 const coverAlt = (p) => `Иллюстрация к статье «${p.h1}»`;
 const postCard = (p) => `
         <article class="post-card">${p.cover ? `
-          <img class="post-card-img" src="${esc(p.cover)}" alt="${esc(coverAlt(p))}" width="1200" height="630" loading="lazy" decoding="async">` : ''}
+          <picture><source srcset="${esc(webp(p.cover))}" type="image/webp"><img class="post-card-img" src="${esc(p.cover)}" alt="${esc(coverAlt(p))}" width="1200" height="630" loading="lazy" decoding="async"></picture>` : ''}
           <p class="post-meta"><time datetime="${p.date}">${ruDate(p.date)}</time> · ${readMin(p.body)} мин чтения</p>
           <h2 class="post-card-title"><a href="${U.post(p.slug)}">${esc(p.title)}</a></h2>
           <p class="post-card-text">${esc(p.description)}</p>
@@ -1250,7 +1253,7 @@ const postHtml = (p) => {
       <h1 class="post-title">${esc(p.h1)}</h1>
       <p class="post-meta"><a class="post-rubric" href="${U.rubric(p.rubric)}">${esc(rubricOf(p).name)}</a> <time datetime="${p.date}">${ruDate(p.date)}</time> · ${readMin(p.body)} мин чтения · Редакция ${esc(SITE.nameInText)}</p>
       <p class="post-lead">${esc(p.lead)}</p>${p.cover ? `
-      <img class="post-cover" src="${esc(p.cover)}" alt="${esc(coverAlt(p))}" width="1200" height="630" decoding="async" fetchpriority="high">` : ''}
+      <picture><source srcset="${esc(webp(p.cover))}" type="image/webp"><img class="post-cover" src="${esc(p.cover)}" alt="${esc(coverAlt(p))}" width="1200" height="630" decoding="async" fetchpriority="high"></picture>` : ''}
     </header>
     <div class="wrap post-grid">
       <aside class="post-toc" aria-label="Содержание">
@@ -1457,7 +1460,20 @@ const pages = artifact
       ...Object.fromEntries(rubrics.flatMap((r) => [[`blog/rubrika/${r.slug}/index.html`, rootify(rubricHtml(r))], [`blog-rubrika-${r.slug}.html`, rootify(rubricHtml(r))]])),
       ...Object.fromEntries(Object.entries(legal).map(([k, v]) => [k, rootify(v)])),
     };
-for (const [name, page] of Object.entries(pages)) {
+// На хостинге скрипт — отдельным файлом с хешем в имени: браузер скачивает его один раз и берет из кэша
+// на следующих страницах. Стили остаются внутри страницы: отдельный файл стилей задерживает первый показ
+// страницы (замер: 0,8 → 1,6 с на медленном мобильном), а это важнее для заходов из поиска и рекламы.
+const hash = (t) => createHash('sha1').update(t).digest('hex').slice(0, 8);
+const jsFile = `assets/app.${hash(js)}.js`;
+const externalize = (page) =>
+  page.replaceAll(`${js}\n</script>`, `</script>\n<script src="/${jsFile}"></script>`);
+if (!artifact) {
+  await rm(new URL('assets/', out), { recursive: true, force: true });
+  await mkdir(new URL('assets/', out), { recursive: true });
+  await writeFile(new URL(jsFile, out), js);
+}
+for (const [name, page0] of Object.entries(pages)) {
+  const page = artifact ? page0 : externalize(page0);
   if (name.includes('/')) await mkdir(new URL(name.replace(/[^/]+$/, ''), out), { recursive: true });
   // Метрика для посетителей без JavaScript: пиксель сразу после <body> (только на хостинге)
   const withPixel = !artifact && SITE.ymId && !/http-equiv="refresh"/.test(page)

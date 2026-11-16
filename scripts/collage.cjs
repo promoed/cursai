@@ -58,6 +58,8 @@ const covers = {
     fs.writeFileSync(`/tmp/collage-${name}.html`, html);
     await p.goto(`file:///tmp/collage-${name}.html`); await p.waitForTimeout(400);
     await p.screenshot({ path: `${dir}/images/blog/${name}.jpg`, type: 'jpeg', quality: 86 });
+    // WebP-копия для страниц (в 2–3 раза легче); jpg остается для соцсетей и старых браузеров. Нужен ImageMagick
+    require('child_process').execFileSync('convert', [`${dir}/images/blog/${name}.jpg`, '-quality', '80', `${dir}/images/blog/${name}.webp`]);
   }
   await b.close(); console.log('ok');
 })();
