@@ -2055,7 +2055,7 @@ td:nth-child(4) {
 /* Цветные плитки направлений, по мотивам наклеек первого экрана */
 .directions {
   display: grid;
-  /* 9 плиток: «Все курсы» высокой плиткой на два ряда, остальные восемь — 4×2 */
+  /* 10 плиток: ровно 5×2 на компьютере, на планшете «Все курсы» на всю ширину и 3×3, на телефоне 2×5 */
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
 }
@@ -2077,7 +2077,6 @@ td:nth-child(4) {
   transform: rotate(calc((3 - var(--i)) * 0.45deg));
 }
 .direction-all {
-  grid-row: span 2;
   background: var(--ink);
   color: var(--bg);
 }
@@ -2099,7 +2098,7 @@ td:nth-child(4) {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .direction-all {
-    grid-row: auto;
+    grid-column: 1 / -1;
   }
 }
 @media (max-width: 640px) {
@@ -2110,10 +2109,9 @@ td:nth-child(4) {
     min-height: 64px;
     padding: 11px 14px;
   }
-  /* 9 плиток: «Все курсы» на всю ширину, остальные ровно 2×4 */
   .direction-all {
-    grid-column: 1 / -1;
-    min-height: 0;
+    grid-column: auto;
+    min-height: 64px;
   }
   .directions .direction-all:not([aria-current='true']) {
     transform: rotate(-0.4deg);

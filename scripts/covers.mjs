@@ -56,8 +56,18 @@ const M = {
   23: (k) => `<circle cx="580" cy="500" r="80" fill="${k.t1}"/><rect x="480" y="600" width="200" height="200" rx="80" fill="${k.t1}"/><circle cx="1020" cy="500" r="80" fill="${k.t2}"/><rect x="920" y="600" width="200" height="200" rx="80" fill="${k.t2}"/><circle cx="800" cy="440" r="100" fill="${k.a}"/><rect x="675" y="565" width="250" height="250" rx="100" fill="${k.a}"/>`,
   // 24 Codex: окно терминала со знаком >_
   24: (k) => `<rect x="490" y="330" width="620" height="460" rx="56" fill="${k.t1}"/><path d="M600 480l90 80-90 80" fill="none" stroke="${k.a}" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/><rect x="730" y="610" width="140" height="30" rx="15" fill="${k.a}"/>${spark(1060, 330, 60, k.t2)}`,
-};
-for (const [n, f] of Object.entries(M)) {
+  // 25 ИИ-креатор (Нетология): веер из трех рамок — разные форматы контента
+  25: (k) => `<rect x="520" y="360" width="300" height="380" rx="44" fill="${k.t1}" transform="rotate(-12 670 550)"/><rect x="650" y="330" width="300" height="380" rx="44" fill="${k.t2}" transform="rotate(4 800 520)"/><rect x="780" y="360" width="300" height="380" rx="44" fill="${k.a}" transform="rotate(16 930 550)"/>${spark(930, 550, 56, k.bg)}`,
+  // 26 AI-креатор (Contented): много инструментов — круги разного размера
+  26: (k) => `<circle cx="660" cy="470" r="150" fill="${k.t1}"/><circle cx="920" cy="440" r="100" fill="${k.t2}"/><circle cx="880" cy="690" r="130" fill="${k.a}"/><circle cx="620" cy="720" r="60" fill="${k.t2}"/>`,
+  // 27 AI-креатор (Skillbox): волшебная палочка
+  27: (k) => `<rect x="520" y="560" width="560" height="64" rx="32" fill="${k.t2}" transform="rotate(-35 800 592)"/><rect x="900" y="360" width="150" height="64" rx="32" fill="${k.a}" transform="rotate(-35 975 392)"/>${spark(1040, 300, 70, k.a)}${spark(600, 360, 40, k.t2)}${spark(1100, 640, 34, k.t2)}`,
+  // 28 AI-креатор (GB): звуковая волна — текст, видео и звук
+  28: (k) => [180, 320, 460, 260, 400, 220, 340].map((h, i) => `<rect x="${520 + i * 85}" y="${560 - h / 2}" width="54" height="${h}" rx="27" fill="${i === 2 || i === 4 ? k.a : i % 2 ? k.t2 : k.t1}"/>`).join(''),
+  // 29 ИИ для видео и музыки (Нетология): кнопка «плей» и нота
+  29: (k) => `<circle cx="720" cy="560" r="230" fill="${k.t1}"/><path d="M660 440v240l200-120z" fill="${k.a}"/><path d="M1000 330v250" stroke="${k.t2}" stroke-width="26" stroke-linecap="round"/><path d="M1000 330l110 40v70l-110-40z" fill="${k.t2}"/><ellipse cx="960" cy="590" rx="60" ry="46" fill="${k.t2}" transform="rotate(-20 960 590)"/>`,
+
+};for (const [n, f] of Object.entries(M)) {
   const c = P[(n - 1) % P.length];
   // Желтый в темных тонах уходит в болотный — для желтых курсов синяя основа с желтым акцентом
   const k = c === '#FFD23F' ? { bg: '#2e3768', t1: '#3b4687', t2: '#55629f', a: c } : { bg: mix(c, 0.3), t1: mix(c, 0.5), t2: mix(c, 0.72), a: c };

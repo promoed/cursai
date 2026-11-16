@@ -42,8 +42,8 @@ AddType image/webp .webp
   RewriteRule ^blog/rubrika/([a-z0-9-]+)/(index\.html)?$ /blog-rubrika-$1.html [L]
   RewriteRule ^blog/(index\.html)?$ /blog.html [L]
   RewriteRule ^blog/([a-z0-9-]+)/(index\.html)?$ /blog-$1.html [L]
-  RewriteRule ^(kursy\-ii|ii\-dlya\-sebya|ii\-dlya\-raboty|ii\-dlya\-marketinga|ii\-agenty|novaya\-professiya|data\-science|graficheskij\-dizajn)$ /$1/ [R=301,L]
-  RewriteRule ^(kursy\-ii|ii\-dlya\-sebya|ii\-dlya\-raboty|ii\-dlya\-marketinga|ii\-agenty|novaya\-professiya|data\-science|graficheskij\-dizajn)/(index\.html)?$ /$1.html [L]
+  RewriteRule ^(kursy\-ii|ii\-dlya\-sebya|ii\-dlya\-raboty|ii\-dlya\-marketinga|ii\-agenty|novaya\-professiya|data\-science|graficheskij\-dizajn|ai\-kreator)$ /$1/ [R=301,L]
+  RewriteRule ^(kursy\-ii|ii\-dlya\-sebya|ii\-dlya\-raboty|ii\-dlya\-marketinga|ii\-agenty|novaya\-professiya|data\-science|graficheskij\-dizajn|ai\-kreator)/(index\.html)?$ /$1.html [L]
 </IfModule>
 
 # Ненайденный адрес — честная страница 404 (не главная), чтобы пропавший файл сразу был заметен
