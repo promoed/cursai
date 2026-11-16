@@ -763,7 +763,7 @@ const bJsonLd = {
     { '@type': 'Organization', name: SITE.name, ...(SITE.url ? { url: SITE.url, logo: `${SITE.url}apple-touch-icon.png` } : {}), ...(SITE.contact ? { email: SITE.contact } : {}) },
   ],
 };
-const bHtml = `<!doctype html>
+let bHtml = `<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -843,10 +843,13 @@ ${methodSection}
     </div>
   </section>
 
-  <section class="final" data-tint="base">
+  <section class="blog-fresh" aria-labelledby="fresh-title">
     <div class="wrap">
-      <h2 class="final-title">Лучшее время начать — сегодня</h2>
-      <div class="picks">${finalPicksB}
+      <div class="fresh-head">
+        <h2 class="h2" id="fresh-title">Свежее в блоге</h2>
+        <a class="btn btn-line" href="${U.blog}">Все статьи ${arrow}</a>
+      </div>
+      <div class="posts">__BLOG_FRESH__
       </div>
     </div>
   </section>
@@ -1146,6 +1149,8 @@ const postCard = (p) => `
           <p class="post-card-text">${esc(p.description)}</p>
           <p class="post-tags"><a class="post-rubric" href="${U.rubric(p.rubric)}">${esc(rubricOf(p).name)}</a></p>
         </article>`;
+// Блок «Свежее в блоге» на главной и страницах направлений: три последние статьи (анонсы со ссылками, не копии текста)
+bHtml = bHtml.replace('__BLOG_FRESH__', posts.slice(0, 3).map(postCard).join(''));
 const blogIndexHtml = pageShell({
   title: `${blog.title} · ${SITE.name}`,
   description: blog.description,

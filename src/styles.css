@@ -1899,17 +1899,17 @@ td:nth-child(4) {
    Отдельные свойства translate и rotate не спорят с раскрытием веера (transform) */
 .deck-card {
   animation: deck-float 6s ease-in-out infinite;
-  --sway: 1.6deg;
+  --sway: 0.9deg;
 }
 .deck-card-2 {
   animation-duration: 7s;
   animation-delay: -2.3s;
-  --sway: -1.4deg;
+  --sway: -0.8deg;
 }
 .deck-card-3 {
   animation-duration: 8s;
   animation-delay: -4.6s;
-  --sway: 1.2deg;
+  --sway: 0.7deg;
 }
 @keyframes deck-float {
   0%,
@@ -1918,7 +1918,7 @@ td:nth-child(4) {
     rotate: 0deg;
   }
   50% {
-    translate: 0 -16px;
+    translate: 0 -9px;
     rotate: var(--sway);
   }
 }
@@ -3340,4 +3340,18 @@ td:nth-child(4) {
   .mega {
     animation: none;
   }
+}
+
+/* «Свежее в блоге» на главной */
+.blog-fresh {
+  padding-block: clamp(48px, 7vw, 96px);
+  border-top: 1px solid var(--line);
+}
+.fresh-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: clamp(24px, 3vw, 36px);
 }
