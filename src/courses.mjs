@@ -60,8 +60,7 @@ export const schools = {
   skillbox: { name: 'Skillbox', logo: 'images/logo-skillbox.webp', logoSize: [548, 128], logoBg: '#ffffff' },
   practicum: { name: 'Яндекс Практикум', logo: 'images/logo-practicum.webp', logoSize: [640, 101], logoBg: '#1e1e1e' },
   gb: { name: 'GeekBrains', logo: 'images/logo-geekbrains.webp', logoSize: [412, 60], logoBg: '#ffffff' },
-  // Логотипа школы в проекте нет: название набрано шрифтом сайта (images/logo-contented.png)
-  contented: { name: 'Contented', logo: 'images/logo-contented.png', logoSize: [746, 160], logoBg: '#ffffff' },
+  contented: { name: 'Contented', logo: 'images/logo-contented.svg', logoSize: [796, 67], logoBg: '#ffffff' },
 };
 
 export const courses = [
@@ -802,6 +801,7 @@ export const coursesB = [
     title: 'ИИ-креатор',
     short: 'ИИ-креатор',
     url: 'https://netology.ru/programs/ai-creator',
+    affiliateB: 'https://go.redav.online/e284a52074385500?erid=2VfnxxQsJbC&m=1',
     art: 'images/art-25.svg',
     image: null,
     duration: '7 месяцев',
@@ -829,13 +829,14 @@ export const coursesB = [
     title: 'AI-креатор',
     short: 'AI-креатор',
     url: 'https://contented.ru/edu/ai-creator',
+    affiliateB: 'https://go.redav.online/43ad1dea374c2250?erid=2VfnxxVKGSE&m=1',
     art: 'images/art-26.svg',
     image: null,
     duration: '3–6 месяцев', // «Базовый» 3 мес., «Оптимальный» и VIP 6 мес.
     schedule: null,
-    price: 100152, // сумма рассрочки 2 782 ₽ × 36 мес., тариф «Базовый»; страница contented.ru недоступна из сборки, данные из выдачи поиска
+    price: 86256, // сумма рассрочки 2 396 ₽ × 36 мес. (платеж — данные владельца сайта, ноябрь 2026; срок рассрочки 36 мес. — по выдаче поиска)
     priceFrom: true,
-    priceMonthly: 2782, // рассрочка на 36 мес.; «Оптимальный» — 3 519 ₽/мес, VIP — 4 308 ₽/мес
+    priceMonthly: 2396, // рассрочка, младший тариф (данные владельца сайта, ноябрь 2026)
     priceMonthlyFrom: true,
     tags: ['creator', 'career'],
     sub: 'creator',
@@ -856,6 +857,7 @@ export const coursesB = [
     title: 'AI-креатор: создаем контент с помощью нейросетей',
     short: 'AI-креатор',
     url: 'https://skillbox.ru/course/profession-ai-creator/',
+    affiliateB: 'https://go.redav.online/b63e5f273226ec20?erid=2VfnxwisD9b&m=1',
     art: 'images/art-27.svg',
     image: null,
     duration: '3–6 месяцев',
@@ -883,6 +885,7 @@ export const coursesB = [
     title: 'AI-креатор',
     short: 'AI-креатор',
     url: 'https://gb.ru/geek_university/design/ai-creator',
+    affiliateB: 'https://go.redav.online/fcc41e9e9d10dd20?erid=2VfnxxQa3a9&m=1',
     art: 'images/art-28.svg',
     image: null,
     duration: null, // срок на странице не указан
@@ -910,6 +913,7 @@ export const coursesB = [
     title: 'Нейросети для создания видео и музыки',
     short: 'ИИ для видео и музыки',
     url: 'https://netology.ru/programs/ai-creative',
+    affiliateB: 'https://go.redav.online/1c38f3bf1f1acd00?erid=2VfnxxQsJbC&m=1',
     art: 'images/art-29.svg',
     image: null,
     duration: '3 месяца',
