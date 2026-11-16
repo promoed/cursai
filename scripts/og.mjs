@@ -78,7 +78,8 @@ for (const p of pages) {
 const svg = /const faviconSvg =\s*'(<svg[\s\S]*?<\/svg>)'/.exec(await readFile(new URL('scripts/build.mjs', root), 'utf8'))[1];
 for (const [name, size] of [['favicon-32.png', 32], ['apple-touch-icon.png', 180]]) {
   const ip = await browser.newPage({ viewport: { width: size, height: size } });
-  await ip.setContent(`<style>*{margin:0}svg{display:block;width:${size}px;height:${size}px}</style>${svg}`);
+  // Для iPhone/Android квадрат без скругления и прозрачных углов: система сама скругляет иконку, а прозрачные углы закрашивает черным
+  await ip.setContent(`<style>*{margin:0}svg{display:block;width:${size}px;height:${size}px}</style>${size > 32 ? svg.replace('rx="8" ', '') : svg}`);
   await ip.screenshot({ path: new URL(`images/${name}`, root).pathname, omitBackground: true });
   await ip.close();
 }
