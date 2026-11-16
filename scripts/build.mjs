@@ -790,7 +790,6 @@ ${themeBoot}
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}" aria-current="page">Рейтинг курсов</a>
       <a href="${U.blog}">Блог</a>
-      <a href="${U.faq}">FAQ</a>
       <a href="${U.about}">О нас</a>
     </nav>
     <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
@@ -801,6 +800,7 @@ ${themeBoot}
 
 <main>
   <section class="hero hero-b" data-tint="base">
+    <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="wrap">${heroArt}
       <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
       <h1 class="hero-title">
@@ -928,7 +928,6 @@ ${themeBoot}
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.blog}">Блог</a>
-      <a href="${U.faq}">FAQ</a>
       <a href="${U.about}" aria-current="page">О нас</a>
     </nav>
     <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
@@ -1083,7 +1082,6 @@ ${ld ? `<script type="application/ld+json">${JSON.stringify(ld)}</script>` : ''}
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.blog}"${current === 'blog' ? ' aria-current="page"' : ''}>Блог</a>
-      <a href="${U.faq}">FAQ</a>
       <a href="${U.about}">О нас</a>
     </nav>
     <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
@@ -1363,7 +1361,6 @@ ${themeBoot}
     <nav class="site-nav" aria-label="Разделы сайта">
       <a href="${U.home}">Рейтинг курсов</a>
       <a href="${U.blog}">Блог</a>
-      <a href="${U.faq}">FAQ</a>
       <a href="${U.about}">О нас</a>
     </nav>
     <button class="theme" id="theme-toggle" type="button" aria-label="Переключить тему">
