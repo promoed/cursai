@@ -3327,12 +3327,12 @@ td:nth-child(4) {
 }
 .logo-mark svg {
   display: block;
-  height: 31px;
+  height: 25px;
   width: auto;
 }
 @media (max-width: 640px) {
   .logo-mark svg {
-    height: 27px;
+    height: 22px;
   }
 }
 
