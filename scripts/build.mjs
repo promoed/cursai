@@ -800,7 +800,6 @@ ${themeBoot}
 
 <main>
   <section class="hero hero-b" data-tint="base">
-    <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="wrap">${heroArt}
       <p class="hero-kicker">Рейтинг обновлен · ${esc(SITE.updated)}</p>
       <h1 class="hero-title">
