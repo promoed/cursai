@@ -2,7 +2,7 @@
 //   node scripts/build.mjs             -> site/ (готовая папка для хостинга)
 //   node scripts/build.mjs --artifact  -> dist/ (превью: главная страница без обертки html/head)
 import { readFile, writeFile, mkdir, copyFile, rm, readdir } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { criteria, filters, directionsB, schools, courses, coursesB, faq } from '../src/courses.mjs';
 import { policy, consent, terms } from '../src/legal.mjs';
 import { timelineTitle, timeline, bigStat } from '../src/about.mjs';
@@ -161,10 +161,14 @@ const poster = (i) => {
 
 // Картинка курса. Пока файла нет, показываем постерную заглушку в цвете курса.
 // Обложка-иллюстрация курса (c.art) с плашкой логотипа школы поверх
+// Обложки курсов встраиваются прямо в страницу (SVG по 1–2 КБ): ни одного лишнего запроса, картинка видна сразу
+const artCache = {};
+const artSrc = (file) =>
+  (artCache[file] ??= 'data:image/svg+xml,' + encodeURIComponent(readFileSync(new URL(file, root), 'utf8').trim()).replace(/%20/g, ' ').replace(/%3D/g, '=').replace(/%3A/g, ':').replace(/%2F/g, '/').replace(/%22/g, "'"));
 const artCover = (c, cls) => {
   const school = schools[c.school];
-  const logo = `<span class="art-logo${school.logoSize[0] / school.logoSize[1] < 3 ? ' is-tall' : ''}" style="--logo-bg:${school.logoBg}"><img src="${esc(school.logo)}" alt="Логотип ${esc(school.name)}" width="${school.logoSize[0]}" height="${school.logoSize[1]}" loading="lazy" decoding="async"></span>`;
-  const img = `<img class="art-img" src="${esc(c.art)}" alt="" width="1600" height="1000" loading="lazy" decoding="async">`;
+  const logo = `<span class="art-logo${school.logoSize[0] / school.logoSize[1] < 3 ? ' is-tall' : ''}" style="--logo-bg:${school.logoBg}"><img src="${esc(school.logo)}" alt="Логотип ${esc(school.name)}" width="${school.logoSize[0]}" height="${school.logoSize[1]}" decoding="async"></span>`;
+  const img = `<img class="art-img" src="${artSrc(c.art)}" alt="" width="1600" height="1000" decoding="async">`;
   // Эксперимент: название курса прямо на обложке (artTitle: true в данных курса)
   if (c.artTitle) {
     return `<span class="${cls} art has-title" style="--art-bg:${c.color}"><span class="art-pic">${img}</span><span class="art-band"><span class="art-title">${esc(c.short)}</span>${logo}</span></span>`;
@@ -666,7 +670,7 @@ const heroArt = `
           .map(
             (c, i) => `
           <a class="deck-card deck-card-${i + 1}" href="#kurs-${c.rank}" style="--art-bg:${c.color}">
-            <span class="deck-pic"><img src="${esc(c.art)}" alt="" width="1600" height="1000" decoding="async"><span class="deck-place">${c.placeAll}</span></span>
+            <span class="deck-pic"><img src="${artSrc(c.art)}" alt="""" width="1600" height="1000" decoding="async"><span class="deck-place">${c.placeAll}</span></span>
             <span class="deck-info">
               <span class="deck-school">${esc(schools[c.school].name)}</span>
               <span class="deck-title">${esc(c.short)}</span>
