@@ -2379,7 +2379,7 @@ td:nth-child(4) {
 .mcard-cta:hover {
   background: linear-gradient(100deg, #3dd6a0, #5ab0ff, #9c8cff, #ff8fc7, #9c8cff, #5ab0ff, #3dd6a0) 0 0 / 300% 100%;
   color: #121212;
-  animation: cta-shimmer 4s linear infinite;
+  animation: cta-shimmer 9s linear infinite;
 }
 @keyframes cta-shimmer {
   to { background-position: 100% 0; }
