@@ -2375,11 +2375,11 @@ td:nth-child(4) {
   color: var(--bg);
   transition: background-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.3s var(--spring);
 }
-/* Наведение: переливающийся градиент как у логотипа (src/logo.svg) */
+/* Наведение: переливающийся градиент в цветах «ai.» из логотипа (src/logo.svg) */
 .mcard-cta:hover {
-  background: linear-gradient(100deg, #3dd6a0, #5ab0ff, #9c8cff, #ff8fc7, #9c8cff, #5ab0ff, #3dd6a0) 0 0 / 300% 100%;
+  background: linear-gradient(100deg, #9c8cff, #ff8fc7, #ff7a59, #ff8fc7, #9c8cff) 0 0 / 300% 100%;
   color: #121212;
-  animation: cta-shimmer 9s linear infinite;
+  animation: cta-shimmer 14s linear infinite;
 }
 @keyframes cta-shimmer {
   to { background-position: 100% 0; }
