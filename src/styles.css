@@ -1825,7 +1825,7 @@ td:nth-child(4) {
     /* кликается только верхняя карточка колоды, остальное поле картинки пропускает клики к тексту */
     pointer-events: none;
     transform-origin: bottom right;
-    animation: rise 1s var(--ease) both 0.3s;
+    animation: rise 0.6s var(--ease) both;
   }
 }
 /* Чем уже экран, тем меньше свободного места справа от «Рейтинг»: масштаб подобран так, чтобы не задевать текст */
