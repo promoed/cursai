@@ -7,10 +7,17 @@ import { createHash } from 'node:crypto';
 import { criteria, filters, directionsB, schools, courses, coursesB, faq } from '../src/courses.mjs';
 import { policy, consent, terms } from '../src/legal.mjs';
 import { timelineTitle, timeline, bigStat } from '../src/about.mjs';
-import { blog, posts, rubrics as allRubrics } from '../src/blog.mjs';
+import { blog, posts as allPosts, rubrics as allRubrics } from '../src/blog.mjs';
 
 const root = new URL('../', import.meta.url);
 const artifact = process.argv.includes('--artifact');
+// Отложенная публикация: на сайт попадают статьи с датой не позже сегодняшней (по Москве).
+// Статьи с будущей датой ждут своего дня; их выкладывает ежедневная сборка (.github/workflows/publish.yml).
+// В превью (--artifact) видны все статьи, чтобы их можно было проверить заранее.
+const todayMsk = new Date(Date.now() + 3 * 3600e3).toISOString().slice(0, 10);
+const posts = allPosts.filter((p) => artifact || p.date <= todayMsk).sort((a, b) => b.date.localeCompare(a.date));
+const scheduled = allPosts.filter((p) => p.date > todayMsk);
+if (scheduled.length) console.log(`Запланировано: ${scheduled.map((p) => `${p.date} ${p.slug}`).join(', ')}${artifact ? ' (в превью видны)' : ''}`);
 
 const SITE = {
   name: 'nomoreai.',

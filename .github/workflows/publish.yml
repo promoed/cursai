@@ -1,0 +1,49 @@
+# Ежедневная публикация сайта на хостинг (reg.ru) по FTP.
+# Каждое утро собирает сайт: статьи из src/blog.mjs, у которых наступила дата, появляются в блоге,
+# на главной и в карте сайта. Загружаются только изменившиеся файлы.
+# Также запускается при каждом обновлении ветки и вручную: Actions → «Публикация сайта» → Run workflow.
+#
+# Секреты репозитория (Settings → Secrets and variables → Actions):
+#   FTP_SERVER    — адрес FTP-сервера из панели reg.ru
+#   FTP_USERNAME  — логин FTP
+#   FTP_PASSWORD  — пароль FTP
+#   FTP_DIR       — папка сайта на хостинге, например /www/cursai.ru/  (со слешем в конце)
+#   SITE_CONTACT  — почта для подвала сайта
+name: Публикация сайта
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # 06:00 UTC = 09:00 по Москве
+  push:
+    branches: [claude/sleepy-shannon-euxd1x]
+  workflow_dispatch:
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Сборка сайта
+        env:
+          SITE_CONTACT: ${{ secrets.SITE_CONTACT }}
+        run: node scripts/build.mjs
+
+      - name: Загрузка на хостинг
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_DIR }}
+          local-dir: ./site/
+          # Файлы со старыми версиями скриптов и неопубликованные страницы удаляются с хостинга
+          dangerous-clean-slate: false
