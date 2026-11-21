@@ -45,5 +45,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.FTP_DIR }}
           local-dir: ./site/
-          # Файлы со старыми версиями скриптов и неопубликованные страницы удаляются с хостинга
+          # Ничего на хостинге не удаляется: загружаются только новые и изменившиеся файлы
           dangerous-clean-slate: false
