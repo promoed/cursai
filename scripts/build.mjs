@@ -32,7 +32,12 @@ const SITE = {
   policyDate: '27 сентября 2026',
   // Мета-теги подтверждения владения сайтом для партнерских программ/вебмастер-сервисов.
   // Каждый — строка вида '<meta name="..." content="...">', ставится только на реальной сборке (site/), не в превью.
-  verification: ['<meta name="mitgo-verification" content="c882e009-18cd-42f1-b70d-7c06b9f8288c">'],
+  // Подтверждение прав в Mitgo, Google Search Console и Яндекс Вебмастере (только на главной хостинга)
+  verification: [
+    '<meta name="mitgo-verification" content="c882e009-18cd-42f1-b70d-7c06b9f8288c">',
+    '<meta name="google-site-verification" content="v_mVHloF8ElJE2lzl2ejSQrzaExHRu5eKiMr2WwshWk">',
+    '<meta name="yandex-verification" content="febe504f0ebfd5e8">',
+  ],
   // Реквизиты оператора для политики и согласия. ФИО/ИНН можно оставить пустыми —
   // тогда в текстах используется формулировка «владелец сайта cursai.ru».
   operator: {

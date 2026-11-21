@@ -3294,6 +3294,22 @@ td:nth-child(4) {
   border-radius: 24px;
   object-fit: cover;
 }
+/* Картинки внутри статьи */
+.post-figure {
+  margin: 28px 0;
+}
+.post-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1200 / 630;
+  border-radius: 20px;
+}
+.post-figure figcaption {
+  margin-top: 10px;
+  font-size: 0.86rem;
+  color: var(--ink-2);
+}
 /* Подвал: «Сотрудничество» и почта всегда в одной строке */
 .foot-mail {
   white-space: nowrap;

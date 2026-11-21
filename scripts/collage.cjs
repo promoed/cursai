@@ -51,10 +51,35 @@ const covers = {
     piece({ src: 8, crop: [145, 1315, 980, 545], at: [560, 360, 560], rot: -2, z: 5 }),
     tape('профессии', 80, 110, -6, 290),
   ].join('')),
+  // AI-креатор: голубая бумага, лицо, грибы и бабочка — контент из всего подряд, собранный в одно
+  'kto-takoj-ai-kreator': page('#6fd3e6', [
+    piece({ src: 6, crop: [1140, 0, 200, 1200], at: [40, -40, 150], rot: -4, rip: 3, z: 1 }),
+    piece({ src: 7, crop: [1010, 0, 490, 420], at: [820, -20, 400], rot: 6, rip: 2, z: 2 }),
+    piece({ src: 4, crop: [0, 900, 275, 350], at: [210, 90, 330], rot: -5, z: 4 }),
+    piece({ src: 7, crop: [10, 1095, 460, 400], at: [500, 200, 420], rot: 4, rip: 3, z: 3 }),
+    piece({ src: 4, crop: [760, 1405, 318, 284], at: [860, 330, 280], rot: -8, z: 5 }),
+    tape('AI-креатор', 140, 480, -4, 330),
+  ].join('')),
+  // Картинка в статье: из чего состоит работа — тексты, фото, видео, звук
+  'kto-takoj-ai-kreator-1': page('#efe6d6', [
+    piece({ src: 6, crop: [290, 0, 210, 1250], at: [20, -40, 170], rot: 3, rip: 3, z: 1 }),
+    piece({ src: 7, crop: [75, 40, 525, 340], at: [230, 60, 460], rot: -4, rip: 2, z: 3 }),
+    piece({ src: 4, crop: [372, 942, 540, 290], at: [640, 210, 520], rot: 7, z: 4 }),
+    piece({ src: 7, crop: [0, 865, 235, 230], at: [300, 360, 230], rot: -10, z: 5 }),
+    tape('тексты · фото · видео', 610, 60, 3, 470),
+  ].join('')),
+  // Картинка в статье: портфолио — вырезаем лучшее
+  'kto-takoj-ai-kreator-2': page('#9c8cff', [
+    piece({ src: 8, crop: [175, 165, 690, 1000], at: [80, 30, 360], rot: -3, rip: 1.2, z: 3 }),
+    piece({ src: 6, crop: [0, 1250, 1467, 560], at: [420, 330, 700], rot: 2, rip: 1.6, z: 2 }),
+    piece({ src: 4, crop: [940, 900, 232, 390], at: [760, 30, 250], rot: 16, z: 5 }),
+    tape('портфолио', 520, 120, -5, 300),
+  ].join('')),
 };
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1200, height: 630 } });
-  for (const [name, html] of Object.entries(covers)) {
+  // node scripts/collage.cjs slug — пересобрать только эти картинки (без аргументов — все)
+  for (const [name, html] of Object.entries(covers).filter(([n]) => process.argv.length < 3 || process.argv.slice(2).some((a) => n.startsWith(a)))) {
     fs.writeFileSync(`/tmp/collage-${name}.html`, html);
     await p.goto(`file:///tmp/collage-${name}.html`); await p.waitForTimeout(400);
     await p.screenshot({ path: `${dir}/images/blog/${name}.jpg`, type: 'jpeg', quality: 86 });
